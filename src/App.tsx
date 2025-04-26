@@ -1,7 +1,7 @@
 function App() {
    return (
       <>
-         <h1>Typify</h1>
+         <h1 className="text-3xl font-bold">Typify</h1>
       </>
    );
 }
