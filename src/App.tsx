@@ -1,7 +1,11 @@
 function App() {
    return (
       <>
-         <h1 className="text-3xl font-bold">Typify</h1>
+         <h1 className="canvas">
+            <div>1</div>
+            <div>2</div>
+            <div>3</div>
+         </h1>
       </>
    );
 }

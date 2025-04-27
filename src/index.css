@@ -1,1 +1,29 @@
 @import "tailwindcss";
+
+@layer base {
+   * {
+      box-sizing: border-box;
+   }
+
+   body {
+      margin: 0;
+      padding: 0;
+      transition: all 0.3s linear;
+      background-color: #0d0d0d;
+      color: #b7ab98;
+   }
+}
+
+@layer components {
+   .canvas {
+      display: grid;
+      min-height: 100dvh;
+      grid-auto-flow: row;
+      grid-template-rows: auto 1fr auto;
+      gap: 0.5rem;
+      padding: 2rem;
+      width: 100vw;
+      align-items: center;
+      text-align: center;
+   }
+}
