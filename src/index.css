@@ -16,14 +16,6 @@
 
 @layer components {
    .canvas {
-      display: grid;
-      min-height: 100dvh;
-      grid-auto-flow: row;
-      grid-template-rows: auto 1fr auto;
-      gap: 0.5rem;
-      padding: 2rem;
-      width: 100vw;
-      align-items: center;
-      text-align: center;
+      @apply grid min-h-[100dvh] grid-rows-[auto,1fr,auto] gap-2 p-8 w-screen items-center text-center;
    }
 }

@@ -1,11 +1,15 @@
+import Footer from "./components/Footer";
+import TypeZone from "./components/TypeZone";
+import Header from "./components/Header";
+
 function App() {
    return (
       <>
-         <h1 className="canvas">
-            <div>1</div>
-            <div>2</div>
-            <div>3</div>
-         </h1>
+         <div className="canvas">
+            <Header />
+            <TypeZone />
+            <Footer />
+         </div>
       </>
    );
 }
