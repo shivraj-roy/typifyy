@@ -11,6 +11,7 @@
       transition: all 0.3s linear;
       background-color: #0d0d0d;
       color: #b7ab98;
+      overflow-x: hidden;
    }
 }
 
