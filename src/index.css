@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap");
 
 @theme {
    --color-dark: #0d0d0d;
@@ -13,18 +14,19 @@
    }
 
    body {
+      font-family: "Space Mono", "Roboto Mono", monospace;
       margin: 0;
       padding: 0;
       transition: all 0.3s linear;
       background-color: var(--color-dark-100);
-      color: #b7ab98;
+      color: var(--color-fade);
       overflow-x: hidden;
    }
 }
 
 @layer components {
    .canvas {
-      @apply grid min-h-[100dvh] grid-rows-[auto_auto_auto_auto] gap-2 p-8 w-screen items-center text-center relative;
+      @apply grid min-h-[100dvh] grid-rows-[auto_auto_auto_auto] gap-2 px-16 py-8 w-screen items-center text-center relative;
    }
 
    .active {
