@@ -1,5 +1,12 @@
 @import "tailwindcss";
 
+@theme {
+   --color-dark: #0d0d0d;
+   --color-dark-100: rgba(13, 13, 13, 0.871);
+   --color-fade: #b7ab98;
+   --color-active: #eb5939;
+}
+
 @layer base {
    * {
       box-sizing: border-box;
@@ -9,7 +16,7 @@
       margin: 0;
       padding: 0;
       transition: all 0.3s linear;
-      background-color: #0d0d0de5;
+      background-color: var(--color-dark-100);
       color: #b7ab98;
       overflow-x: hidden;
    }
@@ -18,5 +25,9 @@
 @layer components {
    .canvas {
       @apply grid min-h-[100dvh] grid-rows-[auto_auto_auto_auto] gap-2 p-8 w-screen items-center text-center relative;
+   }
+
+   .active {
+      @apply text-active;
    }
 }

@@ -1,17 +1,22 @@
+import { MdTimer } from "react-icons/md";
+import Button from "../ui/Button";
+
 const MenuBar = () => {
    return (
       <div className="flex justify-center items-center self-start">
-         <div className="flex bg-[#0d0d0d] p-3 rounded-xl">
+         <div className="flex bg-dark-100 px-3 py-2 rounded-xl">
             <div className="flex">
-               <button className="px-2 cursor-pointer hover:text-white">
-                  text
-               </button>
-               <div>word</div>
+               <Button btnIcon={<MdTimer />} btnTxt="time" btnClass="active" />
+               <Button
+                  btnIcon={<span className="font-serif">A</span>}
+                  btnTxt="words"
+               />
             </div>
+            <div className="w-1 h-auto bg-fade rounded-2xl mr-2 ml-3 my-1" />
             <div className="flex">
-               <div className="time">15</div>
-               <div className="time">30</div>
-               <div className="time">60</div>
+               <Button btnTxt="15" />
+               <Button btnTxt="30" />
+               <Button btnTxt="60" />
             </div>
          </div>
       </div>
