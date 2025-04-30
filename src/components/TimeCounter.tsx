@@ -1,7 +1,7 @@
 const TimeCounter = ({ countDown }: { countDown: number }) => {
    return (
       <div>
-         <div className="flex text-3xl ml-2">{countDown}</div>
+         <div className="flex text-3xl ml-2 text-active">{countDown}</div>
       </div>
    );
 };
