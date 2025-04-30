@@ -1,12 +1,11 @@
-import Footer from "./components/Footer";
-import TypeZone from "./components/TypeZone";
-import Header from "./components/Header";
+import { Footer, Header, MenuBar, TypeZone } from "./components";
 
 function App() {
    return (
       <>
          <div className="canvas">
             <Header />
+            <MenuBar />
             <TypeZone />
             <Footer />
          </div>

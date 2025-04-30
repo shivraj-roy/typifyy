@@ -9,7 +9,7 @@ const TypeZone = () => {
 
    return (
       <>
-         <div className="max-w-full mx-auto overflow-hidden">
+         <div className="max-w-full mx-auto overflow-hidden self-start  mb-16">
             <TimeCounter countDown={testTime} />
             <div className="text-3xl flex flex-wrap">
                {words.map((word, wordIndex) => (
