@@ -1,6 +1,17 @@
 import { createContext, useContext, useState } from "react";
 
-const TestModeContext = createContext();
+interface TestModeContextType {
+   // mode: TestMode;
+   // setMode: (mode: TestMode) => void;
+   testTime: number;
+   setTestTime: (time: number) => void;
+   // testWords: number;
+   // setTestWords: (words: number) => void;
+}
+
+const TestModeContext = createContext<TestModeContextType | undefined>(
+   undefined
+);
 
 export const TestModeContextProvider = ({
    children,

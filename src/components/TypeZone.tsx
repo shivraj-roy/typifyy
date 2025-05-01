@@ -1,16 +1,21 @@
 import { generate } from "random-words";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTestMode } from "../context/TestMode";
 import TimeCounter from "./TimeCounter";
 
 const TypeZone = () => {
    const [words, setWords] = useState<string[]>(() => generate(50) as string[]);
    const { testTime } = useTestMode() as { testTime: number }; // Ensure the type matches your context
+   const [counter, setCounter] = useState<number>(testTime);
+
+   useEffect(() => {
+      setCounter(testTime);
+   }, [testTime]);
 
    return (
       <>
          <div className="max-w-full mx-auto overflow-hidden self-start  mb-16">
-            <TimeCounter countDown={testTime} />
+            <TimeCounter countDown={counter} />
             <div className="text-3xl flex flex-wrap leading-12 tracking-wide">
                {words.map((word, wordIndex) => (
                   <span
