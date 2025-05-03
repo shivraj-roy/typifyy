@@ -1,5 +1,5 @@
 import { generate } from "random-words";
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, createRef, useMemo } from "react";
 import { useTestMode } from "../context/TestMode";
 import TimeCounter from "./TimeCounter";
 
@@ -9,6 +9,14 @@ const TypeZone = () => {
    const [counter, setCounter] = useState<number>(testTime);
 
    const inputRef = useRef<HTMLInputElement>(null);
+
+   const wordSpanRef = useMemo(() => {
+      return Array(words.length)
+         .fill(0)
+         .map(() => createRef<HTMLSpanElement>());
+   }, [words]);
+
+   console.log(wordSpanRef);
 
    const handleUserInput = (e: React.KeyboardEvent<HTMLInputElement>) => {
       console.log(e.key);
@@ -38,6 +46,7 @@ const TypeZone = () => {
                   <span
                      key={`${wordIndex}-${word}`}
                      className="my-[0.3rem] mx-2"
+                     ref={wordSpanRef[wordIndex]}
                   >
                      {word.split("").map((letter, letterIndex) => (
                         <span key={`${letterIndex}-${wordIndex}`}>
