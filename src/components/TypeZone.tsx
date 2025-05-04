@@ -10,6 +10,7 @@ const TypeZone = () => {
 
    const inputRef = useRef<HTMLInputElement>(null);
 
+   // * Reference for each word span element in the DOM
    const wordSpanRef = useMemo(() => {
       return Array(words.length)
          .fill(0)
@@ -18,10 +19,12 @@ const TypeZone = () => {
 
    console.log(wordSpanRef);
 
+   // * Handles user input
    const handleUserInput = (e: React.KeyboardEvent<HTMLInputElement>) => {
       console.log(e.key);
    };
 
+   // * Focus the input when the component mounts
    const focusInput = () => {
       inputRef.current?.focus();
    };
@@ -34,6 +37,7 @@ const TypeZone = () => {
       }
    }, [wordSpanRef]);
 
+   // * Reset the counter when the test time changes
    useEffect(() => {
       setCounter(testTime);
    }, [testTime]);
