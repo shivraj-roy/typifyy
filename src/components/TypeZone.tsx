@@ -49,7 +49,7 @@ const TypeZone = () => {
             onClick={focusInput}
          >
             <TimeCounter countDown={counter} />
-            <div className="text-3xl flex flex-wrap leading-12 tracking-tight relative">
+            <div className="text-3xl flex flex-wrap leading-12 tracking-tight relative text-fade-100">
                {/* <div className="absolute top-3 left-1 caret w-1 h-9 bg-active rounded-2xl animate-blinking" /> */}
                {words.map((word, wordIndex) => (
                   <span
