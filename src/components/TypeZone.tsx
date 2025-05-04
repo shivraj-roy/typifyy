@@ -7,6 +7,8 @@ const TypeZone = () => {
    const [words, setWords] = useState<string[]>(() => generate(50) as string[]);
    const { testTime } = useTestMode() as { testTime: number }; // Ensure the type matches your context
    const [counter, setCounter] = useState<number>(testTime);
+   const [onWordIndex, setOnWordIndex] = useState(0);
+   const [onCharIndex, setOnCharIndex] = useState(0);
 
    const inputRef = useRef<HTMLInputElement>(null);
 
@@ -17,13 +19,6 @@ const TypeZone = () => {
          .map(() => createRef<HTMLSpanElement>());
    }, [words]);
 
-   console.log(wordSpanRef);
-
-   // * Handles user input
-   const handleUserInput = (e: React.KeyboardEvent<HTMLInputElement>) => {
-      console.log(e.key);
-   };
-
    // * Focus the input when the component mounts
    const focusInput = () => {
       inputRef.current?.focus();
@@ -31,11 +26,30 @@ const TypeZone = () => {
 
    useEffect(() => {
       focusInput();
+      console.log("focused");
       const firstChild = wordSpanRef[0].current?.childNodes[0] as HTMLElement;
       if (firstChild) {
          firstChild.className = " caret ";
       }
-   }, [wordSpanRef]);
+   }, []);
+
+   // * Handles user input
+   const handleUserInput = (e: React.KeyboardEvent<HTMLInputElement>) => {
+      console.log(e.key);
+      const currentWord = wordSpanRef[onWordIndex].current
+         ?.childNodes as NodeListOf<HTMLElement>;
+      const currentChar = currentWord[onCharIndex].innerText;
+
+      if (e.key === currentChar) {
+         console.log("correct");
+         currentWord[onCharIndex].className = "correct";
+         // setOnCharIndex((prev) => prev + 1);
+      } else {
+         console.log("incorrect");
+         currentWord[onCharIndex].className = "incorrect";
+         // setOnCharIndex((prev) => prev + 1);
+      }
+   };
 
    // * Reset the counter when the test time changes
    useEffect(() => {
@@ -70,7 +84,7 @@ const TypeZone = () => {
             </div>
             <input
                type="text"
-               className="hidden"
+               className="opacity-0 pointer-events-none absolute"
                onKeyDown={handleUserInput}
                ref={inputRef}
             />

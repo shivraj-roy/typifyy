@@ -64,4 +64,12 @@
       animation: blinking 1s infinite;
       border-radius: 100px; */
    }
+
+   .correct {
+      @apply text-fade;
+   }
+
+   .incorrect {
+      @apply text-red-500;
+   }
 }
