@@ -6,6 +6,20 @@
    --color-dark-100: rgba(13, 13, 13, 0.871);
    --color-fade: #b7ab98;
    --color-active: #eb5939;
+
+   @keyframes blinking {
+      0% {
+         opacity: 1;
+      }
+      50% {
+         opacity: 0;
+      }
+      100% {
+         opacity: 1;
+      }
+   }
+
+   --animate-blinking: blinking 1s infinite;
 }
 
 @layer base {
@@ -31,5 +45,22 @@
 
    .active {
       @apply text-active;
+   }
+
+   .caret {
+      @apply relative;
+   }
+   .caret::after {
+      @apply absolute top-0 left-0 content-[""] block w-[2px] h-9 bg-(--color-active) animate-blinking rounded-4xl;
+      /* position: absolute;
+      top: 0;
+      left: 0;
+      content: "";
+      display: block;
+      width: 2px;
+      height: 2.5rem;
+      background-color: var(--color-active);
+      animation: blinking 1s infinite;
+      border-radius: 100px; */
    }
 }

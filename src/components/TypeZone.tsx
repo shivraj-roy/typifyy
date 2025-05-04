@@ -28,7 +28,11 @@ const TypeZone = () => {
 
    useEffect(() => {
       focusInput();
-   }, []);
+      const firstChild = wordSpanRef[0].current?.childNodes[0] as HTMLElement;
+      if (firstChild) {
+         firstChild.className = " caret ";
+      }
+   }, [wordSpanRef]);
 
    useEffect(() => {
       setCounter(testTime);
@@ -41,7 +45,8 @@ const TypeZone = () => {
             onClick={focusInput}
          >
             <TimeCounter countDown={counter} />
-            <div className="text-3xl flex flex-wrap leading-12 tracking-wide">
+            <div className="text-3xl flex flex-wrap leading-12 tracking-tight relative">
+               {/* <div className="absolute top-3 left-1 caret w-1 h-9 bg-active rounded-2xl animate-blinking" /> */}
                {words.map((word, wordIndex) => (
                   <span
                      key={`${wordIndex}-${word}`}
@@ -49,7 +54,10 @@ const TypeZone = () => {
                      ref={wordSpanRef[wordIndex]}
                   >
                      {word.split("").map((letter, letterIndex) => (
-                        <span key={`${letterIndex}-${wordIndex}`}>
+                        <span
+                           key={`${letterIndex}-${wordIndex}`}
+                           // className="caret"
+                        >
                            {letter}
                         </span>
                      ))}
