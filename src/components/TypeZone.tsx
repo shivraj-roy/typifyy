@@ -5,7 +5,7 @@ import TimeCounter from "./TimeCounter";
 
 const TypeZone = () => {
    const [words, setWords] = useState<string[]>(() => generate(50) as string[]);
-   const { testTime } = useTestMode() as { testTime: number }; // Ensure the type matches your context
+   const { testTime } = useTestMode() as { testTime: number };
    const [counter, setCounter] = useState<number>(testTime);
    const [onWordIndex, setOnWordIndex] = useState(0);
    const [onCharIndex, setOnCharIndex] = useState(0);
