@@ -43,11 +43,16 @@ const TypeZone = () => {
       if (e.key === currentChar) {
          console.log("correct");
          currentWord[onCharIndex].className = "correct";
-         // setOnCharIndex((prev) => prev + 1);
+         setOnCharIndex((prev) => prev + 1);
       } else {
          console.log("incorrect");
          currentWord[onCharIndex].className = "incorrect";
-         // setOnCharIndex((prev) => prev + 1);
+         setOnCharIndex((prev) => prev + 1);
+      }
+      if (currentWord[onCharIndex + 1]) {
+         currentWord[onCharIndex + 1].className = " caret ";
+      } else if (onCharIndex === currentWord.length - 1) {
+         currentWord[onCharIndex].className += " caret_end ";
       }
    };
 

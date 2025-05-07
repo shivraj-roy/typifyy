@@ -65,6 +65,13 @@
       border-radius: 100px; */
    }
 
+   .caret_end {
+      @apply relative;
+   }
+   .caret_end::before {
+      @apply absolute top-0 right-0 content-[""] block w-[2px] h-9 bg-(--color-active) animate-blinking rounded-4xl;
+   }
+
    .correct {
       @apply text-fade;
    }
