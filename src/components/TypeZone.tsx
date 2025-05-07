@@ -36,23 +36,62 @@ const TypeZone = () => {
    // * Handles user input...
    const handleUserInput = (e: React.KeyboardEvent<HTMLInputElement>) => {
       console.log(e.key);
-      const currentWord = wordSpanRef[onWordIndex].current
-         ?.childNodes as NodeListOf<HTMLElement>;
-      const currentChar = currentWord[onCharIndex].innerText;
 
-      if (e.key === currentChar) {
+      // Ensure the current word exists
+      const currentWordRef = wordSpanRef[onWordIndex]?.current;
+      if (!currentWordRef) {
+         console.error("Current word reference is undefined");
+         return;
+      }
+
+      const currentWord = currentWordRef.childNodes as NodeListOf<HTMLElement>;
+
+      // Only get currentChar if within bounds
+      let currentChar: string | null = null;
+      if (onCharIndex < currentWord.length) {
+         currentChar = currentWord[onCharIndex].innerText;
+      }
+
+      // Handle space key (move to the next word)
+      if (e.key === " " || e.keyCode === 32) {
+         e.preventDefault(); // Prevent the default space behavior
+
+         if (currentWord.length <= onCharIndex) {
+            currentWord[onCharIndex - 1].classList.remove("caret_end");
+         } else {
+            currentWord[onCharIndex].classList.remove("caret");
+         }
+
+         if (onWordIndex + 1 < words.length) {
+            const nextWordFirstChild = wordSpanRef[onWordIndex + 1].current
+               ?.childNodes[0] as HTMLElement;
+            if (nextWordFirstChild) {
+               nextWordFirstChild.className = "caret";
+            }
+            setOnWordIndex((prev) => prev + 1);
+            setOnCharIndex(0);
+         }
+         return;
+      }
+
+      // Check if the character is correct
+      if (currentChar && e.key === currentChar) {
          console.log("correct");
          currentWord[onCharIndex].className = "correct";
          setOnCharIndex((prev) => prev + 1);
       } else {
          console.log("incorrect");
-         currentWord[onCharIndex].className = "incorrect";
+         if (currentChar) {
+            currentWord[onCharIndex].className = "incorrect";
+         }
          setOnCharIndex((prev) => prev + 1);
       }
+
+      // Handle caret movement
       if (currentWord[onCharIndex + 1]) {
-         currentWord[onCharIndex + 1].className = " caret ";
+         currentWord[onCharIndex + 1].className = "caret";
       } else if (onCharIndex === currentWord.length - 1) {
-         currentWord[onCharIndex].className += " caret_end ";
+         currentWord[onCharIndex].className += " caret_end";
       }
    };
 
