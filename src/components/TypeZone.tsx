@@ -74,6 +74,23 @@ const TypeZone = () => {
          return;
       }
 
+      // Handle backspace key (move to the previous word/character)
+      if (e.key === "Backspace" || e.keyCode === 8) {
+         e.preventDefault(); // Prevent the default backspace behavior
+
+         if (onCharIndex > 0) {
+            if (currentWord.length === onCharIndex) {
+               currentWord[onCharIndex - 1].className = "caret";
+               setOnCharIndex((prev) => prev - 1);
+               return;
+            }
+            currentWord[onCharIndex].className = "";
+            currentWord[onCharIndex - 1].className = "caret";
+            setOnCharIndex((prev) => prev - 1);
+         }
+         return;
+      }
+
       // Check if the character is correct
       if (currentChar && e.key === currentChar) {
          console.log("correct");
