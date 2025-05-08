@@ -79,4 +79,8 @@
    .incorrect {
       @apply text-red-500;
    }
+
+   .extra-key {
+      @apply text-red-500/50;
+   }
 }

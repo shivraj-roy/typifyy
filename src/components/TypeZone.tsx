@@ -80,7 +80,12 @@ const TypeZone = () => {
 
          if (onCharIndex > 0) {
             if (currentWord.length === onCharIndex) {
-               currentWord[onCharIndex - 1].className = "caret";
+               if (currentWord[onCharIndex - 1].className.includes("extra")) {
+                  currentWord[onCharIndex - 1].remove();
+                  currentWord[onCharIndex - 2].className += " caret_end";
+               } else {
+                  currentWord[onCharIndex - 1].className = "caret";
+               }
                setOnCharIndex((prev) => prev - 1);
                return;
             }
@@ -88,6 +93,17 @@ const TypeZone = () => {
             currentWord[onCharIndex - 1].className = "caret";
             setOnCharIndex((prev) => prev - 1);
          }
+         return;
+      }
+
+      // Handle other extra keys
+      if (currentWord.length === onCharIndex) {
+         const newSpan = document.createElement("span");
+         newSpan.innerText = e.key;
+         newSpan.className = "extra-key caret_end extra"; // "extra" className is for key reference for backspace key
+         currentWord[onCharIndex - 1].classList.remove("caret_end");
+         wordSpanRef[onWordIndex].current?.appendChild(newSpan);
+         setOnCharIndex((prev) => prev + 1);
          return;
       }
 
