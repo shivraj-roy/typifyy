@@ -167,7 +167,10 @@ const TypeZone = () => {
                className="max-w-full mx-auto overflow-hidden self-start  mb-16 h-72"
                onClick={focusInput}
             >
-               <TimeCounter countDown={counter} />
+               <TimeCounter
+                  countDown={counter}
+                  className={testStart ? "opacity-100" : "opacity-0"}
+               />
                <div className="text-3xl flex flex-wrap leading-12 tracking-tight relative text-fade-100">
                   {/* <div className="absolute top-3 left-1 caret w-1 h-9 bg-active rounded-2xl animate-blinking" /> */}
                   {words.map((word, wordIndex) => (
