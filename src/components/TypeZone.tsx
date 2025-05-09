@@ -54,8 +54,14 @@ const TypeZone = () => {
    const handleUserInput = (e: React.KeyboardEvent<HTMLInputElement>) => {
       console.log(e.key);
 
+      // Prevent default behavior for non-character keys
+      if (e.keyCode !== 8 && e.key.length > 1) {
+         e.preventDefault();
+         return;
+      }
+
       // Start the test when the user types the first character
-      if (!testStart) {
+      if (!testStart && e.key.length === 1) {
          setTestStart(true);
          startTimer();
       }
@@ -159,12 +165,12 @@ const TypeZone = () => {
    return (
       <>
          {testEnd ? (
-            <h1 className="max-w-full mx-auto overflow-hidden self-start  mb-16 h-72">
+            <h1 className="max-w-full mx-auto overflow-hidden self-start  mb-16 h-64">
                Test End
             </h1>
          ) : (
             <div
-               className="max-w-full mx-auto overflow-hidden self-start  mb-16 h-72"
+               className="max-w-full mx-auto overflow-hidden self-start  mb-16 h-64"
                onClick={focusInput}
             >
                <TimeCounter
