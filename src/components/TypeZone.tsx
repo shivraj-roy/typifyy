@@ -9,6 +9,8 @@ const TypeZone = () => {
    const [counter, setCounter] = useState<number>(testTime);
    const [onWordIndex, setOnWordIndex] = useState(0);
    const [onCharIndex, setOnCharIndex] = useState(0);
+   const [testStart, setTestStart] = useState(false);
+   const [testEnd, setTestEnd] = useState(false);
 
    const inputRef = useRef<HTMLInputElement>(null);
 
@@ -33,9 +35,30 @@ const TypeZone = () => {
       }
    }, []);
 
+   // * Handle to start the counter when the test starts...
+   const startTimer = () => {
+      const timer = setInterval(() => {
+         setCounter((prev) => {
+            if (prev <= 0) {
+               clearInterval(timer);
+               setTestEnd(true);
+               return 0;
+            }
+            return prev - 1;
+         });
+      }, 1000);
+      // return timer;
+   };
+
    // * Handles user input...
    const handleUserInput = (e: React.KeyboardEvent<HTMLInputElement>) => {
       console.log(e.key);
+
+      // Start the test when the user types the first character
+      if (!testStart) {
+         setTestStart(true);
+         startTimer();
+      }
 
       // Ensure the current word exists
       const currentWordRef = wordSpanRef[onWordIndex]?.current;
@@ -135,37 +158,43 @@ const TypeZone = () => {
 
    return (
       <>
-         <div
-            className="max-w-full mx-auto overflow-hidden self-start  mb-16"
-            onClick={focusInput}
-         >
-            <TimeCounter countDown={counter} />
-            <div className="text-3xl flex flex-wrap leading-12 tracking-tight relative text-fade-100">
-               {/* <div className="absolute top-3 left-1 caret w-1 h-9 bg-active rounded-2xl animate-blinking" /> */}
-               {words.map((word, wordIndex) => (
-                  <span
-                     key={`${wordIndex}-${word}`}
-                     className="my-[0.3rem] mx-2"
-                     ref={wordSpanRef[wordIndex]}
-                  >
-                     {word.split("").map((letter, letterIndex) => (
-                        <span
-                           key={`${letterIndex}-${wordIndex}`}
-                           // className="caret"
-                        >
-                           {letter}
-                        </span>
-                     ))}
-                  </span>
-               ))}
+         {testEnd ? (
+            <h1 className="max-w-full mx-auto overflow-hidden self-start  mb-16 h-72">
+               Test End
+            </h1>
+         ) : (
+            <div
+               className="max-w-full mx-auto overflow-hidden self-start  mb-16 h-72"
+               onClick={focusInput}
+            >
+               <TimeCounter countDown={counter} />
+               <div className="text-3xl flex flex-wrap leading-12 tracking-tight relative text-fade-100">
+                  {/* <div className="absolute top-3 left-1 caret w-1 h-9 bg-active rounded-2xl animate-blinking" /> */}
+                  {words.map((word, wordIndex) => (
+                     <span
+                        key={`${wordIndex}-${word}`}
+                        className="my-[0.3rem] mx-2"
+                        ref={wordSpanRef[wordIndex]}
+                     >
+                        {word.split("").map((letter, letterIndex) => (
+                           <span
+                              key={`${letterIndex}-${wordIndex}`}
+                              // className="caret"
+                           >
+                              {letter}
+                           </span>
+                        ))}
+                     </span>
+                  ))}
+               </div>
+               <input
+                  type="text"
+                  className="opacity-0 pointer-events-none absolute"
+                  onKeyDown={handleUserInput}
+                  ref={inputRef}
+               />
             </div>
-            <input
-               type="text"
-               className="opacity-0 pointer-events-none absolute"
-               onKeyDown={handleUserInput}
-               ref={inputRef}
-            />
-         </div>
+         )}
       </>
    );
 };
