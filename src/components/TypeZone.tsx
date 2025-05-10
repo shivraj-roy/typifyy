@@ -3,13 +3,19 @@ import { useRef, useEffect, useState, createRef, useMemo } from "react";
 import { useTestMode } from "../context/TestMode";
 import TimeCounter from "./TimeCounter";
 
-const TypeZone = () => {
+const TypeZone = ({
+   setTestStart,
+   testStart,
+}: {
+   setTestStart: React.Dispatch<React.SetStateAction<boolean>>;
+   testStart: boolean;
+}) => {
    const [words, setWords] = useState<string[]>(() => generate(50) as string[]);
    const { testTime } = useTestMode() as { testTime: number };
    const [counter, setCounter] = useState<number>(testTime);
    const [onWordIndex, setOnWordIndex] = useState(0);
    const [onCharIndex, setOnCharIndex] = useState(0);
-   const [testStart, setTestStart] = useState(false);
+   // const [testStart, setTestStart] = useState(false);
    const [testEnd, setTestEnd] = useState(false);
 
    const inputRef = useRef<HTMLInputElement>(null);

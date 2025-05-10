@@ -3,7 +3,7 @@ import { MdTimer } from "react-icons/md";
 import Button from "../ui/Button";
 import { useTestMode } from "../context/TestMode";
 
-const MenuBar = () => {
+const MenuBar = ({ testStart }: { testStart: boolean }) => {
    const testMode = useTestMode();
    const setTestTime = testMode?.setTestTime || (() => {});
    const [activeButton, setActiveButton] = useState<number | null>(null); // State to track active button
@@ -15,7 +15,11 @@ const MenuBar = () => {
    };
 
    return (
-      <div className="flex justify-center items-center self-start">
+      <div
+         className={`flex justify-center items-center self-start transition-opacity duration-300 ${
+            testStart ? "opacity-0 pointer-events-none" : "opacity-100"
+         }`}
+      >
          <div className="flex bg-dark-100 px-3 py-2 rounded-xl">
             <div className="flex">
                <Button
