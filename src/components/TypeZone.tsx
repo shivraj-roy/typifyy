@@ -60,13 +60,13 @@ const TypeZone = ({
    const handleUserInput = (e: React.KeyboardEvent<HTMLInputElement>) => {
       console.log(e.key);
 
-      // Prevent default behavior for non-character keys
+      // ? Prevent default behavior for non-character keys
       if (e.keyCode !== 8 && e.key.length > 1) {
          e.preventDefault();
          return;
       }
 
-      // Start the test when the user types the first character
+      // ? Start the test when the user types the first character
       if (!testStart && e.key.length === 1) {
          setTestStart(true);
          startTimer();
@@ -87,9 +87,16 @@ const TypeZone = ({
          currentChar = currentWord[onCharIndex].innerText;
       }
 
-      // Handle space key (move to the next word)
+      // ? Handle space key (move to the next word)
       if (e.key === " " || e.keyCode === 32) {
          e.preventDefault(); // Prevent the default space behavior
+
+         // Add 'incorrect' class if space is pressed in the middle of a word or at the start
+         if (onCharIndex < currentWord.length || onCharIndex === 0) {
+            for (let i = onCharIndex; i < currentWord.length; i++) {
+               currentWord[i].className = "incorrect"; // Mark remaining characters as incorrect
+            }
+         }
 
          if (currentWord.length <= onCharIndex) {
             currentWord[onCharIndex - 1].classList.remove("caret_end");
@@ -109,7 +116,7 @@ const TypeZone = ({
          return;
       }
 
-      // Handle backspace key (move to the previous word/character)
+      // ? Handle backspace key (move to the previous word/character)
       if (e.key === "Backspace" || e.keyCode === 8) {
          e.preventDefault(); // Prevent the default backspace behavior
 
@@ -131,7 +138,7 @@ const TypeZone = ({
          return;
       }
 
-      // Handle other extra keys
+      // ? Handle other extra keys
       if (currentWord.length === onCharIndex) {
          const newSpan = document.createElement("span");
          newSpan.innerText = e.key;
@@ -142,7 +149,7 @@ const TypeZone = ({
          return;
       }
 
-      // Check if the character is correct
+      // ? Check if the character is correct
       if (currentChar && e.key === currentChar) {
          console.log("correct");
          currentWord[onCharIndex].className = "correct";
@@ -155,7 +162,7 @@ const TypeZone = ({
          setOnCharIndex((prev) => prev + 1);
       }
 
-      // Handle caret movement
+      // ? Handle caret movement
       if (currentWord[onCharIndex + 1]) {
          currentWord[onCharIndex + 1].className = "caret";
       } else if (onCharIndex === currentWord.length - 1) {
