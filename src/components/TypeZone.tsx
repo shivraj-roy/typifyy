@@ -2,6 +2,7 @@ import { generate } from "random-words";
 import { useRef, useEffect, useState, createRef, useMemo } from "react";
 import { useTestMode } from "../context/TestMode";
 import TimeCounter from "./TimeCounter";
+import { HiCursorClick } from "react-icons/hi";
 
 const TypeZone = ({
    setTestStart,
@@ -17,6 +18,7 @@ const TypeZone = ({
    const [onCharIndex, setOnCharIndex] = useState(0);
    // const [testStart, setTestStart] = useState(false);
    const [testEnd, setTestEnd] = useState(false);
+   const [isFocused, setIsFocused] = useState(true);
 
    const inputRef = useRef<HTMLInputElement>(null);
 
@@ -178,12 +180,12 @@ const TypeZone = ({
    return (
       <>
          {testEnd ? (
-            <h1 className="max-w-full mx-auto overflow-hidden self-start  mb-16 h-64">
+            <h1 className="max-w-full mx-auto overflow-hidden self-start  mb-16 h-[17rem]">
                Test End
             </h1>
          ) : (
             <div
-               className="max-w-full mx-auto overflow-hidden self-start  mb-16 h-64"
+               className="max-w-full mx-auto overflow-hidden self-start  mb-16 h-[17rem]"
                onClick={focusInput}
             >
                <TimeCounter
@@ -191,7 +193,17 @@ const TypeZone = ({
                   className={testStart ? "opacity-100" : "opacity-0"}
                />
                <div className="text-3xl flex flex-wrap leading-12 tracking-tight relative text-fade-100">
-                  {/* <div className="absolute top-3 left-1 caret w-1 h-9 bg-active rounded-2xl animate-blinking" /> */}
+                  {!isFocused && (
+                     <div
+                        className="cursor-default absolute top-0 left-0 w-full h-full flex items-center justify-center backdrop-blur-sm z-10 pb-16 "
+                        onClick={focusInput}
+                     >
+                        <span className="flex items-center justify-around text-xl text-fade gap-5 font-mono tracking-wider">
+                           <HiCursorClick />
+                           Click here to focus
+                        </span>
+                     </div>
+                  )}
                   {words.map((word, wordIndex) => (
                      <span
                         key={`${wordIndex}-${word}`}
@@ -214,6 +226,8 @@ const TypeZone = ({
                   className="opacity-0 pointer-events-none absolute"
                   onKeyDown={handleUserInput}
                   ref={inputRef}
+                  onFocus={() => setIsFocused(true)}
+                  onBlur={() => setIsFocused(false)}
                />
             </div>
          )}

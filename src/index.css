@@ -8,6 +8,8 @@
    --color-fade-100: rgba(183, 171, 152, 0.385);
    --color-active: #eb5939;
 
+   --font-mono: "Roboto Mono", monospace;
+
    @keyframes blinking {
       0% {
          opacity: 1;
