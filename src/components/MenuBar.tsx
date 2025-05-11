@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { MdTimer } from "react-icons/md";
 import Button from "../ui/Button";
 import { useTestMode } from "../context/TestMode";
@@ -6,12 +5,10 @@ import { useTestMode } from "../context/TestMode";
 const MenuBar = ({ testStart }: { testStart: boolean }) => {
    const testMode = useTestMode();
    const setTestTime = testMode?.setTestTime || (() => {});
-   const [activeButton, setActiveButton] = useState<number | null>(null); // State to track active button
 
    const handleTime = (e: React.MouseEvent<HTMLButtonElement>) => {
       const time = Number(e.currentTarget.id);
       setTestTime(time);
-      setActiveButton(time); // Set the clicked button as active
    };
 
    return (
@@ -39,19 +36,19 @@ const MenuBar = ({ testStart }: { testStart: boolean }) => {
                   btnTxt="15"
                   btnId={15}
                   btnClick={handleTime}
-                  btnClass={activeButton === 15 ? "active" : ""}
+                  btnClass={testMode?.testTime === 15 ? "active" : ""}
                />
                <Button
                   btnTxt="30"
                   btnId={30}
                   btnClick={handleTime}
-                  btnClass={activeButton === 30 ? "active" : ""}
+                  btnClass={testMode?.testTime === 30 ? "active" : ""}
                />
                <Button
                   btnTxt="60"
                   btnId={60}
                   btnClick={handleTime}
-                  btnClass={activeButton === 60 ? "active" : ""}
+                  btnClass={testMode?.testTime === 60 ? "active" : ""}
                />
             </div>
          </div>
