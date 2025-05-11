@@ -71,7 +71,7 @@
       @apply relative;
    }
    .caret::after {
-      @apply absolute top-0 left-0 content-[""] block w-[2px] h-9 bg-(--color-active) animate-blinking rounded-4xl;
+      @apply absolute top-0 left-0 content-[""] block w-[2.8px] h-9 bg-(--color-active) animate-blinking rounded-4xl;
       /* position: absolute;
       top: 0;
       left: 0;
