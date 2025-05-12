@@ -19,6 +19,11 @@ const TypeZone = ({
    // const [testStart, setTestStart] = useState(false);
    const [testEnd, setTestEnd] = useState(false);
    const [isFocused, setIsFocused] = useState(true);
+   const [correctChar, setCorrectChar] = useState(0);
+   const [incorrectChar, setIncorrectChar] = useState(0);
+   const [missedChar, setMissedChar] = useState(0);
+   const [extraChar, setExtraChar] = useState(0);
+   const [correctWord, setCorrectWord] = useState(0);
 
    const inputRef = useRef<HTMLInputElement>(null);
 
@@ -93,6 +98,12 @@ const TypeZone = ({
       if (e.key === " " || e.keyCode === 32) {
          e.preventDefault(); // Prevent the default space behavior
 
+         const correctCharInWord = currentWordRef.querySelectorAll(".correct");
+
+         if (correctCharInWord.length === currentWord.length) {
+            setCorrectWord((prev) => prev + 1);
+         }
+
          // Add 'incorrect' class if space is pressed in the middle of a word or at the start
          if (onCharIndex < currentWord.length || onCharIndex === 0) {
             for (let i = onCharIndex; i < currentWord.length; i++) {
@@ -104,6 +115,7 @@ const TypeZone = ({
             currentWord[onCharIndex - 1].classList.remove("caret_end");
          } else {
             currentWord[onCharIndex].classList.remove("caret");
+            setMissedChar((prev) => prev + (currentWord.length - onCharIndex));
          }
 
          if (onWordIndex + 1 < words.length) {
@@ -148,6 +160,7 @@ const TypeZone = ({
          currentWord[onCharIndex - 1].classList.remove("caret_end");
          wordSpanRef[onWordIndex].current?.appendChild(newSpan);
          setOnCharIndex((prev) => prev + 1);
+         setExtraChar((prev) => prev + 1);
          return;
       }
 
@@ -156,10 +169,12 @@ const TypeZone = ({
          console.log("correct");
          currentWord[onCharIndex].className = "correct";
          setOnCharIndex((prev) => prev + 1);
+         setCorrectChar((prev) => prev + 1);
       } else {
          console.log("incorrect");
          if (currentChar) {
             currentWord[onCharIndex].className = "incorrect";
+            setIncorrectChar((prev) => prev + 1);
          }
          setOnCharIndex((prev) => prev + 1);
       }
@@ -176,6 +191,21 @@ const TypeZone = ({
    useEffect(() => {
       setCounter(testTime);
    }, [testTime]);
+
+   // * Calculate WPM
+   const calculateWPM = () => {
+      const totalTimeInMinutes = testTime / 60;
+      const wpm = Math.floor(correctChar / 5 / totalTimeInMinutes);
+      return wpm;
+   };
+
+   // * Calculate accuracy
+   const calculateAccuracy = () => {
+      const totalChars = correctChar + incorrectChar + missedChar + extraChar;
+      if (totalChars === 0) return 0;
+      const accuracy = Math.floor((correctChar / totalChars) * 100);
+      return accuracy;
+   };
 
    return (
       <>
