@@ -3,6 +3,7 @@ import { useRef, useEffect, useState, createRef, useMemo } from "react";
 import { useTestMode } from "../context/TestMode";
 import TimeCounter from "./TimeCounter";
 import { HiCursorClick } from "react-icons/hi";
+import Stats from "./Stats";
 
 const TypeZone = ({
    setTestStart,
@@ -211,7 +212,15 @@ const TypeZone = ({
       <>
          {testEnd ? (
             <h1 className="max-w-full mx-auto overflow-hidden self-start  mb-16 h-[17rem]">
-               Test End
+               <Stats
+                  wpm={calculateWPM()}
+                  accuracy={calculateAccuracy()}
+                  correctChar={correctChar}
+                  incorrectChar={incorrectChar}
+                  missedChar={missedChar}
+                  extraChar={extraChar}
+                  correctWord={correctWord}
+               />
             </h1>
          ) : (
             <div
