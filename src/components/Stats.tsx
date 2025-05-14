@@ -1,4 +1,5 @@
 import { useTestMode } from "../context/TestMode";
+import { StatsProps } from "../types";
 
 const Stats = ({
    wpm,
@@ -10,17 +11,7 @@ const Stats = ({
    extraChar,
    correctWord,
    consistency,
-}: {
-   wpm: number;
-   netWPM: number;
-   accuracy: number;
-   correctChar: number;
-   incorrectChar: number;
-   missedChar: number;
-   extraChar: number;
-   correctWord: number;
-   consistency: number;
-}) => {
+}: StatsProps) => {
    const { testTime } = useTestMode() as { testTime: number };
 
    return (
