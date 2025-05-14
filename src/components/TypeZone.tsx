@@ -211,7 +211,7 @@ const TypeZone = ({
    return (
       <>
          {testEnd ? (
-            <h1 className="max-w-full mx-auto overflow-hidden self-start  mb-16 h-[17rem]">
+            <h1 className="max-w-full overflow-hidden self-start  mb-16 h-[17rem]">
                <Stats
                   wpm={calculateWPM()}
                   accuracy={calculateAccuracy()}
