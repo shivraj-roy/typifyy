@@ -43,11 +43,15 @@ const Stats = ({
                   <h3 className="text-xs">Words</h3>
                   <p className="text-3xl text-active">{correctWord}</p>
                </div>
-               <div className="cursor-pointer">
+               <div className="relative group cursor-pointer">
                   <h3 className="text-xs">Characters</h3>
                   <p className="text-3xl text-active">
                      {correctChar}/{incorrectChar}/{missedChar}/{extraChar}
                   </p>
+                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-max bg-dark text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                     Correct: {correctChar}, Incorrect: {incorrectChar}, Missed:{" "}
+                     {missedChar}, Extra: {extraChar}
+                  </div>
                </div>
                <div>
                   <h3 className="text-xs">Consistency</h3>
