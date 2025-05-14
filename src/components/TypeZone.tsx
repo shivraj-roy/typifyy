@@ -200,6 +200,15 @@ const TypeZone = ({
       return wpm;
    };
 
+   // * Calculate net WPM
+   const calculateNetWPM = () => {
+      const totalTimeInMinutes = testTime / 60;
+      const netWPM = Math.floor(
+         (correctChar - incorrectChar) / 5 / totalTimeInMinutes
+      );
+      return netWPM;
+   };
+
    // * Calculate accuracy
    const calculateAccuracy = () => {
       const totalChars = correctChar + incorrectChar + missedChar + extraChar;
@@ -208,18 +217,30 @@ const TypeZone = ({
       return accuracy;
    };
 
+   // * Calculate consistency
+   const calculateConsistency = () => {
+      const totalChars = correctChar + incorrectChar + missedChar + extraChar;
+      if (totalChars === 0) return 0;
+      const consistency = Math.floor(
+         ((correctChar - incorrectChar) / totalChars) * 100
+      );
+      return consistency;
+   };
+
    return (
       <>
          {testEnd ? (
             <h1 className="max-w-full overflow-hidden self-start  mb-16 h-[17rem]">
                <Stats
                   wpm={calculateWPM()}
+                  netWPM={calculateNetWPM()}
                   accuracy={calculateAccuracy()}
                   correctChar={correctChar}
                   incorrectChar={incorrectChar}
                   missedChar={missedChar}
                   extraChar={extraChar}
                   correctWord={correctWord}
+                  consistency={calculateConsistency()}
                />
             </h1>
          ) : (
