@@ -18,7 +18,7 @@ const Stats = ({
       <>
          <div className="max-w-full h-full text-fade-100 cursor-default">
             <div className="stats-box flex justify-between h-[80%]">
-               <div className="left-stats w-1/5 h-full flex flex-col justify-center items-center gap-3">
+               <div className="left-stats w-1/6 h-full flex flex-col justify-center items-center gap-2">
                   <div className="stat flex flex-col justify-center items-baseline w-full">
                      <h3 className="text-3xl lowercase">WPM</h3>
                      <p className="text-7xl text-active">{wpm}</p>
@@ -28,11 +28,11 @@ const Stats = ({
                      <p className="text-7xl text-active">{accuracy}%</p>
                   </div>
                </div>
-               <div className="right-stats w-4/5 h-full bg-dark-100"></div>
+               <div className="right-stats w-5/6 h-full bg-dark-100"></div>
             </div>
-            <div className="flex justify-between items-center h-[20%]">
+            <div className="flex justify-between items-center h-[20%] mt-1">
                <div>
-                  <h3 className="text-xs">Test Type</h3>
+                  <h3 className="text-xs lowercase">Test Type</h3>
                   <p className="text-xl text-active">time {testTime}s</p>
                </div>
                <div>
