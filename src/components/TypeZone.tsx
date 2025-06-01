@@ -149,6 +149,32 @@ const TypeZone = ({
             currentWord[onCharIndex].className = "";
             currentWord[onCharIndex - 1].className = "caret";
             setOnCharIndex((prev) => prev - 1);
+         } else if (onCharIndex === 0 && onWordIndex > 0) {
+            // Check if previous word has incorrect characters
+            const prevWordRef = wordSpanRef[onWordIndex - 1]?.current;
+            if (prevWordRef) {
+               const prevWordChars = prevWordRef.childNodes as NodeListOf<HTMLElement>;
+               const hasIncorrect = Array.from(prevWordChars).some(char => 
+                  char.className.includes("incorrect") || char.className.includes("extra")
+               );
+               
+               if (hasIncorrect) {
+                  // Remove caret from current word
+                  currentWord[0].classList.remove("caret");
+                  
+                  // Move to previous word
+                  setOnWordIndex((prev) => prev - 1);
+                  
+                  // Set char index to end of previous word
+                  const newCharIndex = prevWordChars.length;
+                  setOnCharIndex(newCharIndex);
+                  
+                  // Add caret to last character of previous word
+                  if (prevWordChars[newCharIndex - 1]) {
+                     prevWordChars[newCharIndex - 1].className += " caret_end";
+                  }
+               }
+            }
          }
          return;
       }
