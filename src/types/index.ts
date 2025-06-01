@@ -17,3 +17,16 @@ export type StatsProps = {
    correctWord: number;
    consistency: number;
 };
+
+// * Test Mode Types
+export type TestMode = "time" | "words";
+
+// * Test Mode Context Type
+export interface TestModeContextType {
+   mode: TestMode;
+   setMode: (mode: TestMode) => void;
+   testTime: number;
+   setTestTime: (time: number) => void;
+   testWords: number;
+   setTestWords: (words: number) => void;
+}

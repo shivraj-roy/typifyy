@@ -12,8 +12,15 @@ const TypeZone = ({
    setTestStart: React.Dispatch<React.SetStateAction<boolean>>;
    testStart: boolean;
 }) => {
-   const [words, setWords] = useState<string[]>(() => generate(50) as string[]);
-   const { testTime } = useTestMode() as { testTime: number };
+   const testMode = useTestMode();
+   const mode = testMode?.mode || "time";
+   const testTime = testMode?.testTime || 30;
+   const testWords = testMode?.testWords || 25;
+
+   const [words, setWords] = useState<string[]>(() => {
+      const wordCount = mode === "words" ? testWords : 50;
+      return generate(wordCount) as string[];
+   });
    const [counter, setCounter] = useState<number>(testTime);
    const [onWordIndex, setOnWordIndex] = useState(0);
    const [onCharIndex, setOnCharIndex] = useState(0);
@@ -25,6 +32,7 @@ const TypeZone = ({
    const [missedChar, setMissedChar] = useState(0);
    const [extraChar, setExtraChar] = useState(0);
    const [correctWord, setCorrectWord] = useState(0);
+   const [completedWords, setCompletedWords] = useState(0);
 
    const inputRef = useRef<HTMLInputElement>(null);
 
@@ -51,17 +59,19 @@ const TypeZone = ({
 
    // * Handle to start the counter when the test starts...
    const startTimer = () => {
-      const timer = setInterval(() => {
-         setCounter((prev) => {
-            if (prev <= 0) {
-               clearInterval(timer);
-               setTestEnd(true);
-               return 0;
-            }
-            return prev - 1;
-         });
-      }, 1000);
-      // return timer;
+      if (mode === "time") {
+         const timer = setInterval(() => {
+            setCounter((prev) => {
+               if (prev <= 0) {
+                  clearInterval(timer);
+                  setTestEnd(true);
+                  return 0;
+               }
+               return prev - 1;
+            });
+         }, 1000);
+      }
+      // For words mode, timer doesn't count down
    };
 
    // * Handles user input...
@@ -127,6 +137,12 @@ const TypeZone = ({
             }
             setOnWordIndex((prev) => prev + 1);
             setOnCharIndex(0);
+
+            // Increment completed words counter only when moving to next word
+            setCompletedWords((prev) => prev + 1);
+         } else {
+            // Last word completed
+            setCompletedWords((prev) => prev + 1);
          }
          return;
       }
@@ -153,22 +169,25 @@ const TypeZone = ({
             // Check if previous word has incorrect characters
             const prevWordRef = wordSpanRef[onWordIndex - 1]?.current;
             if (prevWordRef) {
-               const prevWordChars = prevWordRef.childNodes as NodeListOf<HTMLElement>;
-               const hasIncorrect = Array.from(prevWordChars).some(char => 
-                  char.className.includes("incorrect") || char.className.includes("extra")
+               const prevWordChars =
+                  prevWordRef.childNodes as NodeListOf<HTMLElement>;
+               const hasIncorrect = Array.from(prevWordChars).some(
+                  (char) =>
+                     char.className.includes("incorrect") ||
+                     char.className.includes("extra")
                );
-               
+
                if (hasIncorrect) {
                   // Remove caret from current word
                   currentWord[0].classList.remove("caret");
-                  
+
                   // Move to previous word
                   setOnWordIndex((prev) => prev - 1);
-                  
+
                   // Set char index to end of previous word
                   const newCharIndex = prevWordChars.length;
                   setOnCharIndex(newCharIndex);
-                  
+
                   // Add caret to last character of previous word
                   if (prevWordChars[newCharIndex - 1]) {
                      prevWordChars[newCharIndex - 1].className += " caret_end";
@@ -211,6 +230,13 @@ const TypeZone = ({
          currentWord[onCharIndex + 1].className = "caret";
       } else if (onCharIndex === currentWord.length - 1) {
          currentWord[onCharIndex].className += " caret_end";
+
+         // Check if we're on the last word and just typed the last character
+         if (mode === "words" && completedWords === testWords - 1) {
+            // Mark the last word as completed and end the test
+            setCompletedWords((prev) => prev + 1);
+            setTestEnd(true);
+         }
       }
    };
 
@@ -218,6 +244,22 @@ const TypeZone = ({
    useEffect(() => {
       setCounter(testTime);
    }, [testTime]);
+
+   // * Reset words when mode or testWords changes...
+   useEffect(() => {
+      const wordCount = mode === "words" ? testWords : 50;
+      setWords(generate(wordCount) as string[]);
+      // Reset test state
+      setTestEnd(false);
+      setOnWordIndex(0);
+      setOnCharIndex(0);
+      setCorrectChar(0);
+      setIncorrectChar(0);
+      setMissedChar(0);
+      setExtraChar(0);
+      setCorrectWord(0);
+      setCompletedWords(0);
+   }, [mode, testWords]);
 
    // * Calculate WPM
    const calculateWPM = () => {
@@ -271,12 +313,15 @@ const TypeZone = ({
             </h1>
          ) : (
             <div
-               className="max-w-full mx-auto overflow-hidden self-start  mb-16 h-[17rem]"
+               className="max-w-full  overflow-hidden self-start  mb-16 h-[17rem]"
                onClick={focusInput}
             >
                <TimeCounter
                   countDown={counter}
                   className={testStart ? "opacity-100" : "opacity-0"}
+                  mode={mode}
+                  current={completedWords}
+                  total={testWords}
                />
                <div className="text-3xl flex flex-wrap leading-12 tracking-tight relative text-fade-100">
                   {!isFocused && (

@@ -1,13 +1,5 @@
 import { createContext, useContext, useState } from "react";
-
-interface TestModeContextType {
-   // mode: TestMode;
-   // setMode: (mode: TestMode) => void;
-   testTime: number;
-   setTestTime: (time: number) => void;
-   // testWords: number;
-   // setTestWords: (words: number) => void;
-}
+import { TestModeContextType, TestMode } from "../types";
 
 const TestModeContext = createContext<TestModeContextType | undefined>(
    undefined
@@ -18,11 +10,17 @@ export const TestModeContextProvider = ({
 }: {
    children: React.ReactNode;
 }) => {
+   const [mode, setMode] = useState<TestMode>("time");
    const [testTime, setTestTime] = useState(30);
+   const [testWords, setTestWords] = useState(25);
 
    const value = {
+      mode,
+      setMode,
       testTime,
       setTestTime,
+      testWords,
+      setTestWords,
    };
 
    return (
