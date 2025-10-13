@@ -323,7 +323,7 @@ const TypeZone = ({
                   current={completedWords}
                   total={testWords}
                />
-               <div className="text-3xl flex flex-wrap leading-12 tracking-tight relative text-fade-100">
+               <div className="text-3xl flex flex-wrap leading-12 tracking-tight relative text-fade-100 h-full">
                   {!isFocused && (
                      <div
                         className="cursor-default absolute top-0 left-0 w-full h-full flex items-center justify-center backdrop-blur-sm z-10 pb-16 "
