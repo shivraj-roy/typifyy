@@ -2,8 +2,8 @@ import { useTestMode } from "../context/TestMode";
 import { StatsProps } from "../types";
 
 const Stats = ({
+   raw,
    wpm,
-   netWPM,
    accuracy,
    correctChar,
    incorrectChar,
@@ -37,7 +37,7 @@ const Stats = ({
                </div>
                <div>
                   <h3 className="text-xs">net wpm</h3>
-                  <p className="text-3xl text-active">{netWPM}</p>
+                  <p className="text-3xl text-active">{raw}</p>
                </div>
                <div>
                   <h3 className="text-xs">Words</h3>

@@ -262,14 +262,14 @@ const TypeZone = ({
    }, [mode, testWords]);
 
    // * Calculate WPM
-   const calculateWPM = () => {
+   const calculateRAW = () => {
       const totalTimeInMinutes = testTime / 60;
       const wpm = Math.floor(correctChar / 5 / totalTimeInMinutes);
       return wpm;
    };
 
    // * Calculate net WPM
-   const calculateNetWPM = () => {
+   const calculateWPM = () => {
       const totalTimeInMinutes = testTime / 60;
       const netWPM = Math.floor(
          (correctChar - incorrectChar) / 5 / totalTimeInMinutes
@@ -300,8 +300,8 @@ const TypeZone = ({
          {testEnd ? (
             <h1 className="max-w-full overflow-hidden self-start  mb-16 h-[17rem]">
                <Stats
+                  raw={calculateRAW()}
                   wpm={calculateWPM()}
-                  netWPM={calculateNetWPM()}
                   accuracy={calculateAccuracy()}
                   correctChar={correctChar}
                   incorrectChar={incorrectChar}

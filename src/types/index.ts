@@ -7,8 +7,8 @@ export type ButtonProps = {
 };
 
 export type StatsProps = {
+   raw: number;
    wpm: number;
-   netWPM: number;
    accuracy: number;
    correctChar: number;
    incorrectChar: number;
