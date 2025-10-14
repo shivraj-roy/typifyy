@@ -35,6 +35,7 @@ const TypeZone = ({
    const [completedWords, setCompletedWords] = useState(0);
 
    const inputRef = useRef<HTMLInputElement>(null);
+   const wordsContainerRef = useRef<HTMLDivElement>(null);
 
    // * Reference for each word span element in the DOM...
    const wordSpanRef = useMemo(() => {
@@ -46,6 +47,27 @@ const TypeZone = ({
    // * Focus the input when the component mounts...
    const focusInput = () => {
       inputRef.current?.focus();
+   };
+
+   // * Scroll smoothly when moving to the next line
+   const scrollToKeepOnSecondLine = (wordIndex: number) => {
+      const container = wordsContainerRef.current;
+      const wordElement = wordSpanRef[wordIndex]?.current;
+
+      if (!container || !wordElement) return;
+
+      const lineHeight = 48; // 3rem = 48px
+      const wordTop = wordElement.offsetTop;
+      const currentLine = Math.floor(wordTop / lineHeight);
+
+      // If current word is on line 2 or beyond (0-indexed), scroll up
+      if (currentLine >= 2) {
+         const scrollAmount = (currentLine - 1) * lineHeight;
+         container.scrollTo({
+            top: scrollAmount,
+            behavior: 'smooth'
+         });
+      }
    };
 
    useEffect(() => {
@@ -137,6 +159,9 @@ const TypeZone = ({
             }
             setOnWordIndex((prev) => prev + 1);
             setOnCharIndex(0);
+
+            // Scroll to keep current word on second line
+            scrollToKeepOnSecondLine(onWordIndex + 1);
 
             // Increment completed words counter only when moving to next word
             setCompletedWords((prev) => prev + 1);
@@ -313,7 +338,7 @@ const TypeZone = ({
             </h1>
          ) : (
             <div
-               className="max-w-full  overflow-hidden self-start  mb-16 h-[17rem]"
+               className="max-w-full overflow-hidden self-start mb-16"
                onClick={focusInput}
             >
                <TimeCounter
@@ -323,10 +348,13 @@ const TypeZone = ({
                   current={completedWords}
                   total={testWords}
                />
-               <div className="text-3xl flex flex-wrap leading-12 tracking-tight relative text-fade-100 h-full">
+               <div
+                  ref={wordsContainerRef}
+                  className="text-3xl flex flex-wrap leading-[3rem] tracking-tight relative text-fade-100 h-36 overflow-hidden"
+               >
                   {!isFocused && (
                      <div
-                        className="cursor-default absolute top-0 left-0 w-full h-full flex items-center justify-center backdrop-blur-sm z-10 pb-16 "
+                        className="cursor-default absolute top-0 left-0 w-full h-full flex items-center justify-center backdrop-blur-sm z-10"
                         onClick={focusInput}
                      >
                         <span className="flex items-center justify-around text-xl text-fade gap-5 font-mono tracking-wider">
@@ -338,7 +366,7 @@ const TypeZone = ({
                   {words.map((word, wordIndex) => (
                      <span
                         key={`${wordIndex}-${word}`}
-                        className="my-[0.3rem] mx-2"
+                        className="mx-2"
                         ref={wordSpanRef[wordIndex]}
                      >
                         {word.split("").map((letter, letterIndex) => (
