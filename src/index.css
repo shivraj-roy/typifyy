@@ -62,7 +62,7 @@
 
 @layer components {
    .canvas {
-      @apply grid min-h-[100dvh] grid-rows-[auto_auto_auto_auto] gap-2 px-16 py-8 w-screen items-center text-center relative;
+      @apply grid min-h-[100dvh] grid-rows-[auto_auto_auto_auto] gap-2 px-16 py-8 w-full max-w-[104rem] mx-auto items-center text-center relative;
    }
 
    .active {
