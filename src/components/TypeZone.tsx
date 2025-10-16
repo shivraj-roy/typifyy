@@ -33,9 +33,13 @@ const TypeZone = ({
    const [extraChar, setExtraChar] = useState(0);
    const [correctWord, setCorrectWord] = useState(0);
    const [completedWords, setCompletedWords] = useState(0);
+   const [graphData, setGraphData] = useState<number[][]>([]);
 
    const inputRef = useRef<HTMLInputElement>(null);
    const wordsContainerRef = useRef<HTMLDivElement>(null);
+   const correctCharRef = useRef<number>(0);
+   const incorrectCharRef = useRef<number>(0);
+   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
    // * Reference for each word span element in the DOM...
    const wordSpanRef = useMemo(() => {
@@ -65,7 +69,7 @@ const TypeZone = ({
          const scrollAmount = (currentLine - 1) * lineHeight;
          container.scrollTo({
             top: scrollAmount,
-            behavior: 'smooth'
+            behavior: "smooth",
          });
       }
    };
@@ -79,9 +83,19 @@ const TypeZone = ({
       }
    }, []);
 
+   // * Keep correctCharRef in sync with correctChar state
+   useEffect(() => {
+      correctCharRef.current = correctChar;
+   }, [correctChar]);
+
+   // * Keep incorrectCharRef in sync with incorrectChar state
+   useEffect(() => {
+      incorrectCharRef.current = incorrectChar;
+   }, [incorrectChar]);
+
    // * Handle to start the counter when the test starts...
    const startTimer = () => {
-      if (mode === "time") {
+      if (mode === "time" && !timerRef.current) {
          const timer = setInterval(() => {
             setCounter((prev) => {
                if (prev <= 0) {
@@ -89,9 +103,38 @@ const TypeZone = ({
                   setTestEnd(true);
                   return 0;
                }
+
+               const timeElapsed = testTime - prev + 1;
+               const currentCorrectChars = correctCharRef.current;
+               const currentIncorrectChars = incorrectCharRef.current;
+
+               // Calculate raw WPM and WPM
+               const rawWPM = Math.floor(
+                  currentCorrectChars / 5 / (timeElapsed / 60)
+               );
+               const WPM = Math.floor(
+                  (currentCorrectChars - currentIncorrectChars) /
+                     5 /
+                     (timeElapsed / 60)
+               );
+
+               // Add data point for current second (starting from 1s)
+               // Data format: [time, rawWPM, netWPM]
+               setGraphData((prevData) => {
+                  const lastEntry = prevData[prevData.length - 1];
+                  const newDataPoint = [timeElapsed, rawWPM, WPM];
+                  if (lastEntry && lastEntry[0] === timeElapsed) {
+                     // Update existing entry instead of adding duplicate
+                     return [...prevData.slice(0, -1), newDataPoint];
+                  }
+                  return [...prevData, newDataPoint];
+               });
+
                return prev - 1;
             });
          }, 1000);
+
+         timerRef.current = timer;
       }
       // For words mode, timer doesn't count down
    };
@@ -274,6 +317,11 @@ const TypeZone = ({
    useEffect(() => {
       const wordCount = mode === "words" ? testWords : 50;
       setWords(generate(wordCount) as string[]);
+      // Clear existing timer if any
+      if (timerRef.current) {
+         clearInterval(timerRef.current);
+         timerRef.current = null;
+      }
       // Reset test state
       setTestEnd(false);
       setOnWordIndex(0);
@@ -284,16 +332,26 @@ const TypeZone = ({
       setExtraChar(0);
       setCorrectWord(0);
       setCompletedWords(0);
+      setGraphData([]);
    }, [mode, testWords]);
 
-   // * Calculate WPM
+   // * Cleanup timer on unmount
+   useEffect(() => {
+      return () => {
+         if (timerRef.current) {
+            clearInterval(timerRef.current);
+         }
+      };
+   }, []);
+
+   // * Calculate raw WPM
    const calculateRAW = () => {
       const totalTimeInMinutes = testTime / 60;
       const wpm = Math.floor(correctChar / 5 / totalTimeInMinutes);
       return wpm;
    };
 
-   // * Calculate net WPM
+   // * Calculate WPM
    const calculateWPM = () => {
       const totalTimeInMinutes = testTime / 60;
       const netWPM = Math.floor(
@@ -334,6 +392,7 @@ const TypeZone = ({
                   extraChar={extraChar}
                   correctWord={correctWord}
                   consistency={calculateConsistency()}
+                  graphData={graphData}
                />
             </h1>
          ) : (

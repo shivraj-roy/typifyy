@@ -1,5 +1,6 @@
 import { useTestMode } from "../context/TestMode";
 import { StatsProps } from "../types";
+import Graph from "./Graph";
 
 const Stats = ({
    raw,
@@ -11,6 +12,7 @@ const Stats = ({
    extraChar,
    correctWord,
    consistency,
+   graphData,
 }: StatsProps) => {
    const { testTime } = useTestMode() as { testTime: number };
 
@@ -28,7 +30,9 @@ const Stats = ({
                      <p className="text-7xl text-active">{accuracy}%</p>
                   </div>
                </div>
-               <div className="right-stats w-5/6 h-full bg-dark-100"></div>
+               <div className="right-stats w-5/6 h-full">
+                  <Graph graphData={graphData} />
+               </div>
             </div>
             <div className="flex justify-between items-center h-[20%] mt-1">
                <div>

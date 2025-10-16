@@ -16,6 +16,7 @@ export type StatsProps = {
    extraChar: number;
    correctWord: number;
    consistency: number;
+   graphData: number[][];
 };
 
 // * Test Mode Types
