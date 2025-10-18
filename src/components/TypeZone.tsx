@@ -34,12 +34,15 @@ const TypeZone = ({
    const [correctWord, setCorrectWord] = useState(0);
    const [completedWords, setCompletedWords] = useState(0);
    const [graphData, setGraphData] = useState<number[][]>([]);
+   const [isAfk, setIsAfk] = useState(false);
 
    const inputRef = useRef<HTMLInputElement>(null);
    const wordsContainerRef = useRef<HTMLDivElement>(null);
    const correctCharRef = useRef<number>(0);
    const incorrectCharRef = useRef<number>(0);
    const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+   const elapsedSecondsRef = useRef<number>(0);
+   const lastTypingTimeRef = useRef<number>(Date.now());
 
    // * Reference for each word span element in the DOM...
    const wordSpanRef = useMemo(() => {
@@ -95,53 +98,86 @@ const TypeZone = ({
 
    // * Handle to start the counter when the test starts...
    const startTimer = () => {
-      if (mode === "time" && !timerRef.current) {
-         const timer = setInterval(() => {
-            setCounter((prev) => {
-               if (prev <= 0) {
-                  clearInterval(timer);
-                  setTestEnd(true);
-                  return 0;
-               }
+      if (!timerRef.current) {
+         elapsedSecondsRef.current = 0;
 
-               const timeElapsed = testTime - prev + 1;
+         const timer = setInterval(() => {
+            elapsedSecondsRef.current += 1;
+
+            if (mode === "time") {
+               setCounter((prev) => {
+                  if (prev <= 0) {
+                     clearInterval(timer);
+                     timerRef.current = null;
+                     setTestEnd(true);
+                     return 0;
+                  }
+
+                  const timeElapsed = testTime - prev + 1;
+                  const currentCorrectChars = correctCharRef.current;
+                  const currentIncorrectChars = incorrectCharRef.current;
+
+                  // Calculate raw WPM and WPM
+                  const rawWPM = Math.max(0, Math.floor(
+                     currentCorrectChars / 5 / (timeElapsed / 60)
+                  ));
+                  const WPM = Math.max(0, Math.floor(
+                     (currentCorrectChars - currentIncorrectChars) /
+                        5 /
+                        (timeElapsed / 60)
+                  ));
+
+                  // Add data point for current second (starting from 1s)
+                  setGraphData((prevData) => {
+                     const lastEntry = prevData[prevData.length - 1];
+                     const newDataPoint = [timeElapsed, rawWPM, WPM];
+                     if (lastEntry && lastEntry[0] === timeElapsed) {
+                        return [...prevData.slice(0, -1), newDataPoint];
+                     }
+                     return [...prevData, newDataPoint];
+                  });
+
+                  return prev - 1;
+               });
+            } else if (mode === "words") {
+               // For words mode, track elapsed time
+               const timeElapsed = elapsedSecondsRef.current;
                const currentCorrectChars = correctCharRef.current;
                const currentIncorrectChars = incorrectCharRef.current;
 
-               // Calculate raw WPM and WPM
-               const rawWPM = Math.floor(
+               // Calculate raw WPM and WPM based on elapsed time
+               const rawWPM = Math.max(0, Math.floor(
                   currentCorrectChars / 5 / (timeElapsed / 60)
-               );
-               const WPM = Math.floor(
+               ));
+               const WPM = Math.max(0, Math.floor(
                   (currentCorrectChars - currentIncorrectChars) /
                      5 /
                      (timeElapsed / 60)
-               );
+               ));
 
-               // Add data point for current second (starting from 1s)
-               // Data format: [time, rawWPM, netWPM]
+               // Add data point for current second
                setGraphData((prevData) => {
                   const lastEntry = prevData[prevData.length - 1];
                   const newDataPoint = [timeElapsed, rawWPM, WPM];
                   if (lastEntry && lastEntry[0] === timeElapsed) {
-                     // Update existing entry instead of adding duplicate
                      return [...prevData.slice(0, -1), newDataPoint];
                   }
                   return [...prevData, newDataPoint];
                });
-
-               return prev - 1;
-            });
+            }
          }, 1000);
 
          timerRef.current = timer;
       }
-      // For words mode, timer doesn't count down
    };
 
    // * Handles user input...
    const handleUserInput = (e: React.KeyboardEvent<HTMLInputElement>) => {
       console.log(e.key);
+
+      // Update last typing time
+      lastTypingTimeRef.current = Date.now();
+      setIsAfk(false);
 
       // ? Prevent default behavior for non-character keys
       if (e.keyCode !== 8 && e.key.length > 1) {
@@ -209,8 +245,15 @@ const TypeZone = ({
             // Increment completed words counter only when moving to next word
             setCompletedWords((prev) => prev + 1);
          } else {
-            // Last word completed
+            // Last word completed - end test for words mode
             setCompletedWords((prev) => prev + 1);
+            if (mode === "words") {
+               if (timerRef.current) {
+                  clearInterval(timerRef.current);
+                  timerRef.current = null;
+               }
+               setTestEnd(true);
+            }
          }
          return;
       }
@@ -299,10 +342,14 @@ const TypeZone = ({
       } else if (onCharIndex === currentWord.length - 1) {
          currentWord[onCharIndex].className += " caret_end";
 
-         // Check if we're on the last word and just typed the last character
-         if (mode === "words" && completedWords === testWords - 1) {
-            // Mark the last word as completed and end the test
+         // Check if we're on the last word in words mode and just typed the last character
+         if (mode === "words" && onWordIndex === words.length - 1) {
+            // End the test
             setCompletedWords((prev) => prev + 1);
+            if (timerRef.current) {
+               clearInterval(timerRef.current);
+               timerRef.current = null;
+            }
             setTestEnd(true);
          }
       }
@@ -333,6 +380,9 @@ const TypeZone = ({
       setCorrectWord(0);
       setCompletedWords(0);
       setGraphData([]);
+      setIsAfk(false);
+      elapsedSecondsRef.current = 0;
+      lastTypingTimeRef.current = Date.now();
    }, [mode, testWords]);
 
    // * Cleanup timer on unmount
@@ -344,19 +394,35 @@ const TypeZone = ({
       };
    }, []);
 
+   // * Check for AFK (5 seconds of inactivity)
+   useEffect(() => {
+      if (!testStart || testEnd) return;
+
+      const afkCheckInterval = setInterval(() => {
+         const timeSinceLastTyping = Date.now() - lastTypingTimeRef.current;
+         if (timeSinceLastTyping >= 5000) {
+            setIsAfk(true);
+         }
+      }, 1000);
+
+      return () => clearInterval(afkCheckInterval);
+   }, [testStart, testEnd]);
+
    // * Calculate raw WPM
    const calculateRAW = () => {
-      const totalTimeInMinutes = testTime / 60;
-      const wpm = Math.floor(correctChar / 5 / totalTimeInMinutes);
+      const timeUsed = mode === "words" ? elapsedSecondsRef.current : testTime;
+      const totalTimeInMinutes = timeUsed / 60;
+      const wpm = Math.max(0, Math.floor(correctChar / 5 / totalTimeInMinutes));
       return wpm;
    };
 
    // * Calculate WPM
    const calculateWPM = () => {
-      const totalTimeInMinutes = testTime / 60;
-      const netWPM = Math.floor(
+      const timeUsed = mode === "words" ? elapsedSecondsRef.current : testTime;
+      const totalTimeInMinutes = timeUsed / 60;
+      const netWPM = Math.max(0, Math.floor(
          (correctChar - incorrectChar) / 5 / totalTimeInMinutes
-      );
+      ));
       return netWPM;
    };
 
@@ -372,9 +438,9 @@ const TypeZone = ({
    const calculateConsistency = () => {
       const totalChars = correctChar + incorrectChar + missedChar + extraChar;
       if (totalChars === 0) return 0;
-      const consistency = Math.floor(
+      const consistency = Math.max(0, Math.floor(
          ((correctChar - incorrectChar) / totalChars) * 100
-      );
+      ));
       return consistency;
    };
 
@@ -393,6 +459,10 @@ const TypeZone = ({
                   correctWord={correctWord}
                   consistency={calculateConsistency()}
                   graphData={graphData}
+                  elapsedTime={elapsedSecondsRef.current}
+                  mode={mode}
+                  testWords={testWords}
+                  isAfk={isAfk}
                />
             </h1>
          ) : (

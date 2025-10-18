@@ -27,7 +27,7 @@ const Graph = ({ graphData }: { graphData: number[][] }) => {
          {
             label: "raw",
             data: graphData.map(([, rawWpm]) => rawWpm),
-            borderColor: "rgb(235, 89, 57, 0.5)",
+            borderColor: "rgb(183, 171, 152, 0.5)",
             borderDash: [10, 10],
             tension: 0.3,
             pointRadius: 0,
@@ -38,7 +38,7 @@ const Graph = ({ graphData }: { graphData: number[][] }) => {
             borderColor: "rgb(235, 89, 57)",
             backgroundColor: "rgb(235, 89, 57)",
             tension: 0.3,
-            pointRadius: 3,
+            pointRadius: 2.5,
          },
       ],
    };
@@ -55,12 +55,58 @@ const Graph = ({ graphData }: { graphData: number[][] }) => {
    const options = {
       responsive: true,
       maintainAspectRatio: false,
+      interaction: {
+         mode: "index" as const,
+         intersect: false,
+      },
+      plugins: {
+         tooltip: {
+            mode: "index" as const,
+            intersect: false,
+            bodyFont: {
+               family: "'Roboto Mono', 'Space Mono', monospace",
+            },
+            titleFont: {
+               family: "'Roboto Mono', 'Space Mono', monospace",
+            },
+         },
+         legend: {
+            display: true,
+            position: "top" as const,
+            align: "end" as const,
+            labels: {
+               font: {
+                  family: "'Roboto Mono', 'Space Mono', monospace",
+               },
+               boxWidth: 40,
+               padding: 10,
+            },
+         },
+      },
       scales: {
+         x: {
+            ticks: {
+               font: {
+                  family: "'Roboto Mono', 'Space Mono', monospace",
+               },
+            },
+         },
          y: {
             beginAtZero: true,
+            min: 0,
+            title: {
+               display: true,
+               text: "Words per Minute",
+               font: {
+                  family: "'Roboto Mono', 'Space Mono', monospace",
+               },
+            },
             ticks: {
                maxTicksLimit: 5,
                stepSize: stepSize,
+               font: {
+                  family: "'Roboto Mono', 'Space Mono', monospace",
+               },
             },
          },
       },

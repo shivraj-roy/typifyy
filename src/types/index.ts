@@ -17,6 +17,10 @@ export type StatsProps = {
    correctWord: number;
    consistency: number;
    graphData: number[][];
+   elapsedTime?: number;
+   mode?: TestMode;
+   testWords?: number;
+   isAfk?: boolean;
 };
 
 // * Test Mode Types
