@@ -1,19 +1,22 @@
-import { useState } from "react";
-import { Footer, Header, MenuBar, TypeZone } from "./components";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import RootLayout from "./layouts/RootLayout";
+import Home from "./pages/Home";
+
+const router = createBrowserRouter([
+   {
+      path: "/",
+      element: <RootLayout />,
+      children: [
+         {
+            index: true,
+            element: <Home />,
+         },
+      ],
+   },
+]);
 
 function App() {
-   const [testStart, setTestStart] = useState(false);
-
-   return (
-      <>
-         <div className="canvas">
-            <Header />
-            <MenuBar testStart={testStart} />
-            <TypeZone setTestStart={setTestStart} testStart={testStart} />
-            <Footer />
-         </div>
-      </>
-   );
+   return <RouterProvider router={router} />;
 }
 
 export default App;

@@ -4,6 +4,7 @@ import { useTestMode } from "../context/TestMode";
 import TimeCounter from "./TimeCounter";
 import { HiCursorClick } from "react-icons/hi";
 import Stats from "./Stats";
+import MenuBar from "./MenuBar";
 
 const TypeZone = ({
    setTestStart,
@@ -118,14 +119,18 @@ const TypeZone = ({
                   const currentIncorrectChars = incorrectCharRef.current;
 
                   // Calculate raw WPM and WPM
-                  const rawWPM = Math.max(0, Math.floor(
-                     currentCorrectChars / 5 / (timeElapsed / 60)
-                  ));
-                  const WPM = Math.max(0, Math.floor(
-                     (currentCorrectChars - currentIncorrectChars) /
-                        5 /
-                        (timeElapsed / 60)
-                  ));
+                  const rawWPM = Math.max(
+                     0,
+                     Math.floor(currentCorrectChars / 5 / (timeElapsed / 60))
+                  );
+                  const WPM = Math.max(
+                     0,
+                     Math.floor(
+                        (currentCorrectChars - currentIncorrectChars) /
+                           5 /
+                           (timeElapsed / 60)
+                     )
+                  );
 
                   // Add data point for current second (starting from 1s)
                   setGraphData((prevData) => {
@@ -146,14 +151,18 @@ const TypeZone = ({
                const currentIncorrectChars = incorrectCharRef.current;
 
                // Calculate raw WPM and WPM based on elapsed time
-               const rawWPM = Math.max(0, Math.floor(
-                  currentCorrectChars / 5 / (timeElapsed / 60)
-               ));
-               const WPM = Math.max(0, Math.floor(
-                  (currentCorrectChars - currentIncorrectChars) /
-                     5 /
-                     (timeElapsed / 60)
-               ));
+               const rawWPM = Math.max(
+                  0,
+                  Math.floor(currentCorrectChars / 5 / (timeElapsed / 60))
+               );
+               const WPM = Math.max(
+                  0,
+                  Math.floor(
+                     (currentCorrectChars - currentIncorrectChars) /
+                        5 /
+                        (timeElapsed / 60)
+                  )
+               );
 
                // Add data point for current second
                setGraphData((prevData) => {
@@ -420,9 +429,10 @@ const TypeZone = ({
    const calculateWPM = () => {
       const timeUsed = mode === "words" ? elapsedSecondsRef.current : testTime;
       const totalTimeInMinutes = timeUsed / 60;
-      const netWPM = Math.max(0, Math.floor(
-         (correctChar - incorrectChar) / 5 / totalTimeInMinutes
-      ));
+      const netWPM = Math.max(
+         0,
+         Math.floor((correctChar - incorrectChar) / 5 / totalTimeInMinutes)
+      );
       return netWPM;
    };
 
@@ -438,14 +448,16 @@ const TypeZone = ({
    const calculateConsistency = () => {
       const totalChars = correctChar + incorrectChar + missedChar + extraChar;
       if (totalChars === 0) return 0;
-      const consistency = Math.max(0, Math.floor(
-         ((correctChar - incorrectChar) / totalChars) * 100
-      ));
+      const consistency = Math.max(
+         0,
+         Math.floor(((correctChar - incorrectChar) / totalChars) * 100)
+      );
       return consistency;
    };
 
    return (
       <>
+         <MenuBar testStart={testStart} />
          {testEnd ? (
             <h1 className="max-w-full overflow-hidden self-start  mb-16 h-[17rem]">
                <Stats
