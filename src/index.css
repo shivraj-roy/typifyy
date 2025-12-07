@@ -7,8 +7,12 @@
    --color-fade: #b7ab98;
    --color-fade-100: rgba(183, 171, 152, 0.385);
    --color-active: #eb5939;
+   --color-glow: #fffcf2;
+   --color-glow-100: #ccc5b9;
 
    --font-mono: "Roboto Mono", monospace;
+   --font-space-mono: "Space Mono", "Roboto Mono", monospace;
+   --font-logo: "Softura-Demo", "Space Mono", "Roboto Mono", monospace;
 
    @keyframes blinking {
       0% {
@@ -42,6 +46,11 @@
 
    --animate-blinking: blinking 1s infinite;
    --animate-crazyCaret: crazyCaret 1.5s infinite;
+}
+
+@font-face {
+   font-family: "Softura-Demo";
+   src: url("/font/Softura-Demo.otf") format("opentype");
 }
 
 @layer base {
