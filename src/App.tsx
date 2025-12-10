@@ -2,6 +2,7 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import RootLayout from "./layouts/RootLayout";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
+import { ToastContainer } from "react-toastify";
 
 const router = createBrowserRouter([
    {
@@ -21,7 +22,16 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-   return <RouterProvider router={router} />;
+   return (
+      <>
+         <ToastContainer
+            toastClassName="!bg-transparent !shadow-none !p-0"
+            closeButton={false}
+            newestOnTop={true}
+         />
+         <RouterProvider router={router} />
+      </>
+   );
 }
 
 export default App;

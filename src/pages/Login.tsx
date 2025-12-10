@@ -1,8 +1,16 @@
 import { FiUserPlus } from "react-icons/fi";
 import { useState } from "react";
 import { FaCheck, FaGithub, FaGoogle, FaSignInAlt } from "react-icons/fa";
+import {
+   createUserWithEmailAndPassword,
+   signInWithEmailAndPassword,
+} from "firebase/auth";
+import { Bounce, toast } from "react-toastify";
 import InputAndIndicator from "../components/ui/InputAndIndicator";
 import IconButton from "../components/ui/IconButton";
+import { auth } from "../firebaseConfig";
+import CustomToast from "../components/ui/CustomToast";
+import errorMapping from "../utils/errorMapping";
 
 const Login = () => {
    const [username, setUsername] = useState("");
@@ -11,6 +19,10 @@ const Login = () => {
    const [password, setPassword] = useState("");
    const [verifyPassword, setVerifyPassword] = useState("");
    const [rememberMe, setRememberMe] = useState(true);
+
+   // Login form state
+   const [loginEmail, setLoginEmail] = useState("");
+   const [loginPassword, setLoginPassword] = useState("");
 
    const validateUsername = (value: string) => {
       if (value.length < 6) {
@@ -72,6 +84,134 @@ const Login = () => {
       return { valid: true };
    };
 
+   // Check if all fields are valid for registration
+   const isRegisterFormValid = () => {
+      return (
+         validateUsername(username).valid &&
+         validateEmail(email).valid &&
+         validateVerifyEmail(verifyEmail).valid &&
+         validatePassword(password).valid &&
+         validateVerifyPassword(verifyPassword).valid
+      );
+   };
+
+   const handleRegisterSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      if (!isRegisterFormValid()) return;
+
+      createUserWithEmailAndPassword(auth, email, password)
+         .then((userCredential) => {
+            const user = userCredential.user;
+            // todo: also send the verification email
+
+            toast(
+               <CustomToast
+                  type="success"
+                  title="Success"
+                  message="Account created"
+               />,
+               {
+                  position: "top-right",
+                  autoClose: 5000,
+                  hideProgressBar: true,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: false,
+                  transition: Bounce,
+               }
+            );
+            console.log("Registered user:", user);
+         })
+         .catch((error) => {
+            toast(
+               <CustomToast
+                  type="error"
+                  title="Error"
+                  message={
+                     errorMapping[error.code] || "An unexpected error occurred."
+                  }
+               />,
+               {
+                  position: "top-right",
+                  autoClose: 5000,
+                  hideProgressBar: true,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: false,
+                  transition: Bounce,
+               }
+            );
+            console.error("Registration error:", error.code, error.message);
+         });
+   };
+
+   const handleLoginSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+
+      if (!loginEmail || !loginPassword) {
+         toast(
+            <CustomToast
+               type="info"
+               title="Notice"
+               message="Please fill all the fields"
+            />,
+            {
+               position: "top-right",
+               autoClose: 5000,
+               hideProgressBar: true,
+               closeOnClick: true,
+               pauseOnHover: true,
+               draggable: false,
+               transition: Bounce,
+            }
+         );
+         return;
+      }
+
+      signInWithEmailAndPassword(auth, loginEmail, loginPassword)
+         .then((userCredential) => {
+            const user = userCredential.user;
+            toast(
+               <CustomToast
+                  type="success"
+                  title="Success"
+                  message="Login successful!"
+               />,
+               {
+                  position: "top-right",
+                  autoClose: 5000,
+                  hideProgressBar: true,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: false,
+                  transition: Bounce,
+               }
+            );
+            console.log("Logged in user:", user);
+         })
+         .catch((error) => {
+            toast(
+               <CustomToast
+                  type="error"
+                  title="Error"
+                  message={
+                     errorMapping[error.code] || "An unexpected error occurred."
+                  }
+               />,
+               {
+                  position: "top-right",
+                  autoClose: 5000,
+                  hideProgressBar: true,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: false,
+                  transition: Bounce,
+               }
+            );
+            console.error("Login error:", error.code, error.message);
+         });
+   };
+
    return (
       <>
          <div className="max-w-full h-full flex justify-around items-center">
@@ -83,7 +223,10 @@ const Login = () => {
                   <h2 className="text">register</h2>
                </div>
 
-               <form action="" method="post" className="w-full gap-2 grid">
+               <form
+                  onSubmit={handleRegisterSubmit}
+                  className="w-full gap-2 grid"
+               >
                   <InputAndIndicator
                      type="text"
                      name="username"
@@ -128,6 +271,7 @@ const Login = () => {
                      type="submit"
                      icon={<FiUserPlus size={20} />}
                      text="sign up"
+                     disabled={!isRegisterFormValid()}
                   />
                </form>
             </div>
@@ -148,7 +292,7 @@ const Login = () => {
                   />
                </div>
 
-               <form action="" method="get" className="w-full gap-2 grid">
+               <form onSubmit={handleLoginSubmit} className="w-full gap-2 grid">
                   <div className="orWithLine flex items-center gap-5">
                      <div className="line h-1 w-full bg-dark-100/40 rounded-[0.5rem]" />
                      <div className="text text-glow">or</div>
@@ -156,17 +300,17 @@ const Login = () => {
                   </div>
                   <InputAndIndicator
                      type="email"
-                     name="email"
+                     name="login-email"
                      placeholder="email"
-                     value=""
-                     onChange={() => {}}
+                     value={loginEmail}
+                     onChange={setLoginEmail}
                   />
                   <InputAndIndicator
                      type="password"
                      name="login-password"
                      placeholder="password"
-                     value=""
-                     onChange={() => {}}
+                     value={loginPassword}
+                     onChange={setLoginPassword}
                   />
                   <div
                      className="flex gap-2 items-center h-6 cursor-pointer"
