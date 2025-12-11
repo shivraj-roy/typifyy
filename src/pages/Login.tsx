@@ -4,6 +4,8 @@ import { FaCheck, FaGithub, FaGoogle, FaSignInAlt } from "react-icons/fa";
 import {
    createUserWithEmailAndPassword,
    signInWithEmailAndPassword,
+   signInWithPopup,
+   GoogleAuthProvider,
 } from "firebase/auth";
 import { Bounce, toast } from "react-toastify";
 import InputAndIndicator from "../components/ui/InputAndIndicator";
@@ -212,6 +214,54 @@ const Login = () => {
          });
    };
 
+   const googleProvider = new GoogleAuthProvider();
+   const handleGoogleSignIn = () => {
+      signInWithPopup(auth, googleProvider)
+         .then((result) => {
+            const user = result.user;
+            toast(
+               <CustomToast
+                  type="success"
+                  title="Success"
+                  message="Logged in with Google!"
+               />,
+               {
+                  position: "top-right",
+                  autoClose: 5000,
+                  hideProgressBar: true,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: false,
+                  transition: Bounce,
+               }
+            );
+            console.log("Google Sign-In user:", user);
+         })
+         .catch((error) => {
+            toast(
+               <CustomToast
+                  type="error"
+                  title="Error"
+                  message={
+                     errorMapping[error.code] || "An unexpected error occurred."
+                  }
+               />,
+               {
+                  position: "top-right",
+                  autoClose: 5000,
+                  hideProgressBar: true,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: false,
+                  transition: Bounce,
+               }
+            );
+            console.error("Google Sign-In error:", error.code, error.message);
+         });
+   };
+
+   // Todo: GitHub sign-in handler
+
    return (
       <>
          <div className="max-w-full h-full flex justify-around items-center">
@@ -286,6 +336,7 @@ const Login = () => {
                <div className="providers flex gap-4 mb-2">
                   <IconButton
                      icon={<FaGoogle size={16} className="signInWithGoogle" />}
+                     onClick={handleGoogleSignIn}
                   />
                   <IconButton
                      icon={<FaGithub size={16} className="signInWithGithub" />}
