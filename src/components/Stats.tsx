@@ -1,6 +1,11 @@
+import { useEffect, useRef } from "react";
+import { Timestamp, collection, addDoc } from "firebase/firestore";
 import { useTestMode } from "../context/TestMode";
+import { auth, db } from "../firebaseConfig";
 import { StatsProps } from "../types";
 import Graph from "./Graph";
+import { Bounce, toast } from "react-toastify";
+import CustomToast from "./ui/CustomToast";
 
 const Stats = ({
    raw,
@@ -19,6 +24,81 @@ const Stats = ({
 }: StatsProps) => {
    const testModeContext = useTestMode();
    const testTime = testModeContext?.testTime || 30;
+   const hasPushed = useRef(false);
+
+   useEffect(() => {
+      if (hasPushed.current) return;
+      if (!auth.currentUser) {
+         console.log("User not authenticated, stats not pushed to DB");
+         return;
+      }
+
+      // Todo : Accuracy options - user get to choose accuracy % to set as invalid test
+      // Todo : AFK detection improvements - implement better AFK detection logic
+      if (isAfk && (accuracy === 0 || Number.isNaN(accuracy))) {
+         toast(
+            <CustomToast
+               type="info"
+               title="Notice"
+               message="Test is invalid - AFK detected with 0% accuracy."
+            />,
+            {
+               position: "top-right",
+               autoClose: 5000,
+               hideProgressBar: true,
+               closeOnClick: true,
+               pauseOnHover: true,
+               draggable: false,
+               transition: Bounce,
+            }
+         );
+         return;
+      }
+
+      const pushStatsToDB = async () => {
+         try {
+            const { uid } = auth.currentUser!;
+            await addDoc(collection(db, "results"), {
+               userId: uid,
+               timestamp: Timestamp.now(),
+               wpm,
+               accuracy,
+               correctChar,
+               incorrectChar,
+               missedChar,
+               extraChar,
+               correctWord,
+               consistency,
+               mode,
+               testWords: mode === "words" ? testWords : null,
+               testTime: mode === "time" ? testTime : null,
+               isAfk,
+            });
+            console.log("Stats pushed to DB");
+            hasPushed.current = true;
+         } catch (error) {
+            toast(
+               <CustomToast
+                  type="error"
+                  title="Error"
+                  message="Failed to push stats to database."
+               />,
+               {
+                  position: "top-right",
+                  autoClose: 5000,
+                  hideProgressBar: true,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: false,
+                  transition: Bounce,
+               }
+            );
+            console.error("Error pushing stats to DB:", error);
+         }
+      };
+
+      pushStatsToDB();
+   }, []);
 
    return (
       <>
