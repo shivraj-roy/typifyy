@@ -1,5 +1,6 @@
 import { FiUserPlus } from "react-icons/fi";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { FaCheck, FaGithub, FaGoogle, FaSignInAlt } from "react-icons/fa";
 import {
    createUserWithEmailAndPassword,
@@ -15,6 +16,7 @@ import CustomToast from "../components/ui/CustomToast";
 import errorMapping from "../utils/errorMapping";
 
 const Login = () => {
+   const navigate = useNavigate();
    const [username, setUsername] = useState("");
    const [email, setEmail] = useState("");
    const [verifyEmail, setVerifyEmail] = useState("");
@@ -123,6 +125,7 @@ const Login = () => {
                }
             );
             console.log("Registered user:", user);
+            navigate("/account");
          })
          .catch((error) => {
             toast(
@@ -190,6 +193,7 @@ const Login = () => {
                }
             );
             console.log("Logged in user:", user);
+            navigate("/account");
          })
          .catch((error) => {
             toast(
@@ -236,6 +240,7 @@ const Login = () => {
                }
             );
             console.log("Google Sign-In user:", user);
+            navigate("/account");
          })
          .catch((error) => {
             toast(
