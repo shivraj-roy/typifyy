@@ -20,18 +20,19 @@ npm run preview  # Preview production build
 ```
 /src
   /components
-    /ui/              # Reusable UI components (IconButton, InputAndIndicator, CustomToast, NavIcon)
+    /ui/              # Reusable UI components (IconButton, InputAndIndicator, CustomToast, NavIcon, MenuItem)
     TypeZone.tsx      # Core typing test component (537 lines)
-    Header.tsx        # Navigation header with logo + nav icons
+    Header.tsx        # Navigation header with logo, nav icons, and account dropdown menu
     Footer.tsx        # Footer (placeholder)
     MenuBar.tsx       # Test mode/duration selector
     Stats.tsx         # Results display with Graph + Firestore persistence
     Graph.tsx         # WPM visualization with Chart.js
     TimeCounter.tsx   # Timer or word counter display
+    HistoryTable.tsx  # Test results history table with pagination
     index.ts          # Barrel export
   /context            # React Context for state management
   /layouts            # Layout components (RootLayout)
-  /pages              # Page components (Home, Login)
+  /pages              # Page components (Home, Login, Account)
   /types              # TypeScript type definitions
   /ui                 # Legacy UI components (Button)
   /utils              # Utility functions (errorMapping.ts)
@@ -46,8 +47,8 @@ npm run preview  # Preview production build
 ### Routing & Layout
 - `src/App.tsx` - React Router configuration with `RootLayout` wrapper
 - `src/layouts/RootLayout.tsx` - Grid layout with Header, Outlet, Footer
-- Pages: `Home` (typing test), `Login` (auth forms)
-- Header nav links: `/`, `/about`, `/settings`, `/login`
+- Pages: `Home` (typing test), `Login` (auth forms), `Account` (user history)
+- Header nav links: `/`, `/about`, `/settings`, `/login` (or account dropdown when logged in)
 
 ### State Management
 - `src/context/TestMode.tsx` - Global context for test configuration
@@ -74,7 +75,7 @@ npm run preview  # Preview production build
 - Error mapping: `src/utils/errorMapping.ts` - Firebase error codes to user-friendly messages
 
 ### Firestore Data Model
-- **Collection: `results`** - Test results (saved in `Stats.tsx`)
+- **Collection: `results`** - Test results (saved in `Stats.tsx`, queried in `Account.tsx`)
   - `userId` (string) - Firebase Auth UID
   - `timestamp` (Timestamp) - When test was completed
   - `wpm`, `accuracy`, `consistency` (number) - Performance metrics
@@ -85,6 +86,7 @@ npm run preview  # Preview production build
   - `testWords` (number | null) - Word count if words mode
   - `isAfk` (boolean) - AFK detection flag
 - Invalid tests (AFK with 0% accuracy) are not saved
+- **Query patterns**: Uses Firestore `orderBy("timestamp", "desc")` for server-side sorting (requires composite index: userId + timestamp)
 
 ### Styling
 - Tailwind CSS v4 with custom theme in `src/index.css`
@@ -106,13 +108,43 @@ npm run preview  # Preview production build
   - `InputAndIndicator` - Input with validation status indicators (debounced 1000ms)
   - `CustomToast` - Styled toast notifications (success, error, warning, info)
   - `NavIcon` - Navigation link with delayed tooltip (900ms delay)
+  - `MenuItem` - Dropdown menu item (renders as Link or button based on props)
 - Toast notifications via `react-toastify` (position: top-right, auto-close: 5000ms)
 
-### Login/Registration Validation
-- Username: min 6 chars
-- Email: regex validation
-- Password: min 8 chars, requires uppercase, number, special char
-- Verification fields must match original
+### Header Component
+- Conditional rendering based on auth state via `onAuthStateChanged`
+- Logged out: Shows login NavIcon
+- Logged in: Shows account button with hover dropdown menu
+  - Menu items: user stats, public profile, account settings, sign out
+  - Hover effect with opacity/visibility transition (200ms)
+
+### Login/Registration
+- Validation:
+  - Username: min 6 chars
+  - Email: regex validation
+  - Password: min 8 chars, requires uppercase, number, special char
+  - Verification fields must match original
+- Navigation: Redirects to `/account` after successful login/signup (email, Google)
+
+### Account Page
+- `src/pages/Account.tsx` - User test history page
+- Fetches user's test results from Firestore on auth state change
+- Query: `where("userId", "==", uid)` + `orderBy("timestamp", "desc")`
+- Loading/error states for better UX
+- Displays results in HistoryTable component
+- **Note**: In development, StrictMode causes duplicate saves (2 entries per test). This does NOT happen in production builds.
+
+### HistoryTable Component
+- `src/components/HistoryTable.tsx` - Paginated test results table
+- **Pagination**: Shows 10 entries initially, loads 10 more on "Load More" click
+- "Load More" button visibility:
+  - Hidden if total data ≤ 10
+  - Hidden when all data is displayed
+  - Shows only when more data is available
+- Displays: WPM, raw WPM, accuracy, consistency, character stats, mode, timestamp
+- Alternating row colors for better readability
+- Character breakdown tooltip on hover
+- Crown icon placeholder (for future personal best highlighting)
 
 ## Tech Stack
 
@@ -127,5 +159,8 @@ npm run preview  # Preview production build
 
 - About page (linked but no route/component)
 - Settings page (linked but no route/component)
+- Account settings page `/account-settings` (linked but no route/component)
+- Public profile page (menu item exists but no route/component)
 - GitHub sign-in (UI ready, handler not implemented)
-- User profile/stats history page (results saved but no UI to view history)
+- Personal best highlighting in history table (crown icon placeholder exists)
+- Graph view for individual test results (info icon placeholder exists)
