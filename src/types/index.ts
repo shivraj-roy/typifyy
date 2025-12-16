@@ -1,3 +1,4 @@
+// * Button Types
 export type ButtonProps = {
    btnIcon?: React.ReactNode;
    btnTxt?: string;
@@ -6,6 +7,7 @@ export type ButtonProps = {
    btnClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
 };
 
+// * Stats Types
 export type StatsProps = {
    raw: number;
    wpm: number;
@@ -22,6 +24,20 @@ export type StatsProps = {
    testWords?: number;
    isAfk?: boolean;
 };
+
+// * Personal Best Types
+export interface PersonalBestData {
+   wpm: number;
+   raw: number;
+   accuracy: number;
+   consistency: number;
+   timestamp: Date;
+}
+
+export interface PersonalBestCardProps {
+   label: string;
+   data: PersonalBestData | null;
+}
 
 // * Test Mode Types
 export type TestMode = "time" | "words";
