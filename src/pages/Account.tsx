@@ -4,6 +4,7 @@ import { User } from "firebase/auth";
 import { auth, db } from "../firebaseConfig";
 import HistoryTable from "../components/HistoryTable";
 import PersonalBests from "../components/PersonalBests";
+import ActivityHeatMap from "../components/ActivityHeatMap";
 import { PersonalBestData } from "../types";
 
 interface TestResult {
@@ -144,6 +145,7 @@ function Account() {
       <>
          <div>Account</div>
          <PersonalBests {...(personalBests ?? defaultPersonalBests)} />
+         {data && data.length > 0 && <ActivityHeatMap data={data} />}
          {data && data.length > 0 && <HistoryTable data={data} />}
       </>
    );
