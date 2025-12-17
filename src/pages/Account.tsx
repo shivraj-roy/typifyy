@@ -5,10 +5,12 @@ import { auth, db } from "../firebaseConfig";
 import HistoryTable from "../components/HistoryTable";
 import PersonalBests from "../components/PersonalBests";
 import ActivityHeatMap from "../components/ActivityHeatMap";
+import StatsOverview from "../components/StatsOverview";
 import { PersonalBestData } from "../types";
 
 interface TestResult {
    wpm: number;
+   raw?: number;
    accuracy: number;
    consistency: number;
    correctChar: number;
@@ -34,6 +36,21 @@ type PersonalBests = {
    };
 };
 
+// Helper to get raw value (use stored or calculate fallback)
+function getRawValue(result: TestResult): number {
+   if (result.raw !== undefined) {
+      return result.raw;
+   }
+   // Fallback calculation for older records
+   const totalChars = result.correctChar + result.incorrectChar + result.extraChar;
+   if (result.mode === "time" && result.testTime) {
+      return Math.round((totalChars / 5) / (result.testTime / 60));
+   }
+   // For words mode, estimate time from WPM
+   const estimatedTimeMinutes = result.correctChar / 5 / result.wpm;
+   return Math.round((totalChars / 5) / estimatedTimeMinutes);
+}
+
 function calculatePersonalBests(data: TestResult[]): PersonalBests {
    const personalBests: PersonalBests = {
       time: { 15: null, 30: null, 60: null },
@@ -48,10 +65,7 @@ function calculatePersonalBests(data: TestResult[]): PersonalBests {
             if (!current || result.wpm > current.wpm) {
                personalBests.time[timeKey] = {
                   wpm: result.wpm,
-                  raw: Math.round(
-                     ((result.correctChar + result.incorrectChar + result.extraChar) / 5) /
-                        (result.testTime / 60)
-                  ),
+                  raw: getRawValue(result),
                   accuracy: result.accuracy,
                   consistency: result.consistency,
                   timestamp: new Date(result.timestamp.seconds * 1000),
@@ -63,15 +77,9 @@ function calculatePersonalBests(data: TestResult[]): PersonalBests {
          if (wordsKey in personalBests.words) {
             const current = personalBests.words[wordsKey];
             if (!current || result.wpm > current.wpm) {
-               // For words mode, we need to estimate time from the data
-               // Since we don't store elapsed time for words mode, use correctChar count
-               const estimatedTimeMinutes = (result.correctChar / 5) / result.wpm;
                personalBests.words[wordsKey] = {
                   wpm: result.wpm,
-                  raw: Math.round(
-                     ((result.correctChar + result.incorrectChar + result.extraChar) / 5) /
-                        estimatedTimeMinutes
-                  ),
+                  raw: getRawValue(result),
                   accuracy: result.accuracy,
                   consistency: result.consistency,
                   timestamp: new Date(result.timestamp.seconds * 1000),
@@ -104,7 +112,9 @@ function Account() {
                   orderBy("timestamp", "desc")
                );
                const querySnapshot = await getDocs(q);
-               const resultsData = querySnapshot.docs.map((doc) => doc.data() as TestResult);
+               const resultsData = querySnapshot.docs.map(
+                  (doc) => doc.data() as TestResult
+               );
                if (resultsData.length > 0) {
                   console.log("Documents data:", resultsData);
                   setData(resultsData);
@@ -146,6 +156,7 @@ function Account() {
          <div>Account</div>
          <PersonalBests {...(personalBests ?? defaultPersonalBests)} />
          {data && data.length > 0 && <ActivityHeatMap data={data} />}
+         {data && data.length >= 10 && <StatsOverview data={data} />}
          {data && data.length > 0 && <HistoryTable data={data} />}
       </>
    );

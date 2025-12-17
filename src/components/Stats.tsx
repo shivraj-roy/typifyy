@@ -62,6 +62,7 @@ const Stats = ({
                userId: uid,
                timestamp: Timestamp.now(),
                wpm,
+               raw,
                accuracy,
                correctChar,
                incorrectChar,

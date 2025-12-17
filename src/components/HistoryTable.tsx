@@ -3,6 +3,7 @@ import { FaChartLine, FaCrown } from "react-icons/fa";
 
 interface HistoryEntry {
    wpm: number;
+   raw?: number;
    accuracy: number;
    consistency: number;
    correctChar: number;
@@ -28,6 +29,21 @@ const TableCell = ({
    children?: React.ReactNode;
    className?: string;
 }) => <td className={`p-2 ${className}`}>{children}</td>;
+
+// Helper to get raw value (use stored or calculate fallback)
+const getRawValue = (entry: HistoryEntry): number => {
+   if (entry.raw !== undefined) {
+      return entry.raw;
+   }
+   // Fallback calculation for older records
+   const totalChars = entry.correctChar + entry.incorrectChar + entry.extraChar;
+   if (entry.mode === "time" && entry.testTime) {
+      return Math.round((totalChars / 5) / (entry.testTime / 60));
+   }
+   // For words mode, estimate time from WPM
+   const estimatedTimeMinutes = entry.correctChar / 5 / entry.wpm;
+   return Math.round((totalChars / 5) / estimatedTimeMinutes);
+};
 
 function HistoryTable({ data }: HistoryTableProps) {
    const [visibleCount, setVisibleCount] = useState(10);
@@ -75,9 +91,7 @@ function HistoryTable({ data }: HistoryTableProps) {
                            <FaCrown size={16} className="opacity-0" />
                         </TableCell>
                         <TableCell>{entry.wpm}</TableCell>
-                        <TableCell>
-                           {Math.round((entry.wpm * entry.accuracy) / 100)}
-                        </TableCell>
+                        <TableCell>{getRawValue(entry)}</TableCell>
                         <TableCell>{entry.accuracy}%</TableCell>
                         <TableCell>{entry.consistency}%</TableCell>
                         <TableCell>
