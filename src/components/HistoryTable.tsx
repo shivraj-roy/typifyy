@@ -38,11 +38,11 @@ const getRawValue = (entry: HistoryEntry): number => {
    // Fallback calculation for older records
    const totalChars = entry.correctChar + entry.incorrectChar + entry.extraChar;
    if (entry.mode === "time" && entry.testTime) {
-      return Math.round((totalChars / 5) / (entry.testTime / 60));
+      return Math.round(totalChars / 5 / (entry.testTime / 60));
    }
    // For words mode, estimate time from WPM
    const estimatedTimeMinutes = entry.correctChar / 5 / entry.wpm;
-   return Math.round((totalChars / 5) / estimatedTimeMinutes);
+   return Math.round(totalChars / 5 / estimatedTimeMinutes);
 };
 
 function HistoryTable({ data }: HistoryTableProps) {
@@ -57,7 +57,7 @@ function HistoryTable({ data }: HistoryTableProps) {
 
    return (
       <>
-         <div className="history">
+         <div className="history mt-8">
             <table className="w-full">
                <thead className="text-[0.75rem] text-left text-fade-100">
                   <tr>

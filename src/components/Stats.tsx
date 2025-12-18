@@ -18,6 +18,7 @@ const Stats = ({
    correctWord,
    consistency,
    graphData,
+   elapsedTime,
    mode,
    testWords,
    isAfk,
@@ -73,6 +74,7 @@ const Stats = ({
                mode,
                testWords: mode === "words" ? testWords : null,
                testTime: mode === "time" ? testTime : null,
+               testDuration: elapsedTime ?? null,
                isAfk,
             });
             console.log("Stats pushed to DB");

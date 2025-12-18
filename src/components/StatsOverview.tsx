@@ -171,7 +171,7 @@ function StatsOverview({ data }: StatsOverviewProps) {
    }
 
    return (
-      <div className="statsOverview grid grid-cols-3 gap-4 text-left mt-6">
+      <div className="statsOverview grid grid-cols-3 gap-4 text-left mt-8">
          {/* WPM Stats */}
          <StatCard
             title="highest wpm"

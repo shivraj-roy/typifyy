@@ -6,6 +6,7 @@ import HistoryTable from "../components/HistoryTable";
 import PersonalBests from "../components/PersonalBests";
 import ActivityHeatMap from "../components/ActivityHeatMap";
 import StatsOverview from "../components/StatsOverview";
+import UserDetails from "../components/UserDetails";
 import { PersonalBestData } from "../types";
 
 interface TestResult {
@@ -20,6 +21,7 @@ interface TestResult {
    mode: "time" | "words";
    testTime?: number;
    testWords?: number;
+   testDuration?: number;
    timestamp: { seconds: number };
 }
 
@@ -42,13 +44,14 @@ function getRawValue(result: TestResult): number {
       return result.raw;
    }
    // Fallback calculation for older records
-   const totalChars = result.correctChar + result.incorrectChar + result.extraChar;
+   const totalChars =
+      result.correctChar + result.incorrectChar + result.extraChar;
    if (result.mode === "time" && result.testTime) {
-      return Math.round((totalChars / 5) / (result.testTime / 60));
+      return Math.round(totalChars / 5 / (result.testTime / 60));
    }
    // For words mode, estimate time from WPM
    const estimatedTimeMinutes = result.correctChar / 5 / result.wpm;
-   return Math.round((totalChars / 5) / estimatedTimeMinutes);
+   return Math.round(totalChars / 5 / estimatedTimeMinutes);
 }
 
 function calculatePersonalBests(data: TestResult[]): PersonalBests {
@@ -96,6 +99,8 @@ function Account() {
    const [data, setData] = useState<TestResult[] | null>(null);
    const [loading, setLoading] = useState(true);
    const [error, setError] = useState<string | null>(null);
+   const [username, setUsername] = useState<string>("");
+   const [joinedDate, setJoinedDate] = useState<Date | null>(null);
 
    const personalBests = useMemo(() => {
       if (!data) return null;
@@ -105,6 +110,14 @@ function Account() {
    useEffect(() => {
       const unsubscribe = auth.onAuthStateChanged(async (user: User | null) => {
          if (user) {
+            // Set user info
+            setUsername(
+               user.displayName || user.email?.split("@")[0] || "User"
+            );
+            if (user.metadata.creationTime) {
+               setJoinedDate(new Date(user.metadata.creationTime));
+            }
+
             try {
                const q = query(
                   collection(db, "results"),
@@ -153,8 +166,14 @@ function Account() {
 
    return (
       <>
-         <div>Account</div>
-         <PersonalBests {...(personalBests ?? defaultPersonalBests)} />
+         <div className="profile grid gap-8">
+            <UserDetails
+               username={username}
+               joinedDate={joinedDate}
+               data={data ?? []}
+            />
+            <PersonalBests {...(personalBests ?? defaultPersonalBests)} />
+         </div>
          {data && data.length > 0 && <ActivityHeatMap data={data} />}
          {data && data.length >= 10 && <StatsOverview data={data} />}
          {data && data.length > 0 && <HistoryTable data={data} />}
