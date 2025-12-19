@@ -127,6 +127,7 @@ npm run preview  # Preview production build
 - Conditional rendering based on auth state via `onAuthStateChanged`
 - Logged out: Shows login NavIcon
 - Logged in: Shows account button with hover dropdown menu
+  - **Username display**: `displayName` → `email prefix` → "User" (fallback chain)
   - Menu items: user stats, public profile, account settings, sign out
   - Hover effect with opacity/visibility transition (200ms)
 
@@ -136,6 +137,9 @@ npm run preview  # Preview production build
   - Email: regex validation
   - Password: min 8 chars, requires uppercase, number, special char
   - Verification fields must match original
+- **Username Storage**:
+  - Email registration: Username saved as `displayName` via Firebase `updateProfile`, user reloaded after update
+  - Google sign-in: `displayName` automatically set by Google to account name
 - Navigation: Redirects to `/account` after successful login/signup (email, Google)
 
 ### Account Page
@@ -203,7 +207,7 @@ npm run preview  # Preview production build
 
 ### UserDetails Component
 - `src/components/UserDetails.tsx` - User profile header with stats
-- Displays: avatar, username, joined date, and typing statistics
+- Displays: avatar, username, joined date (with tooltip), and typing statistics
 - Uses `DetailCard` component for consistent stat display
 - **Calculated Stats**:
   - **Current Streak**: Consecutive days with at least one test (must start from today or yesterday)
@@ -214,6 +218,7 @@ npm run preview  # Preview production build
   - Falls back to `testTime` for time mode tests
   - Estimates from WPM for words mode: `(correctChars / 5) / WPM * 60`
 - **User Info**: Gets username from `displayName` or email prefix, joined date from `metadata.creationTime`
+- **Joined Date Tooltip**: Shows "X days ago" on hover (positioned to the right)
 
 ## Tech Stack
 

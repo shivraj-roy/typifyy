@@ -7,6 +7,7 @@ import {
    signInWithEmailAndPassword,
    signInWithPopup,
    GoogleAuthProvider,
+   updateProfile,
 } from "firebase/auth";
 import { Bounce, toast } from "react-toastify";
 import InputAndIndicator from "../components/ui/InputAndIndicator";
@@ -99,55 +100,73 @@ const Login = () => {
       );
    };
 
-   const handleRegisterSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+   const handleRegisterSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
       if (!isRegisterFormValid()) return;
 
-      createUserWithEmailAndPassword(auth, email, password)
-         .then((userCredential) => {
-            const user = userCredential.user;
-            // todo: also send the verification email
+      try {
+         const userCredential = await createUserWithEmailAndPassword(
+            auth,
+            email,
+            password
+         );
+         const user = userCredential.user;
 
-            toast(
-               <CustomToast
-                  type="success"
-                  title="Success"
-                  message="Account created"
-               />,
-               {
-                  position: "top-right",
-                  autoClose: 5000,
-                  hideProgressBar: true,
-                  closeOnClick: true,
-                  pauseOnHover: true,
-                  draggable: false,
-                  transition: Bounce,
-               }
-            );
-            console.log("Registered user:", user);
-            navigate("/account");
-         })
-         .catch((error) => {
-            toast(
-               <CustomToast
-                  type="error"
-                  title="Error"
-                  message={
-                     errorMapping[error.code] || "An unexpected error occurred."
-                  }
-               />,
-               {
-                  position: "top-right",
-                  autoClose: 5000,
-                  hideProgressBar: true,
-                  closeOnClick: true,
-                  pauseOnHover: true,
-                  draggable: false,
-                  transition: Bounce,
-               }
-            );
-            console.error("Registration error:", error.code, error.message);
+         // Set the username as displayName
+         await updateProfile(user, {
+            displayName: username,
          });
+
+         // Reload user to ensure updated profile is reflected in auth state
+         await user.reload();
+
+         // todo: also send the verification email
+
+         toast(
+            <CustomToast
+               type="success"
+               title="Success"
+               message="Account created"
+            />,
+            {
+               position: "top-right",
+               autoClose: 5000,
+               hideProgressBar: true,
+               closeOnClick: true,
+               pauseOnHover: true,
+               draggable: false,
+               transition: Bounce,
+            }
+         );
+         console.log("Registered user:", user);
+         navigate("/account");
+      } catch (error: unknown) {
+         const firebaseError = error as { code?: string; message?: string };
+         toast(
+            <CustomToast
+               type="error"
+               title="Error"
+               message={
+                  errorMapping[firebaseError.code || ""] ||
+                  "An unexpected error occurred."
+               }
+            />,
+            {
+               position: "top-right",
+               autoClose: 5000,
+               hideProgressBar: true,
+               closeOnClick: true,
+               pauseOnHover: true,
+               draggable: false,
+               transition: Bounce,
+            }
+         );
+         console.error(
+            "Registration error:",
+            firebaseError.code,
+            firebaseError.message
+         );
+      }
    };
 
    const handleLoginSubmit = (e: React.FormEvent<HTMLFormElement>) => {

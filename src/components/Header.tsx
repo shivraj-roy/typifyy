@@ -108,9 +108,10 @@ const Header = () => {
                            className="relative items-center p-2 grid gap-[0.33em] grid-flow-col text-fade-100 hover:text-glow-100 transition-colors cursor-pointer "
                         >
                            <FaUserCircle size={20} />
-                           {/* // Todo : replace with dynamic user name from firebase auth data or localstorage */}
                            <div className="text text-sm self-center">
-                              {user?.displayName || "user-name"}
+                              {user?.displayName ||
+                                 user?.email?.split("@")[0] ||
+                                 "User"}
                            </div>
                         </Link>
                         <div className="menu absolute right-0 top-[99%] w-full min-w-44 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
