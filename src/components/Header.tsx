@@ -26,6 +26,12 @@ const Header = () => {
       });
       return () => unsubscribe();
    }, []);
+
+   // Dispatch restart test event
+   const handleRestartTest = () => {
+      window.dispatchEvent(new CustomEvent("restartTest"));
+   };
+
    const handleLogout = () => {
       auth
          .signOut()
@@ -71,7 +77,11 @@ const Header = () => {
    return (
       <>
          <div className="header flex items-center">
-            <Link to="/" className="logo flex items-center gap-2">
+            <Link
+               to="/"
+               className="logo flex items-center gap-2"
+               onClick={handleRestartTest}
+            >
                <div className="icon w-10">
                   <img src="/assets/typifyy.png" alt="typifyy-logo" />
                </div>
@@ -88,6 +98,7 @@ const Header = () => {
                      to="/"
                      icon={<BsFillKeyboardFill size={20} />}
                      tooltip="start typing"
+                     onClick={handleRestartTest}
                   />
                   <NavIcon
                      to="/about"

@@ -1,5 +1,13 @@
 import { generate } from "random-words";
-import { useRef, useEffect, useState, createRef, useMemo } from "react";
+import {
+   useRef,
+   useEffect,
+   useState,
+   createRef,
+   useMemo,
+   useCallback,
+} from "react";
+import { FaRedoAlt, FaChevronRight } from "react-icons/fa";
 import { useTestMode } from "../context/TestMode";
 import TimeCounter from "./TimeCounter";
 import { HiCursorClick } from "react-icons/hi";
@@ -187,6 +195,11 @@ const TypeZone = ({
       // Update last typing time
       lastTypingTimeRef.current = Date.now();
       setIsAfk(false);
+
+      // ? Allow Tab key to pass through for restart button navigation
+      if (e.key === "Tab") {
+         return; // Let Tab work normally for button focus
+      }
 
       // ? Prevent default behavior for non-character keys
       if (e.keyCode !== 8 && e.key.length > 1) {
@@ -455,81 +468,161 @@ const TypeZone = ({
       return consistency;
    };
 
+   // * Restart the test
+   const restartTest = useCallback(() => {
+      // Clear timer
+      if (timerRef.current) {
+         clearInterval(timerRef.current);
+         timerRef.current = null;
+      }
+
+      // Generate new words
+      const wordCount = mode === "words" ? testWords : 50;
+      setWords(generate(wordCount) as string[]);
+
+      // Reset all state
+      setCounter(testTime);
+      setOnWordIndex(0);
+      setOnCharIndex(0);
+      setTestStart(false);
+      setTestEnd(false);
+      setCorrectChar(0);
+      setIncorrectChar(0);
+      setMissedChar(0);
+      setExtraChar(0);
+      setCorrectWord(0);
+      setCompletedWords(0);
+      setGraphData([]);
+      setIsAfk(false);
+      elapsedSecondsRef.current = 0;
+      lastTypingTimeRef.current = Date.now();
+
+      // Reset scroll position
+      if (wordsContainerRef.current) {
+         wordsContainerRef.current.scrollTo({ top: 0 });
+      }
+
+      // Focus input after a short delay to ensure DOM is ready
+      setTimeout(() => {
+         focusInput();
+      }, 10);
+   }, [mode, testWords, testTime, setTestStart]);
+
+   // * Listen for restart test event from Header
+   useEffect(() => {
+      const handleRestartEvent = () => {
+         restartTest();
+      };
+
+      window.addEventListener("restartTest", handleRestartEvent);
+      return () => {
+         window.removeEventListener("restartTest", handleRestartEvent);
+      };
+   }, [restartTest]);
+
    return (
       <>
          <MenuBar testStart={testStart} />
          {testEnd ? (
-            <h1 className="max-w-full overflow-hidden self-start  mb-16 h-[17rem]">
-               <Stats
-                  raw={calculateRAW()}
-                  wpm={calculateWPM()}
-                  accuracy={calculateAccuracy()}
-                  correctChar={correctChar}
-                  incorrectChar={incorrectChar}
-                  missedChar={missedChar}
-                  extraChar={extraChar}
-                  correctWord={correctWord}
-                  consistency={calculateConsistency()}
-                  graphData={graphData}
-                  elapsedTime={elapsedSecondsRef.current}
-                  mode={mode}
-                  testWords={testWords}
-                  isAfk={isAfk}
-               />
-            </h1>
-         ) : (
-            <div
-               className="max-w-full overflow-hidden self-start mb-16"
-               onClick={focusInput}
-            >
-               <TimeCounter
-                  countDown={counter}
-                  className={testStart ? "opacity-100" : "opacity-0"}
-                  mode={mode}
-                  current={completedWords}
-                  total={testWords}
-               />
-               <div
-                  ref={wordsContainerRef}
-                  className="text-3xl flex flex-wrap leading-[3rem] tracking-tight relative text-fade-100 h-36 overflow-hidden"
-               >
-                  {!isFocused && (
-                     <div
-                        className="cursor-default absolute top-0 left-0 w-full h-full flex items-center justify-center backdrop-blur-sm z-10"
-                        onClick={focusInput}
-                     >
-                        <span className="flex items-center justify-around text-xl text-fade gap-5 font-mono tracking-wider">
-                           <HiCursorClick />
-                           Click here to focus
-                        </span>
-                     </div>
-                  )}
-                  {words.map((word, wordIndex) => (
-                     <span
-                        key={`${wordIndex}-${word}`}
-                        className="mx-2"
-                        ref={wordSpanRef[wordIndex]}
-                     >
-                        {word.split("").map((letter, letterIndex) => (
-                           <span
-                              key={`${letterIndex}-${wordIndex}`}
-                              // className="caret"
-                           >
-                              {letter}
-                           </span>
-                        ))}
-                     </span>
-                  ))}
+            <>
+               <div className="max-w-full overflow-hidden self-start h-[17rem]">
+                  <Stats
+                     raw={calculateRAW()}
+                     wpm={calculateWPM()}
+                     accuracy={calculateAccuracy()}
+                     correctChar={correctChar}
+                     incorrectChar={incorrectChar}
+                     missedChar={missedChar}
+                     extraChar={extraChar}
+                     correctWord={correctWord}
+                     consistency={calculateConsistency()}
+                     graphData={graphData}
+                     elapsedTime={elapsedSecondsRef.current}
+                     mode={mode}
+                     testWords={testWords}
+                     isAfk={isAfk}
+                  />
                </div>
-               <input
-                  type="text"
-                  className="opacity-0 pointer-events-none absolute"
-                  onKeyDown={handleUserInput}
-                  ref={inputRef}
-                  onFocus={() => setIsFocused(true)}
-                  onBlur={() => setIsFocused(false)}
-               />
-            </div>
+               <div className="nextTestBtn flex justify-center -mt-64">
+                  <button
+                     onClick={restartTest}
+                     className="relative group px-8 py-3 text-fade-100 hover:text-glow-100 border-2 border-transparent focus:border-fade-100 rounded-lg focus:outline-none transition-all cursor-pointer"
+                     tabIndex={0}
+                  >
+                     <FaChevronRight size={20} />
+                     <span className="absolute top-full left-1/2 -translate-x-1/2 mt-3 px-3 py-1.5 text-sm bg-dark-100 text-glow-100 border border-fade/30 rounded invisible opacity-0 group-hover:visible group-hover:opacity-100 group-focus:visible group-focus:opacity-100 transition-all whitespace-nowrap pointer-events-none z-10">
+                        Next Test
+                     </span>
+                  </button>
+               </div>
+            </>
+         ) : (
+            <>
+               <div
+                  className="max-w-full overflow-hidden self-start"
+                  onClick={focusInput}
+               >
+                  <TimeCounter
+                     countDown={counter}
+                     className={testStart ? "opacity-100" : "opacity-0"}
+                     mode={mode}
+                     current={completedWords}
+                     total={testWords}
+                  />
+                  <div
+                     ref={wordsContainerRef}
+                     className="text-3xl flex flex-wrap leading-[3rem] tracking-tight relative text-fade-100 h-36 overflow-hidden"
+                  >
+                     {!isFocused && (
+                        <div
+                           className="cursor-default absolute top-0 left-0 w-full h-full flex items-center justify-center backdrop-blur-sm z-10"
+                           onClick={focusInput}
+                        >
+                           <span className="flex items-center justify-around text-xl text-fade gap-5 font-mono tracking-wider">
+                              <HiCursorClick />
+                              Click here to focus
+                           </span>
+                        </div>
+                     )}
+                     {words.map((word, wordIndex) => (
+                        <span
+                           key={`${wordIndex}-${word}`}
+                           className="mx-2"
+                           ref={wordSpanRef[wordIndex]}
+                        >
+                           {word.split("").map((letter, letterIndex) => (
+                              <span
+                                 key={`${letterIndex}-${wordIndex}`}
+                                 // className="caret"
+                              >
+                                 {letter}
+                              </span>
+                           ))}
+                        </span>
+                     ))}
+                  </div>
+                  <input
+                     type="text"
+                     className="opacity-0 pointer-events-none absolute"
+                     onKeyDown={handleUserInput}
+                     ref={inputRef}
+                     onFocus={() => setIsFocused(true)}
+                     onBlur={() => setIsFocused(false)}
+                  />
+               </div>
+               <div className="restartBtn flex justify-center -mt-72">
+                  <button
+                     onClick={restartTest}
+                     className="relative group px-8 py-3 text-fade-100 hover:text-glow-100 border-2 border-transparent focus:border-fade-100 rounded-lg focus:outline-none transition-all cursor-pointer"
+                     tabIndex={0}
+                  >
+                     <FaRedoAlt size={20} />
+                     <span className="absolute top-full left-1/2 -translate-x-1/2 mt-3 px-3 py-1.5 text-sm bg-dark-100 text-glow-100 border border-fade/30 rounded invisible opacity-0 group-hover:visible group-hover:opacity-100 group-focus:visible group-focus:opacity-100 transition-all whitespace-nowrap pointer-events-none z-10">
+                        Restart Test
+                     </span>
+                  </button>
+               </div>
+            </>
          )}
       </>
    );

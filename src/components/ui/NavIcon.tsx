@@ -5,9 +5,10 @@ interface NavIconProps {
    to: string;
    icon: ReactNode;
    tooltip?: string;
+   onClick?: () => void;
 }
 
-const NavIcon = ({ to, icon, tooltip }: NavIconProps) => {
+const NavIcon = ({ to, icon, tooltip, onClick }: NavIconProps) => {
    const [showTooltip, setShowTooltip] = useState(false);
    const timeoutRef = useRef<number | null>(null);
 
@@ -31,6 +32,7 @@ const NavIcon = ({ to, icon, tooltip }: NavIconProps) => {
          className="relative w-9 h-9 flex items-center justify-center p-2 text-fade-100 hover:text-glow-100 transition-colors"
          onMouseEnter={handleMouseEnter}
          onMouseLeave={handleMouseLeave}
+         onClick={onClick}
       >
          {icon}
          {tooltip && (

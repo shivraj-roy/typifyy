@@ -71,6 +71,14 @@ npm run preview  # Preview production build
 - AFK detection: 5-second inactivity timeout
 - Auto-scroll: Keeps current word on line 2
 - Uses refs for optimization (`correctCharRef`, `incorrectCharRef`, `wordSpanRef[]`)
+- **Restart Functionality**:
+  - **During test**: Restart button (redo icon) below words, Tab to focus + Enter to restart
+  - **After test**: Next Test button (chevron-right icon) below Stats
+  - **Header triggers**: Logo click and "start typing" NavIcon dispatch `restartTest` custom event
+  - TypeZone listens for `restartTest` event via `window.addEventListener`
+  - `restartTest` function (useCallback): clears timer, generates new words, resets all state
+- **Button styling**: Transparent border by default, glows on Tab focus, icon glows on hover
+- **Tooltip**: Custom styled tooltip appears below button on hover/focus
 
 ### Firebase Integration
 - `src/firebaseConfig.ts` - Exports `auth` and `db` (Firestore)
@@ -117,7 +125,7 @@ npm run preview  # Preview production build
   - `IconButton` - Button with optional icon + text, disabled state
   - `InputAndIndicator` - Input with validation status indicators (debounced 1000ms)
   - `CustomToast` - Styled toast notifications (success, error, warning, info)
-  - `NavIcon` - Navigation link with delayed tooltip (900ms delay)
+  - `NavIcon` - Navigation link with delayed tooltip (900ms delay), supports optional onClick
   - `MenuItem` - Dropdown menu item (renders as Link or button based on props)
   - `PersonalBestCard` - Displays personal best for a specific test mode with hover detail view
   - `DetailCard` - Simple title/value card for stats display (used in UserDetails)
@@ -130,6 +138,7 @@ npm run preview  # Preview production build
   - **Username display**: `displayName` → `email prefix` → "User" (fallback chain)
   - Menu items: user stats, public profile, account settings, sign out
   - Hover effect with opacity/visibility transition (200ms)
+- **Restart event**: Logo and "start typing" NavIcon dispatch `restartTest` custom event on click
 
 ### Login/Registration
 - Validation:
