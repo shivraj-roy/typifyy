@@ -165,7 +165,7 @@ function Account() {
    };
 
    return (
-      <>
+      <div className="account-container w-full max-w-full overflow-x-hidden">
          <div className="profile grid gap-8">
             <UserDetails
                username={username}
@@ -177,7 +177,7 @@ function Account() {
          {data && data.length > 0 && <ActivityHeatMap data={data} />}
          {data && data.length >= 10 && <StatsOverview data={data} />}
          {data && data.length > 0 && <HistoryTable data={data} />}
-      </>
+      </div>
    );
 }
 export default Account;

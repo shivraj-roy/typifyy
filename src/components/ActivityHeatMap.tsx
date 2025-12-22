@@ -199,7 +199,7 @@ function ActivityHeatMap({ data }: ActivityHeatMapProps) {
    return (
       <div className="w-full bg-dark-100/40 rounded-lg p-6 mt-6">
          <div className="flex justify-center">
-            <div className="wrapper">
+            <div className="wrapper w-full max-w-full">
                {/* Header */}
                <div className="flex items-center justify-between mb-6">
                   <div className="flex items-center gap-4">
@@ -289,12 +289,12 @@ function ActivityHeatMap({ data }: ActivityHeatMapProps) {
                         </span>
                      ))}
                   </div>
-
+                  {/* // Todo: Make this responsive */}
                   {/* Grid container */}
-                  <div className="flex-1 overflow-hidden">
-                     <div className="flex flex-col w-full">
+                  <div className="flex-1 overflow-x-auto">
+                     <div className="flex flex-col min-w-fit">
                         {/* Weeks grid */}
-                        <div className="flex gap-[4px] w-full justify-between">
+                        <div className="flex gap-[4px]">
                            {weeks.map((week) => (
                               <div
                                  key={week.weekIndex}
@@ -342,7 +342,7 @@ function ActivityHeatMap({ data }: ActivityHeatMapProps) {
                         </div>
 
                         {/* Month labels */}
-                        <div className="relative h-6 mt-2 w-full">
+                        <div className="relative h-6 mt-2 min-w-fit w-full">
                            {monthLabels.map((label, index) => (
                               <span
                                  key={index}
