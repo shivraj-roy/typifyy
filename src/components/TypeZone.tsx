@@ -7,12 +7,14 @@ import {
    useMemo,
    useCallback,
 } from "react";
+import { Link } from "react-router-dom";
 import { FaRedoAlt, FaChevronRight } from "react-icons/fa";
 import { useTestMode } from "../context/TestMode";
 import TimeCounter from "./TimeCounter";
 import { HiCursorClick } from "react-icons/hi";
 import Stats from "./Stats";
 import MenuBar from "./MenuBar";
+import { auth } from "../firebaseConfig";
 
 const TypeZone = ({
    setTestStart,
@@ -47,6 +49,7 @@ const TypeZone = ({
 
    const inputRef = useRef<HTMLInputElement>(null);
    const wordsContainerRef = useRef<HTMLDivElement>(null);
+   const nextTestBtnRef = useRef<HTMLButtonElement>(null);
    const correctCharRef = useRef<number>(0);
    const incorrectCharRef = useRef<number>(0);
    const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -430,6 +433,13 @@ const TypeZone = ({
       return () => clearInterval(afkCheckInterval);
    }, [testStart, testEnd]);
 
+   // * Blur active element when test ends so Tab focuses Next Test button first
+   useEffect(() => {
+      if (testEnd) {
+         (document.activeElement as HTMLElement)?.blur();
+      }
+   }, [testEnd]);
+
    // * Calculate raw WPM
    const calculateRAW = () => {
       const timeUsed = mode === "words" ? elapsedSecondsRef.current : testTime;
@@ -543,8 +553,9 @@ const TypeZone = ({
                      isAfk={isAfk}
                   />
                </div>
-               <div className="nextTestBtn flex justify-center -mt-64">
+               <div className="nextTestSection flex flex-col items-center -mt-60">
                   <button
+                     ref={nextTestBtnRef}
                      onClick={restartTest}
                      className="relative group px-8 py-3 text-fade-100 hover:text-glow-100 border-2 border-transparent focus:border-fade-100 rounded-lg focus:outline-none transition-all cursor-pointer"
                      tabIndex={0}
@@ -554,6 +565,17 @@ const TypeZone = ({
                         Next Test
                      </span>
                   </button>
+                  {!auth.currentUser && (
+                     <div className="signInPrompt text-center mt-4 text-fade-100 text-sm">
+                        <Link
+                           to="/login"
+                           className="underline hover:text-glow-100 transition-colors"
+                        >
+                           Sign in
+                        </Link>{" "}
+                        to save your result
+                     </div>
+                  )}
                </div>
             </>
          ) : (

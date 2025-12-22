@@ -73,10 +73,12 @@ npm run preview  # Preview production build
 - Uses refs for optimization (`correctCharRef`, `incorrectCharRef`, `wordSpanRef[]`)
 - **Restart Functionality**:
   - **During test**: Restart button (redo icon) below words, Tab to focus + Enter to restart
-  - **After test**: Next Test button (chevron-right icon) below Stats
+  - **After test**: Next Test button (chevron-right icon) below Stats, uses `nextTestBtnRef`
   - **Header triggers**: Logo click and "start typing" NavIcon dispatch `restartTest` custom event
   - TypeZone listens for `restartTest` event via `window.addEventListener`
   - `restartTest` function (useCallback): clears timer, generates new words, resets all state
+  - **Focus management**: Active element is blurred when test ends so Tab focuses Next Test button on first press
+- **Sign in prompt**: Shows "Sign in to save your result" below Next Test button for non-authenticated users (`!auth.currentUser`), "Sign in" is underlined link to `/login`
 - **Button styling**: Transparent border by default, glows on Tab focus, icon glows on hover
 - **Tooltip**: Custom styled tooltip appears below button on hover/focus
 
