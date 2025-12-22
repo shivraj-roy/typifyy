@@ -531,11 +531,11 @@ const TypeZone = ({
    }, [restartTest]);
 
    return (
-      <>
+      <div className="typeZoneContainer grid grid-rows-[auto_1fr] w-full h-full items-center">
          <MenuBar testStart={testStart} />
          {testEnd ? (
-            <>
-               <div className="max-w-full overflow-hidden self-start h-[17rem]">
+            <div className="w-full flex flex-col items-center -mt-24">
+               <div className="w-full overflow-hidden h-[17rem]">
                   <Stats
                      raw={calculateRAW()}
                      wpm={calculateWPM()}
@@ -553,7 +553,7 @@ const TypeZone = ({
                      isAfk={isAfk}
                   />
                </div>
-               <div className="nextTestSection flex flex-col items-center -mt-60">
+               <div className="nextTestSection flex flex-col items-center mt-8">
                   <button
                      ref={nextTestBtnRef}
                      onClick={restartTest}
@@ -577,13 +577,10 @@ const TypeZone = ({
                      </div>
                   )}
                </div>
-            </>
+            </div>
          ) : (
-            <>
-               <div
-                  className="max-w-full overflow-hidden self-start"
-                  onClick={focusInput}
-               >
+            <div className="w-full flex flex-col items-center -mt-24">
+               <div className="w-full overflow-hidden" onClick={focusInput}>
                   <TimeCounter
                      countDown={counter}
                      className={testStart ? "opacity-100" : "opacity-0"}
@@ -593,7 +590,7 @@ const TypeZone = ({
                   />
                   <div
                      ref={wordsContainerRef}
-                     className="text-3xl flex flex-wrap leading-[3rem] tracking-tight relative text-fade-100 h-36 overflow-hidden"
+                     className="text-3xl flex flex-wrap leading-[3rem] tracking-tight relative text-fade-100 h-36 overflow-hidden w-full"
                   >
                      {!isFocused && (
                         <div
@@ -632,7 +629,7 @@ const TypeZone = ({
                      onBlur={() => setIsFocused(false)}
                   />
                </div>
-               <div className="restartBtn flex justify-center -mt-72">
+               <div className="restartBtn flex justify-center mt-8">
                   <button
                      onClick={restartTest}
                      className="relative group px-8 py-3 text-fade-100 hover:text-glow-100 border-2 border-transparent focus:border-fade-100 rounded-lg focus:outline-none transition-all cursor-pointer"
@@ -644,9 +641,9 @@ const TypeZone = ({
                      </span>
                   </button>
                </div>
-            </>
+            </div>
          )}
-      </>
+      </div>
    );
 };
 export default TypeZone;

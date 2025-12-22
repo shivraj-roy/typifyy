@@ -105,7 +105,7 @@ const Stats = ({
 
    return (
       <>
-         <div className="max-w-full h-full text-fade-100 cursor-default">
+         <div className="w-full h-full text-fade-100 cursor-default">
             <div className="stats-box flex justify-between h-[80%]">
                <div className="left-stats w-[10%] h-full flex flex-col justify-center items-center gap-2">
                   <div className="stat flex flex-col justify-center items-baseline w-full">
