@@ -4,7 +4,7 @@ import TextButton from "./ui/TextButton";
 const Footer = () => {
    return (
       <>
-         <div className="keyTips text-[0.7em] text-fade-100 -mb-8">
+         <div className="keyTips text-[0.7em] text-fade-100 mt-4">
             <kbd className="text-dark-100 bg-fade-100 py-0.5 px-1.5 rounded-sm">
                tab
             </kbd>{" "}

@@ -20,10 +20,10 @@ npm run preview  # Preview production build
 ```
 /src
   /components
-    /ui/              # Reusable UI components (IconButton, InputAndIndicator, CustomToast, NavIcon, MenuItem, PersonalBestCard, DetailCard)
-    TypeZone.tsx      # Core typing test component (537 lines)
-    Header.tsx        # Navigation header with logo, nav icons, and account dropdown menu
-    Footer.tsx        # Footer (placeholder)
+    /ui/              # Reusable UI components (IconButton, InputAndIndicator, CustomToast, NavIcon, MenuItem, PersonalBestCard, DetailCard, TextButton, LoadingBar)
+    TypeZone.tsx      # Core typing test component with grid layout (650+ lines)
+    Header.tsx        # Navigation header with logo, nav icons, account dropdown menu, and auth loading spinner
+    Footer.tsx        # Footer with keyboard shortcuts and social links
     MenuBar.tsx       # Test mode/duration selector
     Stats.tsx         # Results display with Graph + Firestore persistence
     Graph.tsx         # WPM visualization with Chart.js
@@ -51,6 +51,9 @@ npm run preview  # Preview production build
 ### Routing & Layout
 - `src/App.tsx` - React Router configuration with `RootLayout` wrapper
 - `src/layouts/RootLayout.tsx` - Grid layout with Header, Outlet, Footer
+  - **Loading State**: Uses `useNavigation()` hook to detect route transitions
+  - During navigation: Header/Footer fade to 30% opacity, LoadingBar shows in outlet area
+  - After navigation: Normal rendering resumes
 - Pages: `Home` (typing test), `Login` (auth forms), `Account` (user history)
 - Header nav links: `/`, `/about`, `/settings`, `/login` (or account dropdown when logged in)
 
@@ -61,6 +64,11 @@ npm run preview  # Preview production build
 - Provider wraps app in `main.tsx`
 
 ### Core Typing Logic (TypeZone.tsx)
+- **Layout Structure**: Grid layout with `grid-rows-[auto_1fr]` and `items-center` for vertical centering
+  - MenuBar at top (auto height)
+  - Content section below (1fr - takes remaining space)
+  - Content wrapped with `-mt-24` offset for positioning closer to center
+  - Restart/Next Test buttons positioned with `mt-8` spacing below content
 - Word generation using `random-words` library
 - Character-by-character validation with direct DOM manipulation
 - Caret positioning via CSS classes (`.caret`, `.caret_end`)
@@ -72,8 +80,8 @@ npm run preview  # Preview production build
 - Auto-scroll: Keeps current word on line 2
 - Uses refs for optimization (`correctCharRef`, `incorrectCharRef`, `wordSpanRef[]`)
 - **Restart Functionality**:
-  - **During test**: Restart button (redo icon) below words, Tab to focus + Enter to restart
-  - **After test**: Next Test button (chevron-right icon) below Stats, uses `nextTestBtnRef`
+  - **During test**: Restart button (redo icon) below words with `mt-8` spacing, Tab to focus + Enter to restart
+  - **After test**: Next Test button (chevron-right icon) below Stats with `mt-8` spacing, uses `nextTestBtnRef`
   - **Header triggers**: Logo click and "start typing" NavIcon dispatch `restartTest` custom event
   - TypeZone listens for `restartTest` event via `window.addEventListener`
   - `restartTest` function (useCallback): clears timer, generates new words, resets all state
@@ -131,10 +139,37 @@ npm run preview  # Preview production build
   - `MenuItem` - Dropdown menu item (renders as Link or button based on props)
   - `PersonalBestCard` - Displays personal best for a specific test mode with hover detail view
   - `DetailCard` - Simple title/value card for stats display (used in UserDetails)
+  - `TextButton` - Versatile button/link component with icon and text
+    - Renders `<a>` for external links (href prop)
+    - Renders `<Link>` for internal navigation (to prop)
+    - Renders `<button>` for click handlers (onClick prop)
+    - Consistent styling across all variants
+    - Used in Footer component
+  - `LoadingBar` - Animated progress bar with dynamic messages
+    - Horizontal progress bar that animates from 0% to 100%
+    - Dynamic messages based on progress: initial message (0-49%), "Almost there..." (50-74%), "Loading results..." (75-99%), "Done" (100%)
+    - Uses theme's active color (orange/red) for progress bar
+    - "Done" message styled with active color and bold font
+    - Smooth 300ms transitions for all changes
+    - Used in RootLayout (route transitions) and Account page (data loading)
 - Toast notifications via `react-toastify` (position: top-right, auto-close: 5000ms)
+
+### Footer Component
+- `src/components/Footer.tsx` - Application footer with keyboard shortcuts and links
+- **Keyboard Shortcuts Section**: Shows "tab + enter - restart test" with styled `<kbd>` elements, positioned with `-mb-8`
+- **Links Section**: Two-column grid layout
+  - Left column: contact, support, and GitHub link (external link to repository)
+  - Right column: "made by shroy" credit
+- All buttons use the reusable `TextButton` component
+- GitHub link opens in new tab with security attributes (`target="_blank"`, `rel="noopener noreferrer"`)
+- Consistent hover styling (text-fade-100 → text-glow-100 transition)
 
 ### Header Component
 - Conditional rendering based on auth state via `onAuthStateChanged`
+- **Auth Loading State**:
+  - Shows spinning `FaCircleNotch` icon while Firebase Auth initializes
+  - Uses `authLoading` state to track initialization
+  - Prevents UI flicker during auth state determination
 - Logged out: Shows login NavIcon
 - Logged in: Shows account button with hover dropdown menu
   - **Username display**: `displayName` → `email prefix` → "User" (fallback chain)
@@ -157,7 +192,9 @@ npm run preview  # Preview production build
 - `src/pages/Account.tsx` - User test history page
 - Fetches user's test results from Firestore on auth state change
 - Query: `where("userId", "==", uid)` + `orderBy("timestamp", "desc")`
-- Loading/error states for better UX
+- **Loading State**: Shows `LoadingBar` component with "Loading account data..." message while fetching Firestore data
+- Error states for better UX
+- **Responsive Layout**: All content wrapped in container with `w-full max-w-full overflow-x-hidden` to prevent horizontal overflow
 - Displays multiple components:
   - `UserDetails` - User profile header with avatar, username, joined date, and stats
   - `PersonalBests` - Shows best WPM for each test mode (time: 15s, 30s, 60s; words: 10, 25, 50)
@@ -203,9 +240,14 @@ npm run preview  # Preview production build
 ### ActivityHeatMap Component
 - `src/components/ActivityHeatMap.tsx` - GitHub-style activity heatmap
 - Displays test activity over time in calendar grid format
+- **Responsive Design**:
+  - Wrapper constrained with `w-full max-w-full`
+  - Grid container has `overflow-x-auto` for horizontal scrolling on smaller screens
+  - Weeks grid uses `min-w-fit` for natural sizing without forced stretching
+  - Maintains readability across all viewport sizes
 - **Time Filters**: Dropdown with "last 12 months" or specific years (auto-populated from data)
 - **Grid Layout**:
-  - Weeks displayed horizontally (up to 53 weeks)
+  - Weeks displayed horizontally (up to 53 weeks, ~1166px min-width)
   - Days displayed vertically (Sun-Sat)
   - Week labels on left (Mon, Wed, Fri)
   - Month labels at bottom

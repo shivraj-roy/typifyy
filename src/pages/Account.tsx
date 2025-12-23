@@ -7,6 +7,7 @@ import PersonalBests from "../components/PersonalBests";
 import ActivityHeatMap from "../components/ActivityHeatMap";
 import StatsOverview from "../components/StatsOverview";
 import UserDetails from "../components/UserDetails";
+import LoadingBar from "../components/ui/LoadingBar";
 import { PersonalBestData } from "../types";
 
 interface TestResult {
@@ -152,7 +153,7 @@ function Account() {
    }, []);
 
    if (loading) {
-      return <div>Loading...</div>;
+      return <LoadingBar initialMessage="Loading account data..." />;
    }
 
    if (error) {

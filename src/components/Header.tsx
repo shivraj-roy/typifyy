@@ -7,6 +7,7 @@ import {
    FaInfo,
    FaSignOutAlt,
    FaUserCircle,
+   FaCircleNotch,
 } from "react-icons/fa";
 import { FiUser } from "react-icons/fi";
 import { BsFillKeyboardFill } from "react-icons/bs";
@@ -19,10 +20,12 @@ import { Bounce, toast } from "react-toastify";
 
 const Header = () => {
    const [user, setUser] = useState<User | null>(null);
+   const [authLoading, setAuthLoading] = useState(true);
 
    useEffect(() => {
       const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
          setUser(currentUser);
+         setAuthLoading(false);
       });
       return () => unsubscribe();
    }, []);
@@ -112,7 +115,14 @@ const Header = () => {
                   />
                </div>
                <div className="right-nav flex items-center gap-4">
-                  {user ? (
+                  {authLoading ? (
+                     <div className="p-2">
+                        <FaCircleNotch
+                           size={20}
+                           className="text-fade-100 animate-spin"
+                        />
+                     </div>
+                  ) : user ? (
                      <div className="accountButtonAndMenu relative group">
                         <Link
                            to={"/account"}
