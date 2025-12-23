@@ -146,7 +146,12 @@ const Header = () => {
                         className="accountButtonAndMenu relative group"
                      >
                         <button
-                           onClick={() => setIsMenuOpen(!isMenuOpen)}
+                           onClick={() => {
+                              // Only toggle on touch devices (non-hover devices)
+                              if (!window.matchMedia("(hover: hover)").matches) {
+                                 setIsMenuOpen(!isMenuOpen);
+                              }
+                           }}
                            className="relative items-center p-2 grid gap-[0.33em] grid-flow-col text-fade-100 hover:text-glow-100 transition-colors cursor-pointer "
                         >
                            <FaUserCircle size={20} />
