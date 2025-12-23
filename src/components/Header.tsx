@@ -1,5 +1,5 @@
-import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState, useRef } from "react";
 import {
    FaChartLine,
    FaCog,
@@ -19,8 +19,11 @@ import CustomToast from "./ui/CustomToast";
 import { Bounce, toast } from "react-toastify";
 
 const Header = () => {
+   const navigate = useNavigate();
    const [user, setUser] = useState<User | null>(null);
    const [authLoading, setAuthLoading] = useState(true);
+   const [isMenuOpen, setIsMenuOpen] = useState(false);
+   const menuRef = useRef<HTMLDivElement>(null);
 
    useEffect(() => {
       const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -30,12 +33,25 @@ const Header = () => {
       return () => unsubscribe();
    }, []);
 
+   // Close menu when clicking outside
+   useEffect(() => {
+      const handleClickOutside = (event: MouseEvent) => {
+         if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+            setIsMenuOpen(false);
+         }
+      };
+
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => document.removeEventListener("mousedown", handleClickOutside);
+   }, []);
+
    // Dispatch restart test event
    const handleRestartTest = () => {
       window.dispatchEvent(new CustomEvent("restartTest"));
    };
 
    const handleLogout = () => {
+      setIsMenuOpen(false); // Close menu before logout
       auth
          .signOut()
          .then(() => {
@@ -55,6 +71,8 @@ const Header = () => {
                   transition: Bounce,
                }
             );
+            // Redirect to home page after logout
+            navigate("/");
          })
          .catch((error) => {
             toast(
@@ -123,9 +141,12 @@ const Header = () => {
                         />
                      </div>
                   ) : user ? (
-                     <div className="accountButtonAndMenu relative group">
-                        <Link
-                           to={"/account"}
+                     <div
+                        ref={menuRef}
+                        className="accountButtonAndMenu relative group"
+                     >
+                        <button
+                           onClick={() => setIsMenuOpen(!isMenuOpen)}
                            className="relative items-center p-2 grid gap-[0.33em] grid-flow-col text-fade-100 hover:text-glow-100 transition-colors cursor-pointer "
                         >
                            <FaUserCircle size={20} />
@@ -134,10 +155,16 @@ const Header = () => {
                                  user?.email?.split("@")[0] ||
                                  "User"}
                            </div>
-                        </Link>
-                        <div className="menu absolute right-0 top-[99%] w-full min-w-44 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                        </button>
+                        <div
+                           className={`menu absolute right-0 top-[99%] w-full min-w-44 transition-all duration-200 ${
+                              isMenuOpen
+                                 ? "opacity-100 visible"
+                                 : "opacity-0 invisible group-hover:opacity-100 group-hover:visible"
+                           }`}
+                        >
                            <div className="spacer h-2 "></div>
-                           <div className="item bg-dark-100 grid gap-0.5 rounded-md shadow-[0_0_0_0.5em_rgba(13, 13, 13, 0.871)]">
+                           <div className="item bg-dark-100 grid gap-0.5 rounded-md shadow-[0_0_0_0.5em_rgba(13,_13,_13,_0.871)]">
                               <MenuItem
                                  to="/account"
                                  icon={<FaChartLine size={16} />}
