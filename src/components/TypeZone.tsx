@@ -68,6 +68,25 @@ const TypeZone = ({
       inputRef.current?.focus();
    };
 
+   // * Helper function to check if word has errors and update underline
+   const updateWordErrorClass = (wordIndex: number) => {
+      const wordRef = wordSpanRef[wordIndex]?.current;
+      if (!wordRef) return;
+
+      const chars = wordRef.querySelectorAll("span");
+      const hasError = Array.from(chars).some(
+         (char) =>
+            char.className.includes("incorrect") ||
+            char.className.includes("extra")
+      );
+
+      if (hasError) {
+         wordRef.classList.add("word-error");
+      } else {
+         wordRef.classList.remove("word-error");
+      }
+   };
+
    // * Scroll smoothly when moving to the next line
    const scrollToKeepOnSecondLine = (wordIndex: number) => {
       const container = wordsContainerRef.current;
@@ -254,6 +273,9 @@ const TypeZone = ({
             currentWord[onCharIndex].classList.remove("caret");
             setMissedChar((prev) => prev + (currentWord.length - onCharIndex));
          }
+
+         // Apply underline if current word has errors
+         updateWordErrorClass(onWordIndex);
 
          if (onWordIndex + 1 < words.length) {
             const nextWordFirstChild = wordSpanRef[onWordIndex + 1].current

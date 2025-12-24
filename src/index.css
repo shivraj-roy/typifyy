@@ -113,4 +113,8 @@
    .extra-key {
       @apply text-red-500/50;
    }
+
+   .word-error {
+      @apply decoration-red-500 underline decoration-2 underline-offset-4;
+   }
 }

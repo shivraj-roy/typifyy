@@ -79,6 +79,12 @@ npm run preview  # Preview production build
 - AFK detection: 5-second inactivity timeout
 - Auto-scroll: Keeps current word on line 2
 - Uses refs for optimization (`correctCharRef`, `incorrectCharRef`, `wordSpanRef[]`)
+- **Word Error Underline**:
+  - `updateWordErrorClass()` helper function checks if word has errors and applies `.word-error` class
+  - Red underline appears only when space is pressed to move to next word
+  - Allows correction with backspace before committing to word
+  - Underline persists to show which words had mistakes
+  - Checks for incorrect, extra, or missed characters
 - **Restart Functionality**:
   - **During test**: Restart button (redo icon) below words with `mt-8` spacing, Tab to focus + Enter to restart
   - **After test**: Next Test button (chevron-right icon) below Stats with `mt-8` spacing, uses `nextTestBtnRef`
@@ -119,6 +125,7 @@ npm run preview  # Preview production build
 - Custom colors: `--color-dark`, `--color-dark-100`, `--color-fade`, `--color-active`, `--color-glow`
 - Fonts: Roboto Mono, Space Mono, Softura-Demo (logo)
 - Typing character states: `.correct`, `.incorrect`, `.extra-key`
+- Word error state: `.word-error` - Red underline (2px thickness, 4px offset) applied to words with errors when space is pressed
 - Animations: `blinking` (caret), `crazyCaret` (active caret)
 
 ### Types
