@@ -127,6 +127,29 @@ const TypeZone = ({
       incorrectCharRef.current = incorrectChar;
    }, [incorrectChar]);
 
+   // * Hide caret when focus is lost, show when focused
+   useEffect(() => {
+      if (!isFocused && !testEnd) {
+         // Remove caret classes when unfocused
+         const allSpans = document.querySelectorAll(".caret, .caret_end");
+         allSpans.forEach((span) => {
+            span.classList.remove("caret", "caret_end");
+         });
+      } else if (isFocused && !testEnd) {
+         // Restore caret when focused
+         const currentWordRef = wordSpanRef[onWordIndex]?.current;
+         if (currentWordRef) {
+            const currentWord =
+               currentWordRef.childNodes as NodeListOf<HTMLElement>;
+            if (onCharIndex < currentWord.length) {
+               currentWord[onCharIndex].classList.add("caret");
+            } else if (onCharIndex > 0 && onCharIndex === currentWord.length) {
+               currentWord[onCharIndex - 1].classList.add("caret_end");
+            }
+         }
+      }
+   }, [isFocused, testEnd, onWordIndex, onCharIndex, wordSpanRef]);
+
    // * Handle to start the counter when the test starts...
    const startTimer = () => {
       if (!timerRef.current) {
