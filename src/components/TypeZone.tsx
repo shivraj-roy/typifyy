@@ -229,8 +229,8 @@ const TypeZone = ({
          return;
       }
 
-      // ? Start the test when the user types the first character
-      if (!testStart && e.key.length === 1) {
+      // ? Start the test when the user types the first character (but not space)
+      if (!testStart && e.key.length === 1 && e.key !== " ") {
          setTestStart(true);
          startTimer();
       }
@@ -253,6 +253,11 @@ const TypeZone = ({
       // ? Handle space key (move to the next word)
       if (e.key === " " || e.keyCode === 32) {
          e.preventDefault(); // Prevent the default space behavior
+
+         // Ignore space if caret is at the start of the word (no characters typed yet)
+         if (onCharIndex === 0) {
+            return;
+         }
 
          const correctCharInWord = currentWordRef.querySelectorAll(".correct");
 

@@ -85,6 +85,11 @@ npm run preview  # Preview production build
   - Allows correction with backspace before committing to word
   - Underline persists to show which words had mistakes
   - Checks for incorrect, extra, or missed characters
+- **Space Key Behavior**:
+  - Space does NOT start the test (only actual character typing starts the timer)
+  - Space is ignored when caret is at the beginning of a word (`onCharIndex === 0`)
+  - Space only works to move to next word after typing at least one character
+  - Prevents accidental test start and word skipping at the beginning
 - **Restart Functionality**:
   - **During test**: Restart button (redo icon) below words with `mt-8` spacing, Tab to focus + Enter to restart
   - **After test**: Next Test button (chevron-right icon) below Stats with `mt-8` spacing, uses `nextTestBtnRef`
