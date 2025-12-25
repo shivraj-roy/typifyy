@@ -59,9 +59,16 @@ npm run preview  # Preview production build
 
 ### State Management
 - `src/context/TestMode.tsx` - Global context for test configuration
-- Access via `useTestMode()` hook
-- State: `mode` ("time" | "words"), `testTime` (default: 30s), `testWords` (default: 25)
-- Provider wraps app in `main.tsx`
+  - Access via `useTestMode()` hook
+  - State: `mode` ("time" | "words"), `testTime` (default: 30s), `testWords` (default: 25)
+  - Provider wraps app in `main.tsx`
+- `src/context/Settings.tsx` - Global context for user settings
+  - Access via `useSettings()` hook
+  - State: `minSpeedMode`, `minSpeedValue`, `minAccuracyMode`, `minAccuracyValue`
+  - Settings modes: "off" | "custom"
+  - Default values: min speed = 100 WPM, min accuracy = 75%
+  - **Persistence**: All settings automatically saved to localStorage
+  - Provider wraps app in `main.tsx`
 
 ### Core Typing Logic (TypeZone.tsx)
 - **Layout Structure**: Grid layout with `grid-rows-[auto_1fr]` and `items-center` for vertical centering
@@ -100,6 +107,12 @@ npm run preview  # Preview production build
 - **Sign in prompt**: Shows "Sign in to save your result" below Next Test button for non-authenticated users (`!auth.currentUser`), "Sign in" is underlined link to `/login`
 - **Button styling**: Transparent border by default, glows on Tab focus, icon glows on hover
 - **Tooltip**: Custom styled tooltip appears below button on hover/focus
+- **Test Mode Notices**: Displays active min speed/accuracy settings above typing area
+  - Shows when respective setting is enabled (custom mode)
+  - Uses `TextButton` component with icons (FaBolt for speed, FaBullseye for accuracy)
+  - Format: "min {value} wpm" and "min {value}% acc"
+  - Custom styling: text size 1em, gap 2
+  - Both notices can appear simultaneously if both settings are active
 
 ### Firebase Integration
 - `src/firebaseConfig.ts` - Exports `auth` and `db` (Firestore)
@@ -122,6 +135,13 @@ npm run preview  # Preview production build
   - `testDuration` (number | null) - Actual time taken to complete test in seconds (used for time typing calculation)
   - `isAfk` (boolean) - AFK detection flag
 - Invalid tests (AFK with 0% accuracy) are not saved
+- **Test Validation**: Tests are validated against user settings before saving
+  - Min speed validation: If enabled (custom mode), tests with WPM below threshold are rejected
+  - Min accuracy validation: If enabled (custom mode), tests with accuracy below threshold are rejected
+  - Failed tests show notice toast: "Test failed - min speed" or "Test failed - min accuracy"
+  - Failed tests display reason in Stats "other" section: "failed - min speed" or "failed - min accuracy"
+  - Failed tests are NOT pushed to database (prevents pollution of test history)
+  - Validation runs for both authenticated and non-authenticated users
 - **Query patterns**: Uses Firestore `orderBy("timestamp", "desc")` for server-side sorting (requires composite index: userId + timestamp)
 - **Note**: Older records may not have `raw` field; components calculate it as fallback using character counts and time
 
@@ -136,9 +156,11 @@ npm run preview  # Preview production build
 ### Types
 - `src/types/index.ts` - Shared types:
   - `TestMode` - "time" | "words"
+  - `SettingMode` - "off" | "custom"
   - `StatsProps` - Stats component props (wpm, raw, accuracy, graphData, mode, isAfk, etc.)
   - `ButtonProps` - Button component props (btnIcon, btnTxt, btnClass, btnClick)
   - `TestModeContextType` - Context interface (mode, testTime, testWords + setters)
+  - `SettingsContextType` - Context interface (minSpeedMode, minSpeedValue, minAccuracyMode, minAccuracyValue + setters)
   - `PersonalBestData` - Personal best record (wpm, raw, accuracy, consistency, timestamp)
   - `PersonalBestCardProps` - PersonalBestCard component props (label, data)
 
@@ -146,6 +168,10 @@ npm run preview  # Preview production build
 - `src/components/ui/` - Reusable components:
   - `IconButton` - Button with optional icon + text, disabled state
   - `InputAndIndicator` - Input with validation status indicators (debounced 1000ms)
+    - Visual feedback: green checkmark (valid), red X (invalid), spinning loader (checking)
+    - Error tooltip appears on left side of red X indicator (positioned with `right-full mr-1`)
+    - Supports custom validators via `validator` prop
+    - Supports `onBlur` and `onKeyDown` event handlers for commit actions
   - `CustomToast` - Styled toast notifications (success, error, warning, info)
   - `NavIcon` - Navigation link with delayed tooltip (900ms delay), supports optional onClick
   - `MenuItem` - Dropdown menu item (renders as Link or button based on props)
@@ -285,6 +311,36 @@ npm run preview  # Preview production build
 - **User Info**: Gets username from `displayName` or email prefix, joined date from `metadata.creationTime`
 - **Joined Date Tooltip**: Shows "X days ago" on hover (positioned to the right)
 
+### Settings Page
+- `src/pages/Settings.tsx` - User settings configuration page
+- **Behavior Settings Section**: Collapsible section with FaChevronDown icon
+  - **Min Speed Setting**:
+    - Icon: FaBolt
+    - Modes: "off" | "custom" (toggle buttons)
+    - Custom input: numeric value (default: 100 WPM)
+    - Description: "Automatically fails a test if your speed falls below a threshold"
+    - Validation: Must be >= 0
+  - **Min Accuracy Setting**:
+    - Icon: FaBullseye
+    - Modes: "off" | "custom" (toggle buttons)
+    - Custom input: numeric value (default: 75%)
+    - Description: "Automatically fails a test if your accuracy falls below a threshold"
+    - Validation: Must be 0-100
+- **Save Behavior**:
+  - Toast notification shows "Saved" on:
+    - Button click (off/custom toggle)
+    - Input commit (Enter key or blur)
+  - Auto-switches to "custom" mode when typing in input field
+  - Validation prevents saving invalid values (no toast shown if invalid)
+- **Input Validation**:
+  - Real-time visual feedback (checkmark/X icon with tooltip)
+  - Error tooltips positioned on left side of indicator
+  - Invalid values cannot be saved (toast only shows for valid values)
+- **SubSetting Component**: Reusable component for settings sections
+  - Props: icon, title, description, buttons, inputValue, onInputChange, onInputCommit, validator
+  - Handles mode toggle buttons and optional numeric input
+  - Passes validation to InputAndIndicator for visual feedback
+
 ## Tech Stack
 
 - React 19.0.0, TypeScript 5.7.2, Vite 6.3.1
@@ -297,9 +353,9 @@ npm run preview  # Preview production build
 ## Unimplemented Features
 
 - About page (linked but no route/component)
-- Settings page (linked but no route/component)
 - Account settings page `/account-settings` (linked but no route/component)
 - Public profile page (menu item exists but no route/component)
 - GitHub sign-in (UI ready, handler not implemented)
 - Personal best highlighting in history table (crown icon placeholder exists; personal bests implemented in separate PersonalBests component)
 - Graph view for individual test results (info icon placeholder exists)
+- Additional settings sections in Settings page (only behavior section implemented)

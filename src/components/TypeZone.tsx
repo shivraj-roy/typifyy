@@ -8,12 +8,14 @@ import {
    useCallback,
 } from "react";
 import { Link } from "react-router-dom";
-import { FaRedoAlt, FaChevronRight } from "react-icons/fa";
+import { FaRedoAlt, FaChevronRight, FaBolt, FaBullseye } from "react-icons/fa";
 import { useTestMode } from "../context/TestMode";
+import { useSettings } from "../context/Settings";
 import TimeCounter from "./TimeCounter";
 import { HiCursorClick } from "react-icons/hi";
 import Stats from "./Stats";
 import MenuBar from "./MenuBar";
+import TextButton from "./ui/TextButton";
 import { auth } from "../firebaseConfig";
 
 const TypeZone = ({
@@ -27,6 +29,8 @@ const TypeZone = ({
    const mode = testMode?.mode || "time";
    const testTime = testMode?.testTime || 30;
    const testWords = testMode?.testWords || 25;
+   const { minSpeedMode, minSpeedValue, minAccuracyMode, minAccuracyValue } =
+      useSettings();
 
    const [words, setWords] = useState<string[]>(() => {
       const wordCount = mode === "words" ? testWords : 50;
@@ -631,6 +635,22 @@ const TypeZone = ({
          ) : (
             <div className="w-full flex flex-col items-center -mt-24">
                <div className="w-full overflow-hidden" onClick={focusInput}>
+                  <div className="testModesNotice flex justify-center text-center gap-2 transition-opacity duration-150">
+                     {minSpeedMode === "custom" && (
+                        <TextButton
+                           icon={<FaBolt size={16} />}
+                           text={`min ${minSpeedValue} wpm`}
+                           className="text-[1em] !gap-2"
+                        />
+                     )}
+                     {minAccuracyMode === "custom" && (
+                        <TextButton
+                           icon={<FaBullseye size={16} />}
+                           text={`min ${minAccuracyValue}% wpm`}
+                           className="text-[1em] !gap-2"
+                        />
+                     )}
+                  </div>
                   <TimeCounter
                      countDown={counter}
                      className={testStart ? "opacity-100" : "opacity-0"}
