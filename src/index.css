@@ -117,4 +117,8 @@
    .word-error {
       @apply decoration-red-500 underline decoration-2 underline-offset-4;
    }
+
+   .activeBtn {
+      @apply bg-active text-dark-100;
+   }
 }

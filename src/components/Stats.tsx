@@ -1,6 +1,7 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Timestamp, collection, addDoc } from "firebase/firestore";
 import { useTestMode } from "../context/TestMode";
+import { useSettings } from "../context/Settings";
 import { auth, db } from "../firebaseConfig";
 import { StatsProps } from "../types";
 import Graph from "./Graph";
@@ -26,9 +27,48 @@ const Stats = ({
    const testModeContext = useTestMode();
    const testTime = testModeContext?.testTime || 30;
    const hasPushed = useRef(false);
+   const { minSpeedMode, minSpeedValue, minAccuracyMode, minAccuracyValue } =
+      useSettings();
+   const [failReason, setFailReason] = useState<string | null>(null);
 
    useEffect(() => {
       if (hasPushed.current) return;
+
+      // Check if test failed due to min speed or min accuracy settings (works for all users)
+      let testFailed = false;
+      let reason = null;
+
+      if (minSpeedMode === "custom" && wpm < minSpeedValue) {
+         testFailed = true;
+         reason = "min speed";
+      } else if (minAccuracyMode === "custom" && accuracy < minAccuracyValue) {
+         testFailed = true;
+         reason = "min accuracy";
+      }
+
+      if (testFailed && reason) {
+         hasPushed.current = true; // Mark as processed to prevent re-running
+         setFailReason(reason);
+         toast(
+            <CustomToast
+               type="info"
+               title="Notice"
+               message={`Test failed - ${reason}`}
+            />,
+            {
+               position: "top-right",
+               autoClose: 5000,
+               hideProgressBar: true,
+               closeOnClick: true,
+               pauseOnHover: true,
+               draggable: false,
+               transition: Bounce,
+            }
+         );
+         return;
+      }
+
+      // From here onwards, only for authenticated users (DB operations)
       if (!auth.currentUser) {
          console.log("User not authenticated, stats not pushed to DB");
          return;
@@ -130,10 +170,12 @@ const Stats = ({
                         : `time ${testTime}s`}
                   </p>
                </div>
-               {isAfk && (
+               {(isAfk || failReason) && (
                   <div>
                      <h3 className="text-xs lowercase">other</h3>
-                     <p className="text-xl text-active">afk detected</p>
+                     <p className="text-xl text-active">
+                        {failReason ? `failed - ${failReason}` : "afk detected"}
+                     </p>
                   </div>
                )}
                <div>

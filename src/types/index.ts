@@ -51,3 +51,17 @@ export interface TestModeContextType {
    testWords: number;
    setTestWords: (words: number) => void;
 }
+
+// * Settings Types
+export type SettingMode = "off" | "custom";
+
+export interface SettingsContextType {
+   minSpeedMode: SettingMode;
+   setMinSpeedMode: (mode: SettingMode) => void;
+   minSpeedValue: number;
+   setMinSpeedValue: (value: number) => void;
+   minAccuracyMode: SettingMode;
+   setMinAccuracyMode: (mode: SettingMode) => void;
+   minAccuracyValue: number;
+   setMinAccuracyValue: (value: number) => void;
+}

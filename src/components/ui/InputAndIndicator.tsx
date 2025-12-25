@@ -11,6 +11,8 @@ interface InputAndIndicatorProps {
    placeholder?: string;
    value: string;
    onChange: (value: string) => void;
+   onBlur?: () => void;
+   onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
    validator?: ValidatorFn;
    debounceMs?: number;
    autoComplete?: string;
@@ -22,6 +24,8 @@ const InputAndIndicator = ({
    placeholder,
    value,
    onChange,
+   onBlur,
+   onKeyDown,
    validator,
    debounceMs = 1000,
    autoComplete = "off",
@@ -74,6 +78,8 @@ const InputAndIndicator = ({
             name={name}
             value={value}
             onChange={handleChange}
+            onBlur={onBlur}
+            onKeyDown={onKeyDown}
             placeholder={placeholder}
             className="w-full h-9 text-[1em] bg-dark-100/40 outline-none border-[1.5px] border-transparent focus:border-glow-100 rounded-[8px] p-2 pr-[2.1em] leading-5 caret-active text-glow-100 transition-colors"
             autoComplete={autoComplete}
@@ -91,7 +97,7 @@ const InputAndIndicator = ({
             }`}
          >
             <FaTimes size={20} className="text-red-500" />
-            <span className="absolute left-full top-1/2 -translate-y-1/2 ml-1 px-2 py-1 text-sm bg-dark text-glow rounded opacity-0 group-hover:opacity-100 transition-opacity w-max max-w-72 pointer-events-none">
+            <span className="absolute right-full top-1/2 -translate-y-1/2 mr-1 px-2 py-1 text-sm bg-dark text-glow rounded opacity-0 group-hover:opacity-100 transition-opacity w-max max-w-72 pointer-events-none">
                {error}
             </span>
          </div>

@@ -4,11 +4,14 @@ import "./index.css";
 import "react-toastify/dist/ReactToastify.css";
 import App from "./App.tsx";
 import { TestModeContextProvider } from "./context/TestMode.tsx";
+import { SettingsContextProvider } from "./context/Settings.tsx";
 
 createRoot(document.getElementById("root")!).render(
    <StrictMode>
-      <TestModeContextProvider>
-         <App />
-      </TestModeContextProvider>
+      <SettingsContextProvider>
+         <TestModeContextProvider>
+            <App />
+         </TestModeContextProvider>
+      </SettingsContextProvider>
    </StrictMode>
 );
