@@ -17,7 +17,7 @@ import Stats from "./Stats";
 import MenuBar from "./MenuBar";
 import TextButton from "./ui/TextButton";
 import { auth } from "../firebaseConfig";
-import { playKeySound, preloadSounds } from "../utils/soundPlayer";
+import { playKeySound, preloadSounds, playErrorSound } from "../utils/soundPlayer";
 
 const TypeZone = ({
    setTestStart,
@@ -37,6 +37,7 @@ const TypeZone = ({
       minAccuracyValue,
       soundVolume,
       soundMode,
+      errorSoundMode,
    } = useSettings();
 
    const [words, setWords] = useState<string[]>(() => {
@@ -303,6 +304,10 @@ const TypeZone = ({
 
          // Ignore space if caret is at the start of the word (no characters typed yet)
          if (onCharIndex === 0) {
+            // Play error sound for space pressed too early
+            if (errorSoundMode !== "off") {
+               playErrorSound(errorSoundMode, soundVolume);
+            }
             return;
          }
 
@@ -314,6 +319,10 @@ const TypeZone = ({
 
          // Add 'incorrect' class if space is pressed in the middle of a word or at the start
          if (onCharIndex < currentWord.length || onCharIndex === 0) {
+            // Play error sound for space pressed too early (in middle of word)
+            if (errorSoundMode !== "off") {
+               playErrorSound(errorSoundMode, soundVolume);
+            }
             for (let i = onCharIndex; i < currentWord.length; i++) {
                currentWord[i].className = "incorrect"; // Mark remaining characters as incorrect
             }
@@ -410,6 +419,10 @@ const TypeZone = ({
 
       // ? Handle other extra keys
       if (currentWord.length === onCharIndex) {
+         // Play error sound for extra characters
+         if (errorSoundMode !== "off") {
+            playErrorSound(errorSoundMode, soundVolume);
+         }
          const newSpan = document.createElement("span");
          newSpan.innerText = e.key;
          newSpan.className = "extra-key caret_end extra"; // "extra" className is for key reference for backspace key
@@ -428,6 +441,10 @@ const TypeZone = ({
          setCorrectChar((prev) => prev + 1);
       } else {
          console.log("incorrect");
+         // Play error sound for incorrect character
+         if (errorSoundMode !== "off") {
+            playErrorSound(errorSoundMode, soundVolume);
+         }
          if (currentChar) {
             currentWord[onCharIndex].className = "incorrect";
             setIncorrectChar((prev) => prev + 1);

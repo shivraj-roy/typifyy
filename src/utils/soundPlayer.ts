@@ -1,6 +1,7 @@
 // Sound player utility for keyboard click sounds
 
 type SoundMode = "off" | "nk cream" | "osu";
+type ErrorSoundMode = "off" | "blow" | "slap" | "whoosh";
 
 interface SoundConfig {
    defines: Record<string, string | null>;
@@ -104,5 +105,30 @@ export const preloadSounds = async (mode: SoundMode) => {
    uniqueSounds.forEach((soundFile) => {
       const soundPath = `${packPath}/${soundFile}`;
       preloadSound(soundPath);
+   });
+};
+
+// Play error sound
+export const playErrorSound = (mode: ErrorSoundMode, volume: number = 0.5) => {
+   if (mode === "off") return;
+
+   const soundPath = `/assets/sounds/errors/${
+      mode.charAt(0).toUpperCase() + mode.slice(1)
+   }.mp3`;
+
+   // Get or create audio element
+   let audio = audioCache[soundPath];
+   if (!audio) {
+      audio = preloadSound(soundPath);
+   }
+
+   // Clone and play to allow multiple simultaneous sounds
+   const audioClone = audio.cloneNode() as HTMLAudioElement;
+   audioClone.volume = volume;
+   audioClone.play().catch((error) => {
+      // Ignore autoplay policy errors
+      if (error.name !== "NotAllowedError") {
+         console.error("Error playing error sound:", error);
+      }
    });
 };

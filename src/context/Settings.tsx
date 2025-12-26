@@ -1,5 +1,10 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from "react";
-import { SettingMode, SoundMode, SettingsContextType } from "../types";
+import {
+   SettingMode,
+   SoundMode,
+   ErrorSoundMode,
+   SettingsContextType,
+} from "../types";
 
 const SettingsContext = createContext<SettingsContextType | null>(null);
 
@@ -36,6 +41,11 @@ export const SettingsContextProvider = ({
    const [soundMode, setSoundMode] = useState<SoundMode>(() => {
       const saved = localStorage.getItem("soundMode");
       return (saved as SoundMode) || "off";
+   });
+
+   const [errorSoundMode, setErrorSoundMode] = useState<ErrorSoundMode>(() => {
+      const saved = localStorage.getItem("errorSoundMode");
+      return (saved as ErrorSoundMode) || "off";
    });
 
    // Save to localStorage whenever settings change
@@ -87,6 +97,14 @@ export const SettingsContextProvider = ({
       }
    }, [soundMode]);
 
+   useEffect(() => {
+      try {
+         localStorage.setItem("errorSoundMode", errorSoundMode);
+      } catch (error) {
+         console.error("Failed to save errorSoundMode to localStorage:", error);
+      }
+   }, [errorSoundMode]);
+
    return (
       <SettingsContext.Provider
          value={{
@@ -102,6 +120,8 @@ export const SettingsContextProvider = ({
             setSoundVolume,
             soundMode,
             setSoundMode,
+            errorSoundMode,
+            setErrorSoundMode,
          }}
       >
          {children}

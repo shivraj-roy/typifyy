@@ -4,12 +4,17 @@ import {
    FaBullseye,
    FaVolumeUp,
    FaVolumeDown,
+   FaVolumeMute,
 } from "react-icons/fa";
 import { Bounce, toast } from "react-toastify";
 import SubSetting from "../components/SubSetting";
 import { useSettings } from "../context/Settings";
 import CustomToast from "../components/ui/CustomToast";
-import { playKeySound, preloadSounds } from "../utils/soundPlayer";
+import {
+   playKeySound,
+   preloadSounds,
+   playErrorSound,
+} from "../utils/soundPlayer";
 
 const Settings = () => {
    const {
@@ -25,6 +30,8 @@ const Settings = () => {
       setSoundVolume,
       soundMode,
       setSoundMode,
+      errorSoundMode,
+      setErrorSoundMode,
    } = useSettings();
 
    const showSavedToast = () => {
@@ -284,6 +291,76 @@ const Settings = () => {
                               if (soundMode !== "osu") {
                                  setSoundMode("osu");
                                  showSavedToast();
+                              }
+                           } catch {
+                              showErrorToast();
+                           }
+                        },
+                     },
+                  ]}
+               />
+               <SubSetting
+                  icon={<FaVolumeMute size={16} />}
+                  title="play sound on error"
+                  description="Plays a short sound if you press an incorrect key or press space too early."
+                  showInput={false}
+                  buttons={[
+                     {
+                        label: "off",
+                        isActive: errorSoundMode === "off",
+                        onClick: () => {
+                           try {
+                              if (errorSoundMode !== "off") {
+                                 setErrorSoundMode("off");
+                                 showSavedToast();
+                              }
+                           } catch {
+                              showErrorToast();
+                           }
+                        },
+                     },
+                     {
+                        label: "blow",
+                        isActive: errorSoundMode === "blow",
+                        onClick: () => {
+                           try {
+                              // Play preview sound
+                              playErrorSound("blow", soundVolume);
+                              if (errorSoundMode !== "blow") {
+                                 setErrorSoundMode("blow");
+                                 // showSavedToast();
+                              }
+                           } catch {
+                              showErrorToast();
+                           }
+                        },
+                     },
+                     {
+                        label: "slap",
+                        isActive: errorSoundMode === "slap",
+                        onClick: () => {
+                           try {
+                              // Play preview sound
+                              playErrorSound("slap", soundVolume);
+                              if (errorSoundMode !== "slap") {
+                                 setErrorSoundMode("slap");
+                                 // showSavedToast();
+                              }
+                           } catch {
+                              showErrorToast();
+                           }
+                        },
+                     },
+                     {
+                        label: "whoosh",
+                        isActive: errorSoundMode === "whoosh",
+                        onClick: () => {
+                           try {
+                              // Play preview sound
+                              playErrorSound("whoosh", soundVolume);
+                              if (errorSoundMode !== "whoosh") {
+                                 setErrorSoundMode("whoosh");
+                                 // showSavedToast();
                               }
                            } catch {
                               showErrorToast();
