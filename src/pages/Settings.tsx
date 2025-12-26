@@ -1,8 +1,9 @@
-import { FaBolt, FaChevronDown, FaBullseye } from "react-icons/fa";
+import { FaBolt, FaChevronDown, FaBullseye, FaVolumeUp } from "react-icons/fa";
 import { Bounce, toast } from "react-toastify";
 import SubSetting from "../components/SubSetting";
 import { useSettings } from "../context/Settings";
 import CustomToast from "../components/ui/CustomToast";
+import { playKeySound, preloadSounds } from "../utils/soundPlayer";
 
 const Settings = () => {
    const {
@@ -14,6 +15,8 @@ const Settings = () => {
       setMinAccuracyMode,
       minAccuracyValue,
       setMinAccuracyValue,
+      soundMode,
+      setSoundMode,
    } = useSettings();
 
    const showSavedToast = () => {
@@ -22,6 +25,25 @@ const Settings = () => {
          {
             position: "top-right",
             autoClose: 1000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: false,
+            transition: Bounce,
+         }
+      );
+   };
+
+   const showErrorToast = () => {
+      toast(
+         <CustomToast
+            type="error"
+            title="Error"
+            message="Failed to save settings: request took too long to complete"
+         />,
+         {
+            position: "top-right",
+            autoClose: 5000,
             hideProgressBar: true,
             closeOnClick: true,
             pauseOnHover: true,
@@ -91,11 +113,15 @@ const Settings = () => {
                      }
                   }}
                   onInputCommit={() => {
-                     const validation = validateMinSpeed(
-                        minSpeedValue.toString()
-                     );
-                     if (validation.valid) {
-                        showSavedToast();
+                     try {
+                        const validation = validateMinSpeed(
+                           minSpeedValue.toString()
+                        );
+                        if (validation.valid) {
+                           showSavedToast();
+                        }
+                     } catch {
+                        showErrorToast();
                      }
                   }}
                   validator={validateMinSpeed}
@@ -105,16 +131,28 @@ const Settings = () => {
                         label: "off",
                         isActive: minSpeedMode === "off",
                         onClick: () => {
-                           setMinSpeedMode("off");
-                           showSavedToast();
+                           try {
+                              if (minSpeedMode !== "off") {
+                                 setMinSpeedMode("off");
+                                 showSavedToast();
+                              }
+                           } catch {
+                              showErrorToast();
+                           }
                         },
                      },
                      {
                         label: "custom",
                         isActive: minSpeedMode === "custom",
                         onClick: () => {
-                           setMinSpeedMode("custom");
-                           showSavedToast();
+                           try {
+                              if (minSpeedMode !== "custom") {
+                                 setMinSpeedMode("custom");
+                                 showSavedToast();
+                              }
+                           } catch {
+                              showErrorToast();
+                           }
                         },
                      },
                   ]}
@@ -132,11 +170,15 @@ const Settings = () => {
                      }
                   }}
                   onInputCommit={() => {
-                     const validation = validateMinAccuracy(
-                        minAccuracyValue.toString()
-                     );
-                     if (validation.valid) {
-                        showSavedToast();
+                     try {
+                        const validation = validateMinAccuracy(
+                           minAccuracyValue.toString()
+                        );
+                        if (validation.valid) {
+                           showSavedToast();
+                        }
+                     } catch {
+                        showErrorToast();
                      }
                   }}
                   validator={validateMinAccuracy}
@@ -146,16 +188,84 @@ const Settings = () => {
                         label: "off",
                         isActive: minAccuracyMode === "off",
                         onClick: () => {
-                           setMinAccuracyMode("off");
-                           showSavedToast();
+                           try {
+                              if (minAccuracyMode !== "off") {
+                                 setMinAccuracyMode("off");
+                                 showSavedToast();
+                              }
+                           } catch {
+                              showErrorToast();
+                           }
                         },
                      },
                      {
                         label: "custom",
                         isActive: minAccuracyMode === "custom",
                         onClick: () => {
-                           setMinAccuracyMode("custom");
-                           showSavedToast();
+                           try {
+                              if (minAccuracyMode !== "custom") {
+                                 setMinAccuracyMode("custom");
+                                 showSavedToast();
+                              }
+                           } catch {
+                              showErrorToast();
+                           }
+                        },
+                     },
+                  ]}
+               />
+               <SubSetting
+                  icon={<FaVolumeUp size={16} />}
+                  title="play sound on click"
+                  description="Plays a short sound when you press a key."
+                  showInput={false}
+                  buttons={[
+                     {
+                        label: "off",
+                        isActive: soundMode === "off",
+                        onClick: () => {
+                           try {
+                              if (soundMode !== "off") {
+                                 setSoundMode("off");
+                                 showSavedToast();
+                              }
+                           } catch {
+                              showErrorToast();
+                           }
+                        },
+                     },
+                     {
+                        label: "nk cream",
+                        isActive: soundMode === "nk cream",
+                        onClick: async () => {
+                           try {
+                              // Preload and play preview sound
+                              await preloadSounds("nk cream");
+                              playKeySound(57, "nk cream"); // Space key
+                              if (soundMode !== "nk cream") {
+                                 setSoundMode("nk cream");
+                                 // showSavedToast();
+                              }
+                           } catch {
+                              showErrorToast();
+                           }
+                        },
+                     },
+                     {
+                        label: "osu",
+                        isActive: soundMode === "osu",
+                        onClick: async () => {
+                           try {
+                              // Preload and play preview sound
+                              await preloadSounds("osu");
+                              playKeySound(57, "osu"); // Space key
+                              if (soundMode !== "osu") {
+                                 setSoundMode("osu");
+                                 // showSavedToast();
+                              }
+                           } catch {
+                              showErrorToast();
+                           }
                         },
                      },
                   ]}

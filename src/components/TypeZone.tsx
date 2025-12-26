@@ -17,6 +17,7 @@ import Stats from "./Stats";
 import MenuBar from "./MenuBar";
 import TextButton from "./ui/TextButton";
 import { auth } from "../firebaseConfig";
+import { playKeySound, preloadSounds } from "../utils/soundPlayer";
 
 const TypeZone = ({
    setTestStart,
@@ -29,8 +30,13 @@ const TypeZone = ({
    const mode = testMode?.mode || "time";
    const testTime = testMode?.testTime || 30;
    const testWords = testMode?.testWords || 25;
-   const { minSpeedMode, minSpeedValue, minAccuracyMode, minAccuracyValue } =
-      useSettings();
+   const {
+      minSpeedMode,
+      minSpeedValue,
+      minAccuracyMode,
+      minAccuracyValue,
+      soundMode,
+   } = useSettings();
 
    const [words, setWords] = useState<string[]>(() => {
       const wordCount = mode === "words" ? testWords : 50;
@@ -154,6 +160,13 @@ const TypeZone = ({
       }
    }, [isFocused, testEnd, onWordIndex, onCharIndex, wordSpanRef]);
 
+   // * Preload sounds when sound mode changes
+   useEffect(() => {
+      if (soundMode !== "off") {
+         preloadSounds(soundMode);
+      }
+   }, [soundMode]);
+
    // * Handle to start the counter when the test starts...
    const startTimer = () => {
       if (!timerRef.current) {
@@ -240,6 +253,12 @@ const TypeZone = ({
    // * Handles user input...
    const handleUserInput = (e: React.KeyboardEvent<HTMLInputElement>) => {
       console.log(e.key);
+
+      // Play key sound
+      if (soundMode !== "off") {
+         const keyCode = e.keyCode || e.which;
+         playKeySound(keyCode, soundMode);
+      }
 
       // Update last typing time
       lastTypingTimeRef.current = Date.now();

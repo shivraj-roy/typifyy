@@ -54,6 +54,7 @@ export interface TestModeContextType {
 
 // * Settings Types
 export type SettingMode = "off" | "custom";
+export type SoundMode = "off" | "nk cream" | "osu";
 
 export interface SettingsContextType {
    minSpeedMode: SettingMode;
@@ -64,4 +65,6 @@ export interface SettingsContextType {
    setMinAccuracyMode: (mode: SettingMode) => void;
    minAccuracyValue: number;
    setMinAccuracyValue: (value: number) => void;
+   soundMode: SoundMode;
+   setSoundMode: (mode: SoundMode) => void;
 }

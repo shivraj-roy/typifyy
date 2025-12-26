@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from "react";
-import { SettingMode, SettingsContextType } from "../types";
+import { SettingMode, SoundMode, SettingsContextType } from "../types";
 
 const SettingsContext = createContext<SettingsContextType | null>(null);
 
@@ -28,22 +28,51 @@ export const SettingsContextProvider = ({
       return saved ? parseInt(saved, 10) : 75;
    });
 
+   const [soundMode, setSoundMode] = useState<SoundMode>(() => {
+      const saved = localStorage.getItem("soundMode");
+      return (saved as SoundMode) || "off";
+   });
+
    // Save to localStorage whenever settings change
    useEffect(() => {
-      localStorage.setItem("minSpeedMode", minSpeedMode);
+      try {
+         localStorage.setItem("minSpeedMode", minSpeedMode);
+      } catch (error) {
+         console.error("Failed to save minSpeedMode to localStorage:", error);
+      }
    }, [minSpeedMode]);
 
    useEffect(() => {
-      localStorage.setItem("minSpeedValue", minSpeedValue.toString());
+      try {
+         localStorage.setItem("minSpeedValue", minSpeedValue.toString());
+      } catch (error) {
+         console.error("Failed to save minSpeedValue to localStorage:", error);
+      }
    }, [minSpeedValue]);
 
    useEffect(() => {
-      localStorage.setItem("minAccuracyMode", minAccuracyMode);
+      try {
+         localStorage.setItem("minAccuracyMode", minAccuracyMode);
+      } catch (error) {
+         console.error("Failed to save minAccuracyMode to localStorage:", error);
+      }
    }, [minAccuracyMode]);
 
    useEffect(() => {
-      localStorage.setItem("minAccuracyValue", minAccuracyValue.toString());
+      try {
+         localStorage.setItem("minAccuracyValue", minAccuracyValue.toString());
+      } catch (error) {
+         console.error("Failed to save minAccuracyValue to localStorage:", error);
+      }
    }, [minAccuracyValue]);
+
+   useEffect(() => {
+      try {
+         localStorage.setItem("soundMode", soundMode);
+      } catch (error) {
+         console.error("Failed to save soundMode to localStorage:", error);
+      }
+   }, [soundMode]);
 
    return (
       <SettingsContext.Provider
@@ -56,6 +85,8 @@ export const SettingsContextProvider = ({
             setMinAccuracyMode,
             minAccuracyValue,
             setMinAccuracyValue,
+            soundMode,
+            setSoundMode,
          }}
       >
          {children}
