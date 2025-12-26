@@ -56,6 +56,7 @@ export interface TestModeContextType {
 export type SettingMode = "off" | "custom";
 export type SoundMode = "off" | "nk cream" | "osu";
 export type ErrorSoundMode = "off" | "blow" | "slap" | "whoosh";
+export type TimeWarningMode = "off" | "1" | "3" | "5";
 
 export interface SettingsContextType {
    minSpeedMode: SettingMode;
@@ -72,4 +73,6 @@ export interface SettingsContextType {
    setSoundMode: (mode: SoundMode) => void;
    errorSoundMode: ErrorSoundMode;
    setErrorSoundMode: (mode: ErrorSoundMode) => void;
+   timeWarningMode: TimeWarningMode;
+   setTimeWarningMode: (mode: TimeWarningMode) => void;
 }

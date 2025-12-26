@@ -32,6 +32,8 @@ const Settings = () => {
       setSoundMode,
       errorSoundMode,
       setErrorSoundMode,
+      timeWarningMode,
+      setTimeWarningMode,
    } = useSettings();
 
    const showSavedToast = () => {
@@ -273,7 +275,7 @@ const Settings = () => {
                               playKeySound(57, "nk cream", soundVolume); // Space key
                               if (soundMode !== "nk cream") {
                                  setSoundMode("nk cream");
-                                 showSavedToast();
+                                 // showSavedToast();
                               }
                            } catch {
                               showErrorToast();
@@ -290,7 +292,7 @@ const Settings = () => {
                               playKeySound(57, "osu", soundVolume); // Space key
                               if (soundMode !== "osu") {
                                  setSoundMode("osu");
-                                 showSavedToast();
+                                 // showSavedToast();
                               }
                            } catch {
                               showErrorToast();
@@ -360,6 +362,70 @@ const Settings = () => {
                               playErrorSound("whoosh", soundVolume);
                               if (errorSoundMode !== "whoosh") {
                                  setErrorSoundMode("whoosh");
+                                 // showSavedToast();
+                              }
+                           } catch {
+                              showErrorToast();
+                           }
+                        },
+                     },
+                  ]}
+               />
+               <SubSetting
+                  icon={<FaVolumeUp size={16} />}
+                  title="play time warning"
+                  description="Play a short warning sound if you are close to the end of a timed test."
+                  showInput={false}
+                  buttons={[
+                     {
+                        label: "off",
+                        isActive: timeWarningMode === "off",
+                        onClick: () => {
+                           try {
+                              if (timeWarningMode !== "off") {
+                                 setTimeWarningMode("off");
+                                 showSavedToast();
+                              }
+                           } catch {
+                              showErrorToast();
+                           }
+                        },
+                     },
+                     {
+                        label: "1 second",
+                        isActive: timeWarningMode === "1",
+                        onClick: () => {
+                           try {
+                              if (timeWarningMode !== "1") {
+                                 setTimeWarningMode("1");
+                                 // showSavedToast();
+                              }
+                           } catch {
+                              showErrorToast();
+                           }
+                        },
+                     },
+                     {
+                        label: "3 seconds",
+                        isActive: timeWarningMode === "3",
+                        onClick: () => {
+                           try {
+                              if (timeWarningMode !== "3") {
+                                 setTimeWarningMode("3");
+                                 // showSavedToast();
+                              }
+                           } catch {
+                              showErrorToast();
+                           }
+                        },
+                     },
+                     {
+                        label: "5 seconds",
+                        isActive: timeWarningMode === "5",
+                        onClick: () => {
+                           try {
+                              if (timeWarningMode !== "5") {
+                                 setTimeWarningMode("5");
                                  // showSavedToast();
                               }
                            } catch {

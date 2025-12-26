@@ -132,3 +132,24 @@ export const playErrorSound = (mode: ErrorSoundMode, volume: number = 0.5) => {
       }
    });
 };
+
+// Play time warning sound
+export const playWarningSound = (volume: number = 0.5) => {
+   const soundPath = "/assets/sounds/warning/Clock Ticking.wav";
+
+   // Get or create audio element
+   let audio = audioCache[soundPath];
+   if (!audio) {
+      audio = preloadSound(soundPath);
+   }
+
+   // Clone and play to allow multiple simultaneous sounds
+   const audioClone = audio.cloneNode() as HTMLAudioElement;
+   audioClone.volume = volume;
+   audioClone.play().catch((error) => {
+      // Ignore autoplay policy errors
+      if (error.name !== "NotAllowedError") {
+         console.error("Error playing warning sound:", error);
+      }
+   });
+};

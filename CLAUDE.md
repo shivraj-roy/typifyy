@@ -64,9 +64,12 @@ npm run preview  # Preview production build
   - Provider wraps app in `main.tsx`
 - `src/context/Settings.tsx` - Global context for user settings
   - Access via `useSettings()` hook
-  - State: `minSpeedMode`, `minSpeedValue`, `minAccuracyMode`, `minAccuracyValue`
+  - State: `minSpeedMode`, `minSpeedValue`, `minAccuracyMode`, `minAccuracyValue`, `soundVolume`, `soundMode`, `errorSoundMode`, `timeWarningMode`
   - Settings modes: "off" | "custom"
-  - Default values: min speed = 100 WPM, min accuracy = 75%
+  - Sound modes: "off" | "nk cream" | "osu"
+  - Error sound modes: "off" | "blow" | "slap" | "whoosh"
+  - Time warning modes: "off" | "1" | "3" | "5" (seconds)
+  - Default values: min speed = 100 WPM, min accuracy = 75%, sound volume = 0.5
   - **Persistence**: All settings automatically saved to localStorage
   - Provider wraps app in `main.tsx`
 
@@ -113,6 +116,24 @@ npm run preview  # Preview production build
   - Format: "min {value} wpm" and "min {value}% acc"
   - Custom styling: text size 1em, gap 2
   - Both notices can appear simultaneously if both settings are active
+- **Sound Integration**:
+  - **Keystroke Sounds**: Plays on every key press when `soundMode` is enabled
+    - Uses `playKeySound(keyCode, soundMode, soundVolume)` from soundPlayer utility
+    - Sound packs: "nk cream" or "osu" (keyboard click sounds)
+  - **Error Sounds**: Plays when typing errors occur (if `errorSoundMode` is enabled)
+    - Incorrect character typed
+    - Space pressed too early (at start of word)
+    - Space pressed in middle of word (before completing it)
+    - Extra characters typed beyond word length
+    - Uses `playErrorSound(errorSoundMode, soundVolume)` from soundPlayer utility
+    - Sound options: "blow", "slap", "whoosh"
+  - **Time Warning Sound**: Plays when timer reaches threshold in time mode (if `timeWarningMode` is enabled)
+    - Only works in time mode (not words mode)
+    - Plays when counter reaches 1, 3, or 5 seconds remaining
+    - Uses `playWarningSound(soundVolume)` from soundPlayer utility
+    - Plays once per test (tracked via `warningPlayedRef`)
+    - Sound: "Clock Ticking.wav"
+  - All sounds respect the `soundVolume` setting (0.0-1.0)
 
 ### Firebase Integration
 - `src/firebaseConfig.ts` - Exports `auth` and `db` (Firestore)
@@ -157,10 +178,13 @@ npm run preview  # Preview production build
 - `src/types/index.ts` - Shared types:
   - `TestMode` - "time" | "words"
   - `SettingMode` - "off" | "custom"
+  - `SoundMode` - "off" | "nk cream" | "osu"
+  - `ErrorSoundMode` - "off" | "blow" | "slap" | "whoosh"
+  - `TimeWarningMode` - "off" | "1" | "3" | "5"
   - `StatsProps` - Stats component props (wpm, raw, accuracy, graphData, mode, isAfk, etc.)
   - `ButtonProps` - Button component props (btnIcon, btnTxt, btnClass, btnClick)
   - `TestModeContextType` - Context interface (mode, testTime, testWords + setters)
-  - `SettingsContextType` - Context interface (minSpeedMode, minSpeedValue, minAccuracyMode, minAccuracyValue + setters)
+  - `SettingsContextType` - Context interface (minSpeedMode, minSpeedValue, minAccuracyMode, minAccuracyValue, soundVolume, soundMode, errorSoundMode, timeWarningMode + setters)
   - `PersonalBestData` - Personal best record (wpm, raw, accuracy, consistency, timestamp)
   - `PersonalBestCardProps` - PersonalBestCard component props (label, data)
 
@@ -326,20 +350,78 @@ npm run preview  # Preview production build
     - Custom input: numeric value (default: 75%)
     - Description: "Automatically fails a test if your accuracy falls below a threshold"
     - Validation: Must be 0-100
+  - **Sound Volume Setting**:
+    - Icon: FaVolumeDown
+    - Custom slider: range 0.0-1.0 (default: 0.5)
+    - Description: "Change the volume of the sound effects"
+    - Display: Value shown on left, pill-shaped slider on right
+    - Slider styling: 120px wide, 20px tall, orange/red color, grab cursor
+  - **Play Sound on Click Setting**:
+    - Icon: FaVolumeUp
+    - Modes: "off" | "nk cream" | "osu" (toggle buttons)
+    - Description: "Plays a short sound when you press a key"
+    - Preview: Plays sample sound when clicking sound pack button
+    - Sound packs located in `/public/assets/sounds/clicks/`
+  - **Play Sound on Error Setting**:
+    - Icon: FaVolumeMute
+    - Modes: "off" | "blow" | "slap" | "whoosh" (toggle buttons)
+    - Description: "Plays a short sound if you press an incorrect key or press space too early"
+    - Preview: Plays sample error sound when clicking sound option button
+    - Error sounds located in `/public/assets/sounds/errors/`
+  - **Play Time Warning Setting**:
+    - Icon: FaVolumeUp
+    - Modes: "off" | "1 second" | "3 seconds" | "5 seconds" (toggle buttons)
+    - Description: "Play a short warning sound if you are close to the end of a timed test"
+    - Only works in time mode tests
+    - Warning sound: "Clock Ticking.wav" from `/public/assets/sounds/warning/`
 - **Save Behavior**:
   - Toast notification shows "Saved" on:
-    - Button click (off/custom toggle)
-    - Input commit (Enter key or blur)
-  - Auto-switches to "custom" mode when typing in input field
+    - Button click (mode toggle, but only if changing to a different mode)
+    - Input commit (Enter key or blur) for min speed/accuracy
+  - Auto-switches to "custom" mode when typing in min speed/accuracy input fields
   - Validation prevents saving invalid values (no toast shown if invalid)
+  - Active button clicks do not trigger save toast (prevents unnecessary notifications)
+- **Error Handling**:
+  - All settings operations wrapped in try-catch blocks
+  - Error toast shows: "Failed to save settings: request took too long to complete"
+  - localStorage operations have error logging for debugging
 - **Input Validation**:
   - Real-time visual feedback (checkmark/X icon with tooltip)
   - Error tooltips positioned on left side of indicator
   - Invalid values cannot be saved (toast only shows for valid values)
 - **SubSetting Component**: Reusable component for settings sections
-  - Props: icon, title, description, buttons, inputValue, onInputChange, onInputCommit, validator
-  - Handles mode toggle buttons and optional numeric input
+  - Props: icon, title, description, buttons, showInput, inputValue, showSlider, sliderValue, sliderMin, sliderMax, sliderStep, onInputChange, onSliderChange, onInputCommit, validator
+  - Handles mode toggle buttons, optional numeric input, and optional slider input
   - Passes validation to InputAndIndicator for visual feedback
+  - Slider support: pill-shaped handle with dynamic styling
+
+### Sound Player Utility
+- `src/utils/soundPlayer.ts` - Audio playback utility for typing sounds
+- **Sound Types**:
+  - Keystroke sounds: Configurable sound packs with key code mappings
+  - Error sounds: Simple sound files for error feedback
+  - Warning sound: Time warning alert sound
+- **Functions**:
+  - `loadSoundConfig(mode)` - Loads sound pack configuration JSON
+  - `preloadSounds(mode)` - Preloads all sounds in a pack for better performance
+  - `playKeySound(keyCode, mode, volume)` - Plays keystroke sound based on key code
+  - `playErrorSound(mode, volume)` - Plays error sound (blow/slap/whoosh)
+  - `playWarningSound(volume)` - Plays time warning sound
+- **Sound Caching**:
+  - `audioCache` stores preloaded HTMLAudioElement instances
+  - Sounds are cloned before playing to allow simultaneous playback
+  - Volume is applied to each cloned instance
+- **Sound Pack Structure**:
+  - Each pack has a `config.json` with key code to sound file mappings
+  - Example: `{ "defines": { "65": "key-a.mp3", "66": "key-b.mp3", ... } }`
+  - Sound files stored in `/public/assets/sounds/clicks/{pack-name}/`
+- **Error Handling**:
+  - Autoplay policy errors are silently ignored (NotAllowedError)
+  - Other playback errors are logged to console
+- **Asset Locations**:
+  - Keystroke sounds: `/public/assets/sounds/clicks/` (nk cream, Osu packs)
+  - Error sounds: `/public/assets/sounds/errors/` (Blow.mp3, Slap.mp3, Whoosh.mp3)
+  - Warning sound: `/public/assets/sounds/warning/` (Clock Ticking.wav)
 
 ## Tech Stack
 
@@ -358,4 +440,3 @@ npm run preview  # Preview production build
 - GitHub sign-in (UI ready, handler not implemented)
 - Personal best highlighting in history table (crown icon placeholder exists; personal bests implemented in separate PersonalBests component)
 - Graph view for individual test results (info icon placeholder exists)
-- Additional settings sections in Settings page (only behavior section implemented)

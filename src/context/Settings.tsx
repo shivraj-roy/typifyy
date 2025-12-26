@@ -3,6 +3,7 @@ import {
    SettingMode,
    SoundMode,
    ErrorSoundMode,
+   TimeWarningMode,
    SettingsContextType,
 } from "../types";
 
@@ -46,6 +47,11 @@ export const SettingsContextProvider = ({
    const [errorSoundMode, setErrorSoundMode] = useState<ErrorSoundMode>(() => {
       const saved = localStorage.getItem("errorSoundMode");
       return (saved as ErrorSoundMode) || "off";
+   });
+
+   const [timeWarningMode, setTimeWarningMode] = useState<TimeWarningMode>(() => {
+      const saved = localStorage.getItem("timeWarningMode");
+      return (saved as TimeWarningMode) || "off";
    });
 
    // Save to localStorage whenever settings change
@@ -105,6 +111,14 @@ export const SettingsContextProvider = ({
       }
    }, [errorSoundMode]);
 
+   useEffect(() => {
+      try {
+         localStorage.setItem("timeWarningMode", timeWarningMode);
+      } catch (error) {
+         console.error("Failed to save timeWarningMode to localStorage:", error);
+      }
+   }, [timeWarningMode]);
+
    return (
       <SettingsContext.Provider
          value={{
@@ -122,6 +136,8 @@ export const SettingsContextProvider = ({
             setSoundMode,
             errorSoundMode,
             setErrorSoundMode,
+            timeWarningMode,
+            setTimeWarningMode,
          }}
       >
          {children}

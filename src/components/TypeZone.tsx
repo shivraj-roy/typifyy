@@ -17,7 +17,12 @@ import Stats from "./Stats";
 import MenuBar from "./MenuBar";
 import TextButton from "./ui/TextButton";
 import { auth } from "../firebaseConfig";
-import { playKeySound, preloadSounds, playErrorSound } from "../utils/soundPlayer";
+import {
+   playKeySound,
+   preloadSounds,
+   playErrorSound,
+   playWarningSound,
+} from "../utils/soundPlayer";
 
 const TypeZone = ({
    setTestStart,
@@ -38,6 +43,7 @@ const TypeZone = ({
       soundVolume,
       soundMode,
       errorSoundMode,
+      timeWarningMode,
    } = useSettings();
 
    const [words, setWords] = useState<string[]>(() => {
@@ -67,6 +73,7 @@ const TypeZone = ({
    const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
    const elapsedSecondsRef = useRef<number>(0);
    const lastTypingTimeRef = useRef<number>(Date.now());
+   const warningPlayedRef = useRef<boolean>(false);
 
    // * Reference for each word span element in the DOM...
    const wordSpanRef = useMemo(() => {
@@ -184,6 +191,18 @@ const TypeZone = ({
                      timerRef.current = null;
                      setTestEnd(true);
                      return 0;
+                  }
+
+                  // Play time warning sound if enabled and threshold reached
+                  if (
+                     timeWarningMode !== "off" &&
+                     !warningPlayedRef.current
+                  ) {
+                     const warningThreshold = parseInt(timeWarningMode);
+                     if (prev === warningThreshold) {
+                        playWarningSound(soundVolume);
+                        warningPlayedRef.current = true;
+                     }
                   }
 
                   const timeElapsed = testTime - prev + 1;
@@ -499,6 +518,7 @@ const TypeZone = ({
       setIsAfk(false);
       elapsedSecondsRef.current = 0;
       lastTypingTimeRef.current = Date.now();
+      warningPlayedRef.current = false;
    }, [mode, testWords]);
 
    // * Cleanup timer on unmount
@@ -597,6 +617,7 @@ const TypeZone = ({
       setIsAfk(false);
       elapsedSecondsRef.current = 0;
       lastTypingTimeRef.current = Date.now();
+      warningPlayedRef.current = false;
 
       // Reset scroll position
       if (wordsContainerRef.current) {
