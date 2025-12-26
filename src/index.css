@@ -121,4 +121,48 @@
    .activeBtn {
       @apply bg-active text-dark-100;
    }
+
+   /* Volume Slider Styles */
+   .volumeSlider {
+      -webkit-appearance: none;
+      appearance: none;
+      background: rgba(183, 171, 152, 0.2);
+      outline: none;
+   }
+
+   .volumeSlider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 120px;
+      height: 20px;
+      border-radius: 20px;
+      background: var(--color-active);
+      cursor: grab;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+   }
+
+   .volumeSlider::-webkit-slider-thumb:hover {
+      background: var(--color-glow-100);
+   }
+
+   .volumeSlider::-moz-range-thumb {
+      width: 120px;
+      height: 20px;
+      border-radius: 20px;
+      background: var(--color-active);
+      cursor: grab;
+      border: none;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+   }
+
+   .volumeSlider::-moz-range-thumb:hover {
+      background: var(--color-glow-100);
+   }
+
+   .volumeSlider::-moz-range-track {
+      background: rgba(183, 171, 152, 0.2);
+      border-radius: 20px;
+   }
 }

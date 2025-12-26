@@ -1,4 +1,10 @@
-import { FaBolt, FaChevronDown, FaBullseye, FaVolumeUp } from "react-icons/fa";
+import {
+   FaBolt,
+   FaChevronDown,
+   FaBullseye,
+   FaVolumeUp,
+   FaVolumeDown,
+} from "react-icons/fa";
 import { Bounce, toast } from "react-toastify";
 import SubSetting from "../components/SubSetting";
 import { useSettings } from "../context/Settings";
@@ -15,6 +21,8 @@ const Settings = () => {
       setMinAccuracyMode,
       minAccuracyValue,
       setMinAccuracyValue,
+      soundVolume,
+      setSoundVolume,
       soundMode,
       setSoundMode,
    } = useSettings();
@@ -215,6 +223,20 @@ const Settings = () => {
                   ]}
                />
                <SubSetting
+                  icon={<FaVolumeDown size={16} />}
+                  title="sound volume"
+                  description="Change the volume of the sound effects."
+                  showSlider={true}
+                  sliderValue={soundVolume}
+                  sliderMin={0}
+                  sliderMax={1}
+                  sliderStep={0.1}
+                  onSliderChange={(value) => {
+                     setSoundVolume(value);
+                  }}
+                  buttons={[]}
+               />
+               <SubSetting
                   icon={<FaVolumeUp size={16} />}
                   title="play sound on click"
                   description="Plays a short sound when you press a key."
@@ -241,10 +263,10 @@ const Settings = () => {
                            try {
                               // Preload and play preview sound
                               await preloadSounds("nk cream");
-                              playKeySound(57, "nk cream"); // Space key
+                              playKeySound(57, "nk cream", soundVolume); // Space key
                               if (soundMode !== "nk cream") {
                                  setSoundMode("nk cream");
-                                 // showSavedToast();
+                                 showSavedToast();
                               }
                            } catch {
                               showErrorToast();
@@ -258,10 +280,10 @@ const Settings = () => {
                            try {
                               // Preload and play preview sound
                               await preloadSounds("osu");
-                              playKeySound(57, "osu"); // Space key
+                              playKeySound(57, "osu", soundVolume); // Space key
                               if (soundMode !== "osu") {
                                  setSoundMode("osu");
-                                 // showSavedToast();
+                                 showSavedToast();
                               }
                            } catch {
                               showErrorToast();

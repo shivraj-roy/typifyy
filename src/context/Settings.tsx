@@ -28,6 +28,11 @@ export const SettingsContextProvider = ({
       return saved ? parseInt(saved, 10) : 75;
    });
 
+   const [soundVolume, setSoundVolume] = useState<number>(() => {
+      const saved = localStorage.getItem("soundVolume");
+      return saved ? parseFloat(saved) : 0.5;
+   });
+
    const [soundMode, setSoundMode] = useState<SoundMode>(() => {
       const saved = localStorage.getItem("soundMode");
       return (saved as SoundMode) || "off";
@@ -68,6 +73,14 @@ export const SettingsContextProvider = ({
 
    useEffect(() => {
       try {
+         localStorage.setItem("soundVolume", soundVolume.toString());
+      } catch (error) {
+         console.error("Failed to save soundVolume to localStorage:", error);
+      }
+   }, [soundVolume]);
+
+   useEffect(() => {
+      try {
          localStorage.setItem("soundMode", soundMode);
       } catch (error) {
          console.error("Failed to save soundMode to localStorage:", error);
@@ -85,6 +98,8 @@ export const SettingsContextProvider = ({
             setMinAccuracyMode,
             minAccuracyValue,
             setMinAccuracyValue,
+            soundVolume,
+            setSoundVolume,
             soundMode,
             setSoundMode,
          }}

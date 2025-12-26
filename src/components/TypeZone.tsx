@@ -35,6 +35,7 @@ const TypeZone = ({
       minSpeedValue,
       minAccuracyMode,
       minAccuracyValue,
+      soundVolume,
       soundMode,
    } = useSettings();
 
@@ -257,7 +258,7 @@ const TypeZone = ({
       // Play key sound
       if (soundMode !== "off") {
          const keyCode = e.keyCode || e.which;
-         playKeySound(keyCode, soundMode);
+         playKeySound(keyCode, soundMode, soundVolume);
       }
 
       // Update last typing time

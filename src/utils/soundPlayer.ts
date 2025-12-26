@@ -45,7 +45,11 @@ const preloadSound = (path: string) => {
 };
 
 // Play sound for a specific key code
-export const playKeySound = (keyCode: number, mode: SoundMode) => {
+export const playKeySound = (
+   keyCode: number,
+   mode: SoundMode,
+   volume: number = 0.5
+) => {
    if (mode === "off") return;
    if (!keyCode || keyCode === 0) return; // Skip if keyCode is invalid
 
@@ -70,7 +74,7 @@ export const playKeySound = (keyCode: number, mode: SoundMode) => {
 
    // Clone and play to allow multiple simultaneous sounds
    const audioClone = audio.cloneNode() as HTMLAudioElement;
-   audioClone.volume = 0.5; // Set volume to 50%
+   audioClone.volume = volume; // Set volume from parameter
    audioClone.play().catch((error) => {
       // Ignore autoplay policy errors
       if (error.name !== "NotAllowedError") {

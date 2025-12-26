@@ -65,6 +65,8 @@ export interface SettingsContextType {
    setMinAccuracyMode: (mode: SettingMode) => void;
    minAccuracyValue: number;
    setMinAccuracyValue: (value: number) => void;
+   soundVolume: number;
+   setSoundVolume: (volume: number) => void;
    soundMode: SoundMode;
    setSoundMode: (mode: SoundMode) => void;
 }

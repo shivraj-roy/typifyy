@@ -19,8 +19,14 @@ interface SubSettingProps {
    description: string;
    buttons: ButtonConfig[];
    showInput?: boolean;
+   showSlider?: boolean;
    inputValue?: number;
+   sliderValue?: number;
+   sliderMin?: number;
+   sliderMax?: number;
+   sliderStep?: number;
    onInputChange?: (value: number) => void;
+   onSliderChange?: (value: number) => void;
    onInputCommit?: () => void;
    validator?: ValidatorFn;
    inputName?: string;
@@ -32,8 +38,14 @@ const SubSetting = ({
    description,
    buttons,
    showInput = false,
+   showSlider = false,
    inputValue = 100,
+   sliderValue = 0.5,
+   sliderMin = 0,
+   sliderMax = 1,
+   sliderStep = 0.1,
    onInputChange = () => {},
+   onSliderChange = () => {},
    onInputCommit = () => {},
    validator,
    inputName = "setting",
@@ -68,6 +80,24 @@ const SubSetting = ({
                         }
                      }}
                      validator={validator}
+                  />
+               </div>
+            )}
+            {showSlider && (
+               <div className="sliderContainer flex items-center gap-4">
+                  <div className="sliderValue text-[1em] text-fade-100 min-w-[3rem]">
+                     {sliderValue.toFixed(1)}
+                  </div>
+                  <input
+                     type="range"
+                     min={sliderMin}
+                     max={sliderMax}
+                     step={sliderStep}
+                     value={sliderValue}
+                     onChange={(e) =>
+                        onSliderChange(parseFloat(e.target.value))
+                     }
+                     className="volumeSlider flex-1 h-4 rounded-full appearance-none cursor-pointer"
                   />
                </div>
             )}
