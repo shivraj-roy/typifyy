@@ -4,6 +4,7 @@ import {
    SoundMode,
    ErrorSoundMode,
    TimeWarningMode,
+   LiveProgressMode,
    SettingsContextType,
 } from "../types";
 
@@ -52,6 +53,11 @@ export const SettingsContextProvider = ({
    const [timeWarningMode, setTimeWarningMode] = useState<TimeWarningMode>(() => {
       const saved = localStorage.getItem("timeWarningMode");
       return (saved as TimeWarningMode) || "off";
+   });
+
+   const [liveProgressMode, setLiveProgressMode] = useState<LiveProgressMode>(() => {
+      const saved = localStorage.getItem("liveProgressMode");
+      return (saved as LiveProgressMode) || "mini";
    });
 
    // Save to localStorage whenever settings change
@@ -119,6 +125,14 @@ export const SettingsContextProvider = ({
       }
    }, [timeWarningMode]);
 
+   useEffect(() => {
+      try {
+         localStorage.setItem("liveProgressMode", liveProgressMode);
+      } catch (error) {
+         console.error("Failed to save liveProgressMode to localStorage:", error);
+      }
+   }, [liveProgressMode]);
+
    return (
       <SettingsContext.Provider
          value={{
@@ -138,6 +152,8 @@ export const SettingsContextProvider = ({
             setErrorSoundMode,
             timeWarningMode,
             setTimeWarningMode,
+            liveProgressMode,
+            setLiveProgressMode,
          }}
       >
          {children}

@@ -12,6 +12,7 @@ import { FaRedoAlt, FaChevronRight, FaBolt, FaBullseye } from "react-icons/fa";
 import { useTestMode } from "../context/TestMode";
 import { useSettings } from "../context/Settings";
 import TimeCounter from "./TimeCounter";
+import TimeProgressBar from "./TimeProgressBar";
 import { HiCursorClick } from "react-icons/hi";
 import Stats from "./Stats";
 import MenuBar from "./MenuBar";
@@ -44,6 +45,7 @@ const TypeZone = ({
       soundMode,
       errorSoundMode,
       timeWarningMode,
+      liveProgressMode,
    } = useSettings();
 
    const [words, setWords] = useState<string[]>(() => {
@@ -709,13 +711,26 @@ const TypeZone = ({
                         />
                      )}
                   </div>
-                  <TimeCounter
-                     countDown={counter}
-                     className={testStart ? "opacity-100" : "opacity-0"}
-                     mode={mode}
-                     current={completedWords}
-                     total={testWords}
-                  />
+                  {liveProgressMode === "mini" && (
+                     <TimeCounter
+                        countDown={counter}
+                        className={testStart ? "opacity-100" : "opacity-0"}
+                        mode={mode}
+                        current={completedWords}
+                        total={testWords}
+                     />
+                  )}
+                  {liveProgressMode === "bar" && (
+                     <TimeProgressBar
+                        mode={mode}
+                        counter={counter}
+                        testTime={testTime}
+                        completedWords={completedWords}
+                        testWords={testWords}
+                        testStart={testStart}
+                        testEnd={testEnd}
+                     />
+                  )}
                   <div
                      ref={wordsContainerRef}
                      className="text-3xl flex flex-wrap leading-[3rem] tracking-tight relative text-fade-100 h-36 overflow-hidden w-full"

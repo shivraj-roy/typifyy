@@ -5,6 +5,8 @@ import {
    FaVolumeUp,
    FaVolumeDown,
    FaVolumeMute,
+   FaChartPie,
+   FaExclamationTriangle,
 } from "react-icons/fa";
 import { Bounce, toast } from "react-toastify";
 import SubSetting from "../components/SubSetting";
@@ -34,6 +36,8 @@ const Settings = () => {
       setErrorSoundMode,
       timeWarningMode,
       setTimeWarningMode,
+      liveProgressMode,
+      setLiveProgressMode,
    } = useSettings();
 
    const showSavedToast = () => {
@@ -372,7 +376,7 @@ const Settings = () => {
                   ]}
                />
                <SubSetting
-                  icon={<FaVolumeUp size={16} />}
+                  icon={<FaExclamationTriangle size={16} />}
                   title="play time warning"
                   description="Play a short warning sound if you are close to the end of a timed test."
                   showInput={false}
@@ -426,6 +430,56 @@ const Settings = () => {
                            try {
                               if (timeWarningMode !== "5") {
                                  setTimeWarningMode("5");
+                                 // showSavedToast();
+                              }
+                           } catch {
+                              showErrorToast();
+                           }
+                        },
+                     },
+                  ]}
+               />
+               <SubSetting
+                  icon={<FaChartPie size={16} />}
+                  title="live progress style"
+                  description="Change the style of the timer/word count during a test."
+                  showInput={false}
+                  buttons={[
+                     {
+                        label: "off",
+                        isActive: liveProgressMode === "off",
+                        onClick: () => {
+                           try {
+                              if (liveProgressMode !== "off") {
+                                 setLiveProgressMode("off");
+                                 showSavedToast();
+                              }
+                           } catch {
+                              showErrorToast();
+                           }
+                        },
+                     },
+                     {
+                        label: "mini",
+                        isActive: liveProgressMode === "mini",
+                        onClick: () => {
+                           try {
+                              if (liveProgressMode !== "mini") {
+                                 setLiveProgressMode("mini");
+                                 // showSavedToast();
+                              }
+                           } catch {
+                              showErrorToast();
+                           }
+                        },
+                     },
+                     {
+                        label: "bar",
+                        isActive: liveProgressMode === "bar",
+                        onClick: () => {
+                           try {
+                              if (liveProgressMode !== "bar") {
+                                 setLiveProgressMode("bar");
                                  // showSavedToast();
                               }
                            } catch {

@@ -57,6 +57,7 @@ export type SettingMode = "off" | "custom";
 export type SoundMode = "off" | "nk cream" | "osu";
 export type ErrorSoundMode = "off" | "blow" | "slap" | "whoosh";
 export type TimeWarningMode = "off" | "1" | "3" | "5";
+export type LiveProgressMode = "off" | "mini" | "bar";
 
 export interface SettingsContextType {
    minSpeedMode: SettingMode;
@@ -75,4 +76,6 @@ export interface SettingsContextType {
    setErrorSoundMode: (mode: ErrorSoundMode) => void;
    timeWarningMode: TimeWarningMode;
    setTimeWarningMode: (mode: TimeWarningMode) => void;
+   liveProgressMode: LiveProgressMode;
+   setLiveProgressMode: (mode: LiveProgressMode) => void;
 }
