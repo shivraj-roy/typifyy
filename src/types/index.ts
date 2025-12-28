@@ -23,6 +23,7 @@ export type StatsProps = {
    mode?: TestMode;
    testWords?: number;
    isAfk?: boolean;
+   testFailed?: boolean;
 };
 
 // * Personal Best Types

@@ -197,6 +197,15 @@ npm run preview  # Preview production build
    -  Failed tests display reason in Stats "other" section: "failed - min speed" or "failed - min accuracy"
    -  Failed tests are NOT pushed to database (prevents pollution of test history)
    -  Validation runs for both authenticated and non-authenticated users
+-  **Word Mode Auto-End**: Prevents infinite tests in word mode
+   -  **Inactivity Timeout**: Auto-ends test after 30 seconds of no typing activity
+   -  **Maximum Time Limit**: Auto-ends test after 5 minutes regardless of progress
+   -  **Error Notification**: Shows error toast "Test failed - inactivity detected" when auto-end triggers
+   -  **Stats Display**: Failed tests show "failed - bad activity" in Stats "other" section
+   -  **Database**: Failed tests (testFailed=true) are NOT saved to database
+   -  **Implementation**: Uses same AFK detection interval (1000ms) to check both conditions
+   -  **State Management**: `testFailed` state tracks auto-end condition, passed to Stats component
+   -  Only applies to word mode tests (time mode already has built-in time limit)
 -  **Query patterns**: Uses Firestore `orderBy("timestamp", "desc")` for server-side sorting (requires composite index: userId + timestamp)
 -  **Note**: Older records may not have `raw` field; components calculate it as fallback using character counts and time
 

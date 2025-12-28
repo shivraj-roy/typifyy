@@ -23,6 +23,8 @@ import { HiCursorClick } from "react-icons/hi";
 import Stats from "./Stats";
 import MenuBar from "./MenuBar";
 import TextButton from "./ui/TextButton";
+import CustomToast from "./ui/CustomToast";
+import { Bounce, toast } from "react-toastify";
 import { auth } from "../firebaseConfig";
 import {
    playKeySound,
@@ -74,6 +76,7 @@ const TypeZone = ({
    const [graphData, setGraphData] = useState<number[][]>([]);
    const [isAfk, setIsAfk] = useState(false);
    const [capsLockOn, setCapsLockOn] = useState(false);
+   const [testFailed, setTestFailed] = useState(false);
 
    const inputRef = useRef<HTMLInputElement>(null);
    const wordsContainerRef = useRef<HTMLDivElement>(null);
@@ -527,6 +530,7 @@ const TypeZone = ({
       setCompletedWords(0);
       setGraphData([]);
       setIsAfk(false);
+      setTestFailed(false);
       elapsedSecondsRef.current = 0;
       lastTypingTimeRef.current = Date.now();
       warningPlayedRef.current = false;
@@ -541,19 +545,41 @@ const TypeZone = ({
       };
    }, []);
 
-   // * Check for AFK (5 seconds of inactivity)
+   // * Check for AFK (5 seconds of inactivity) and auto-end after 30 seconds
    useEffect(() => {
       if (!testStart || testEnd) return;
 
       const afkCheckInterval = setInterval(() => {
          const timeSinceLastTyping = Date.now() - lastTypingTimeRef.current;
+
+         // Set AFK flag after 5 seconds of inactivity
          if (timeSinceLastTyping >= 5000) {
             setIsAfk(true);
+         }
+
+         // Auto-end test after 30 seconds of inactivity (only in word mode)
+         if (mode === "words" && timeSinceLastTyping >= 30000) {
+            if (timerRef.current) {
+               clearInterval(timerRef.current);
+               timerRef.current = null;
+            }
+            setTestFailed(true);
+            setTestEnd(true);
+         }
+
+         // Auto-end test after 5 minutes maximum time (only in word mode)
+         if (mode === "words" && elapsedSecondsRef.current >= 300) {
+            if (timerRef.current) {
+               clearInterval(timerRef.current);
+               timerRef.current = null;
+            }
+            setTestFailed(true);
+            setTestEnd(true);
          }
       }, 1000);
 
       return () => clearInterval(afkCheckInterval);
-   }, [testStart, testEnd]);
+   }, [testStart, testEnd, mode]);
 
    // * Blur active element when test ends so Tab focuses Next Test button first
    useEffect(() => {
@@ -561,6 +587,28 @@ const TypeZone = ({
          (document.activeElement as HTMLElement)?.blur();
       }
    }, [testEnd]);
+
+   // * Show error toast when test fails due to inactivity
+   useEffect(() => {
+      if (testFailed) {
+         toast(
+            <CustomToast
+               type="error"
+               title="Test Failed"
+               message="Test failed - inactivity detected"
+            />,
+            {
+               position: "top-right",
+               autoClose: 3000,
+               hideProgressBar: true,
+               closeOnClick: true,
+               pauseOnHover: true,
+               draggable: false,
+               transition: Bounce,
+            }
+         );
+      }
+   }, [testFailed]);
 
    // * Calculate raw WPM
    const calculateRAW = () => {
@@ -626,6 +674,7 @@ const TypeZone = ({
       setCompletedWords(0);
       setGraphData([]);
       setIsAfk(false);
+      setTestFailed(false);
       elapsedSecondsRef.current = 0;
       lastTypingTimeRef.current = Date.now();
       warningPlayedRef.current = false;
@@ -674,6 +723,7 @@ const TypeZone = ({
                      mode={mode}
                      testWords={testWords}
                      isAfk={isAfk}
+                     testFailed={testFailed}
                   />
                </div>
                <div className="nextTestSection flex flex-col items-center mt-8">

@@ -23,6 +23,7 @@ const Stats = ({
    mode,
    testWords,
    isAfk,
+   testFailed,
 }: StatsProps) => {
    const testModeContext = useTestMode();
    const testTime = testModeContext?.testTime || 30;
@@ -34,19 +35,26 @@ const Stats = ({
    useEffect(() => {
       if (hasPushed.current) return;
 
+      // Check if test failed due to inactivity or timeout (word mode auto-end)
+      if (testFailed) {
+         hasPushed.current = true;
+         setFailReason("bad activity");
+         return;
+      }
+
       // Check if test failed due to min speed or min accuracy settings (works for all users)
-      let testFailed = false;
+      let testFailedSettings = false;
       let reason = null;
 
       if (minSpeedMode === "custom" && wpm < minSpeedValue) {
-         testFailed = true;
+         testFailedSettings = true;
          reason = "min speed";
       } else if (minAccuracyMode === "custom" && accuracy < minAccuracyValue) {
-         testFailed = true;
+         testFailedSettings = true;
          reason = "min accuracy";
       }
 
-      if (testFailed && reason) {
+      if (testFailedSettings && reason) {
          hasPushed.current = true; // Mark as processed to prevent re-running
          setFailReason(reason);
          toast(
@@ -74,7 +82,6 @@ const Stats = ({
          return;
       }
 
-      // Todo : Accuracy options - user get to choose accuracy % to set as invalid test
       // Todo : AFK detection improvements - implement better AFK detection logic
       if (isAfk && (accuracy === 0 || Number.isNaN(accuracy))) {
          toast(
