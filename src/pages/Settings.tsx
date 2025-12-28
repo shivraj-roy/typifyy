@@ -1,6 +1,5 @@
 import {
    FaBolt,
-   FaChevronDown,
    FaBullseye,
    FaVolumeUp,
    FaVolumeDown,
@@ -8,6 +7,8 @@ import {
    FaChartPie,
    FaExclamationTriangle,
    FaLock,
+   FaUndo,
+   FaTools,
 } from "react-icons/fa";
 import { Bounce, toast } from "react-toastify";
 import SubSetting from "../components/SubSetting";
@@ -77,6 +78,41 @@ const Settings = () => {
       );
    };
 
+   // Reset all settings to default values
+   const resetSettings = () => {
+      try {
+         setMinSpeedMode("off");
+         setMinSpeedValue(100);
+         setMinAccuracyMode("off");
+         setMinAccuracyValue(75);
+         setSoundVolume(0.5);
+         setSoundMode("off");
+         setErrorSoundMode("off");
+         setTimeWarningMode("off");
+         setLiveProgressMode("mini");
+         setCapsLockWarningMode("show");
+
+         toast(
+            <CustomToast
+               type="success"
+               title="Settings Reset"
+               message="All settings have been reset to default values"
+            />,
+            {
+               position: "top-right",
+               autoClose: 2000,
+               hideProgressBar: true,
+               closeOnClick: true,
+               pauseOnHover: true,
+               draggable: false,
+               transition: Bounce,
+            }
+         );
+      } catch {
+         showErrorToast();
+      }
+   };
+
    // Validators
    const validateMinSpeed = (value: string) => {
       const num = parseInt(value, 10);
@@ -118,12 +154,12 @@ const Settings = () => {
          <div className="pageSettings flex flex-col gap-8">
             <button
                className="sectionDropdown text-[2rem] p-2 flex gap-4 items-center text-fade-100"
-               id="group_behavior"
+               id="group_settings"
             >
-               <FaChevronDown size={28} />
-               <span>behavior</span>
+               <FaTools size={28} />
+               <span>settings</span>
             </button>
-            <div className="sectionGroup behavior grid gap-8 mx-3">
+            <div className="sectionGroup settings grid gap-8 mx-3">
                <SubSetting
                   icon={<FaBolt size={16} />}
                   title="min speed"
@@ -525,6 +561,28 @@ const Settings = () => {
                               showErrorToast();
                            }
                         },
+                     },
+                  ]}
+               />
+               <SubSetting
+                  icon={<FaUndo size={16} />}
+                  title="reset settings"
+                  description={
+                     <>
+                        Resets settings to the default.{" "}
+                        <span className="text-red-500/70 font-semibold">
+                           You can't undo this action!
+                        </span>
+                     </>
+                  }
+                  showInput={false}
+                  buttons={[
+                     {
+                        label: "reset settings",
+                        isActive: false,
+                        onClick: resetSettings,
+                        className:
+                           "cursor-pointer p-2 rounded-lg text-center h-min text-[1em] bg-red-500/60 hover:bg-fade text-fade-100 hover:text-dark-100 transition-colors",
                      },
                   ]}
                />

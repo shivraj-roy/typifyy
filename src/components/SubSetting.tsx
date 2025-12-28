@@ -5,6 +5,7 @@ interface ButtonConfig {
    label: string;
    isActive: boolean;
    onClick: () => void;
+   className?: string; // Optional custom className for special buttons
 }
 
 type ValidatorFn = (
@@ -16,7 +17,7 @@ type ValidatorFn = (
 interface SubSettingProps {
    icon: ReactNode;
    title: string;
-   description: string;
+   description: ReactNode; // Changed from string to ReactNode to support JSX
    buttons: ButtonConfig[];
    showInput?: boolean;
    showSlider?: boolean;
@@ -106,9 +107,12 @@ const SubSetting = ({
                   <button
                      key={index}
                      onClick={button.onClick}
-                     className={`cursor-pointer p-2 rounded-lg text-center h-min text-[1em] gap-2 justify-center align-baseline hover:bg-glow-100 hover:text-dark-100 ${
-                        button.isActive ? "activeBtn" : "bg-dark-100/40"
-                     }`}
+                     className={
+                        button.className ||
+                        `cursor-pointer p-2 rounded-lg text-center h-min text-[1em] gap-2 justify-center align-baseline hover:bg-glow-100 hover:text-dark-100 ${
+                           button.isActive ? "activeBtn" : "bg-dark-100/40"
+                        }`
+                     }
                   >
                      {button.label}
                   </button>

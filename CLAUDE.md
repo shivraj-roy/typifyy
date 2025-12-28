@@ -410,7 +410,7 @@ npm run preview  # Preview production build
 ### Settings Page
 
 -  `src/pages/Settings.tsx` - User settings configuration page
--  **Behavior Settings Section**: Collapsible section with FaChevronDown icon
+-  **Settings Section**: Section header with FaTools icon and "settings" label
    -  **Min Speed Setting**:
       -  Icon: FaBolt
       -  Modes: "off" | "custom" (toggle buttons)
@@ -464,6 +464,22 @@ npm run preview  # Preview production build
       -  "show": Orange/red warning box appears above typing area when Caps Lock is detected
       -  Warning uses absolute positioning to prevent layout shift
       -  Updates in real-time as Caps Lock state changes
+   -  **Reset Settings**:
+      -  Icon: FaUndo
+      -  Single button: "reset settings" (red background with custom styling)
+      -  Description: "Resets settings to the default." with red warning: "You can't undo this action!"
+      -  **Functionality**: Resets all settings to their default values:
+         -  Min speed: mode = "off", value = 100 WPM
+         -  Min accuracy: mode = "off", value = 75%
+         -  Sound volume: 0.5
+         -  Sound mode: "off"
+         -  Error sound mode: "off"
+         -  Time warning mode: "off"
+         -  Live progress mode: "mini"
+         -  Caps lock warning mode: "show"
+      -  **Toast Notification**: Shows "Settings Reset - All settings have been reset to default values" (2-second duration)
+      -  **Destructive Action**: Red button styling to indicate permanent change
+      -  Uses SubSetting component with custom button className for red styling
 -  **Save Behavior**:
    -  Toast notification shows "Saved" on:
       -  Button click (mode toggle, but only if changing to a different mode)
@@ -481,9 +497,14 @@ npm run preview  # Preview production build
    -  Invalid values cannot be saved (toast only shows for valid values)
 -  **SubSetting Component**: Reusable component for settings sections
    -  Props: icon, title, description, buttons, showInput, inputValue, showSlider, sliderValue, sliderMin, sliderMax, sliderStep, onInputChange, onSliderChange, onInputCommit, validator
+   -  **Description**: Supports ReactNode (allows JSX elements like styled text, not just plain strings)
+   -  **Buttons**: Each button in buttons array supports optional `className` prop for custom styling
+      -  If `className` is provided, it overrides default button styling
+      -  If not provided, uses standard button styling with active/inactive states
    -  Handles mode toggle buttons, optional numeric input, and optional slider input
    -  Passes validation to InputAndIndicator for visual feedback
    -  Slider support: pill-shaped handle with dynamic styling
+   -  **Grid Layout**: 2-column grid (2fr for content, 1fr for controls) with gap-4 spacing
 
 ### Sound Player Utility
 
