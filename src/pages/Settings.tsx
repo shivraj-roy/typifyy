@@ -7,6 +7,7 @@ import {
    FaVolumeMute,
    FaChartPie,
    FaExclamationTriangle,
+   FaLock,
 } from "react-icons/fa";
 import { Bounce, toast } from "react-toastify";
 import SubSetting from "../components/SubSetting";
@@ -38,6 +39,8 @@ const Settings = () => {
       setTimeWarningMode,
       liveProgressMode,
       setLiveProgressMode,
+      capsLockWarningMode,
+      setCapsLockWarningMode,
    } = useSettings();
 
    const showSavedToast = () => {
@@ -481,6 +484,42 @@ const Settings = () => {
                               if (liveProgressMode !== "bar") {
                                  setLiveProgressMode("bar");
                                  // showSavedToast();
+                              }
+                           } catch {
+                              showErrorToast();
+                           }
+                        },
+                     },
+                  ]}
+               />
+               <SubSetting
+                  icon={<FaLock size={16} />}
+                  title="caps lock warning"
+                  description="Displays a warning when caps lock is on."
+                  showInput={false}
+                  buttons={[
+                     {
+                        label: "hide",
+                        isActive: capsLockWarningMode === "hide",
+                        onClick: () => {
+                           try {
+                              if (capsLockWarningMode !== "hide") {
+                                 setCapsLockWarningMode("hide");
+                                 showSavedToast();
+                              }
+                           } catch {
+                              showErrorToast();
+                           }
+                        },
+                     },
+                     {
+                        label: "show",
+                        isActive: capsLockWarningMode === "show",
+                        onClick: () => {
+                           try {
+                              if (capsLockWarningMode !== "show") {
+                                 setCapsLockWarningMode("show");
+                                 showSavedToast();
                               }
                            } catch {
                               showErrorToast();

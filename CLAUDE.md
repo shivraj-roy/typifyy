@@ -67,13 +67,14 @@ npm run preview  # Preview production build
    -  Provider wraps app in `main.tsx`
 -  `src/context/Settings.tsx` - Global context for user settings
    -  Access via `useSettings()` hook
-   -  State: `minSpeedMode`, `minSpeedValue`, `minAccuracyMode`, `minAccuracyValue`, `soundVolume`, `soundMode`, `errorSoundMode`, `timeWarningMode`, `liveProgressMode`
+   -  State: `minSpeedMode`, `minSpeedValue`, `minAccuracyMode`, `minAccuracyValue`, `soundVolume`, `soundMode`, `errorSoundMode`, `timeWarningMode`, `liveProgressMode`, `capsLockWarningMode`
    -  Settings modes: "off" | "custom"
    -  Sound modes: "off" | "nk cream" | "osu"
    -  Error sound modes: "off" | "blow" | "slap" | "whoosh"
    -  Time warning modes: "off" | "1" | "3" | "5" (seconds)
    -  Live progress modes: "off" | "mini" | "bar"
-   -  Default values: min speed = 100 WPM, min accuracy = 75%, sound volume = 0.5, live progress = "mini"
+   -  Caps lock warning modes: "hide" | "show"
+   -  Default values: min speed = 100 WPM, min accuracy = 75%, sound volume = 0.5, live progress = "mini", caps lock warning = "show"
    -  **Persistence**: All settings automatically saved to localStorage
    -  Provider wraps app in `main.tsx`
 
@@ -154,6 +155,17 @@ npm run preview  # Preview production build
       -  Uses active color (orange/red) for progress indicator
       -  Hidden when test hasn't started or has ended
    -  **Off mode**: Neither component renders (no progress indicator shown)
+-  **Caps Lock Warning**:
+   -  Controlled by `capsLockWarningMode` setting: "hide" | "show" (default: "show")
+   -  **Detection**: Uses `getModifierState("CapsLock")` on keyboard events to detect Caps Lock state
+   -  **Display**: Orange/red warning box with lock icon and "Caps Lock" text
+   -  **Positioning**: Absolutely positioned above testModesNotice section
+      -  Uses `absolute -top-16 left-1/2 -translate-x-1/2` for centered positioning
+      -  Parent container has `overflow-visible` to prevent clipping
+      -  Z-index: 50 to appear above other elements
+   -  **Conditional Rendering**: Only shows when `capsLockOn && capsLockWarningMode === "show"`
+   -  **State Management**: `capsLockOn` state tracks current Caps Lock status in real-time
+   -  **No Layout Shift**: Absolute positioning ensures warning doesn't push content down when appearing
 
 ### Firebase Integration
 
@@ -206,10 +218,11 @@ npm run preview  # Preview production build
    -  `ErrorSoundMode` - "off" | "blow" | "slap" | "whoosh"
    -  `TimeWarningMode` - "off" | "1" | "3" | "5"
    -  `LiveProgressMode` - "off" | "mini" | "bar"
+   -  `CapsLockWarningMode` - "hide" | "show"
    -  `StatsProps` - Stats component props (wpm, raw, accuracy, graphData, mode, isAfk, etc.)
    -  `ButtonProps` - Button component props (btnIcon, btnTxt, btnClass, btnClick)
    -  `TestModeContextType` - Context interface (mode, testTime, testWords + setters)
-   -  `SettingsContextType` - Context interface (minSpeedMode, minSpeedValue, minAccuracyMode, minAccuracyValue, soundVolume, soundMode, errorSoundMode, timeWarningMode, liveProgressMode + setters)
+   -  `SettingsContextType` - Context interface (minSpeedMode, minSpeedValue, minAccuracyMode, minAccuracyValue, soundVolume, soundMode, errorSoundMode, timeWarningMode, liveProgressMode, capsLockWarningMode + setters)
    -  `PersonalBestData` - Personal best record (wpm, raw, accuracy, consistency, timestamp)
    -  `PersonalBestCardProps` - PersonalBestCard component props (label, data)
 
@@ -443,6 +456,14 @@ npm run preview  # Preview production build
       -  "bar": Shows TimeProgressBar component (horizontal progress bar at top of viewport)
       -  Time mode (bar): Progress bar starts at 100% width, decreases to 0% as timer counts down
       -  Words mode (bar): Progress bar starts at 0% width, increases to 100% as words are completed
+   -  **Caps Lock Warning Setting**:
+      -  Icon: FaLock
+      -  Modes: "hide" | "show" (toggle buttons, default: "show")
+      -  Description: "Displays a warning when caps lock is on"
+      -  "hide": Caps Lock warning box never appears, even when Caps Lock is on
+      -  "show": Orange/red warning box appears above typing area when Caps Lock is detected
+      -  Warning uses absolute positioning to prevent layout shift
+      -  Updates in real-time as Caps Lock state changes
 -  **Save Behavior**:
    -  Toast notification shows "Saved" on:
       -  Button click (mode toggle, but only if changing to a different mode)

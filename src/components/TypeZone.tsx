@@ -8,7 +8,13 @@ import {
    useCallback,
 } from "react";
 import { Link } from "react-router-dom";
-import { FaRedoAlt, FaChevronRight, FaBolt, FaBullseye } from "react-icons/fa";
+import {
+   FaRedoAlt,
+   FaChevronRight,
+   FaBolt,
+   FaBullseye,
+   FaLock,
+} from "react-icons/fa";
 import { useTestMode } from "../context/TestMode";
 import { useSettings } from "../context/Settings";
 import TimeCounter from "./TimeCounter";
@@ -46,6 +52,7 @@ const TypeZone = ({
       errorSoundMode,
       timeWarningMode,
       liveProgressMode,
+      capsLockWarningMode,
    } = useSettings();
 
    const [words, setWords] = useState<string[]>(() => {
@@ -66,6 +73,7 @@ const TypeZone = ({
    const [completedWords, setCompletedWords] = useState(0);
    const [graphData, setGraphData] = useState<number[][]>([]);
    const [isAfk, setIsAfk] = useState(false);
+   const [capsLockOn, setCapsLockOn] = useState(false);
 
    const inputRef = useRef<HTMLInputElement>(null);
    const wordsContainerRef = useRef<HTMLDivElement>(null);
@@ -196,10 +204,7 @@ const TypeZone = ({
                   }
 
                   // Play time warning sound if enabled and threshold reached
-                  if (
-                     timeWarningMode !== "off" &&
-                     !warningPlayedRef.current
-                  ) {
+                  if (timeWarningMode !== "off" && !warningPlayedRef.current) {
                      const warningThreshold = parseInt(timeWarningMode);
                      if (prev === warningThreshold) {
                         playWarningSound(soundVolume);
@@ -276,6 +281,10 @@ const TypeZone = ({
    // * Handles user input...
    const handleUserInput = (e: React.KeyboardEvent<HTMLInputElement>) => {
       console.log(e.key);
+
+      // Detect Caps Lock state
+      const isCapsLockOn = e.getModifierState("CapsLock");
+      setCapsLockOn(isCapsLockOn);
 
       // Play key sound
       if (soundMode !== "off") {
@@ -694,8 +703,14 @@ const TypeZone = ({
             </div>
          ) : (
             <div className="w-full flex flex-col items-center -mt-24">
-               <div className="w-full overflow-hidden" onClick={focusInput}>
-                  <div className="testModesNotice flex justify-center text-center gap-2 transition-opacity duration-150">
+               <div className="w-full overflow-visible" onClick={focusInput}>
+                  <div className="testModesNotice flex justify-center text-center gap-2 transition-opacity duration-150 relative">
+                     {capsLockOn && capsLockWarningMode === "show" && (
+                        <div className="capsWarning absolute -top-16 left-1/2 -translate-x-1/2 flex gap-2.5 items-center text-dark-100 text-[1rem] bg-active w-fit p-4 rounded-lg pointer-events-none z-50">
+                           <FaLock size={16} />
+                           <span>Caps Lock</span>
+                        </div>
+                     )}
                      {minSpeedMode === "custom" && (
                         <TextButton
                            icon={<FaBolt size={16} />}

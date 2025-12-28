@@ -5,6 +5,7 @@ import {
    ErrorSoundMode,
    TimeWarningMode,
    LiveProgressMode,
+   CapsLockWarningMode,
    SettingsContextType,
 } from "../types";
 
@@ -58,6 +59,11 @@ export const SettingsContextProvider = ({
    const [liveProgressMode, setLiveProgressMode] = useState<LiveProgressMode>(() => {
       const saved = localStorage.getItem("liveProgressMode");
       return (saved as LiveProgressMode) || "mini";
+   });
+
+   const [capsLockWarningMode, setCapsLockWarningMode] = useState<CapsLockWarningMode>(() => {
+      const saved = localStorage.getItem("capsLockWarningMode");
+      return (saved as CapsLockWarningMode) || "show";
    });
 
    // Save to localStorage whenever settings change
@@ -133,6 +139,14 @@ export const SettingsContextProvider = ({
       }
    }, [liveProgressMode]);
 
+   useEffect(() => {
+      try {
+         localStorage.setItem("capsLockWarningMode", capsLockWarningMode);
+      } catch (error) {
+         console.error("Failed to save capsLockWarningMode to localStorage:", error);
+      }
+   }, [capsLockWarningMode]);
+
    return (
       <SettingsContext.Provider
          value={{
@@ -154,6 +168,8 @@ export const SettingsContextProvider = ({
             setTimeWarningMode,
             liveProgressMode,
             setLiveProgressMode,
+            capsLockWarningMode,
+            setCapsLockWarningMode,
          }}
       >
          {children}
