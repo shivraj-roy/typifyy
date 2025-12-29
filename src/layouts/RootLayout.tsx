@@ -11,7 +11,9 @@ const RootLayout = () => {
          <div className={isLoading ? "opacity-30 pointer-events-none" : ""}>
             <Header />
          </div>
-         {isLoading ? <LoadingBar /> : <Outlet />}
+         <div className="w-full h-full">
+            {isLoading ? <LoadingBar /> : <Outlet />}
+         </div>
          <div className={isLoading ? "opacity-30 pointer-events-none" : ""}>
             <Footer />
          </div>

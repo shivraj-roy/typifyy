@@ -29,7 +29,7 @@ const NavIcon = ({ to, icon, tooltip, onClick }: NavIconProps) => {
    return (
       <Link
          to={to}
-         className="relative w-9 h-9 flex items-center justify-center p-2 text-fade-100 hover:text-glow-100 transition-colors"
+         className="relative w-7 h-7 md:w-9 md:h-9 flex items-center justify-center p-1.5 md:p-2 text-fade-100 hover:text-glow-100 transition-colors"
          onMouseEnter={handleMouseEnter}
          onMouseLeave={handleMouseLeave}
          onClick={onClick}

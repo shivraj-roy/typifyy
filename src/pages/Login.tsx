@@ -288,8 +288,8 @@ const Login = () => {
 
    return (
       <>
-         <div className="max-w-full h-full flex justify-around items-center">
-            <div className="register-side w-72">
+         <div className="w-full h-full flex flex-col md:flex-row justify-around items-center gap-12 md:gap-0">
+            <div className="register-side w-full max-w-xs md:w-72">
                <div className="title flex items-center">
                   <div className="icon w-9 h-9 flex items-center justify-center p-2">
                      <FiUserPlus size={22} />
@@ -349,7 +349,7 @@ const Login = () => {
                   />
                </form>
             </div>
-            <div className="login-side w-72 ">
+            <div className="login-side w-full max-w-xs md:w-72">
                <div className="title flex items-center">
                   <div className="icon w-9 h-9 flex items-center justify-center p-2">
                      <FaSignInAlt size={22} />

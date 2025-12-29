@@ -4,7 +4,7 @@ import TextButton from "./ui/TextButton";
 const Footer = () => {
    return (
       <>
-         <div className="keyTips text-[0.7em] text-fade-100 mt-4">
+         <div className="keyTips text-[0.7em] text-fade-100 mb-4 lg:mt-4">
             <kbd className="text-dark-100 bg-fade-100 py-0.5 px-1.5 rounded-sm">
                tab
             </kbd>{" "}
@@ -14,8 +14,8 @@ const Footer = () => {
             </kbd>{" "}
             - restart test
          </div>
-         <div className="grid grid-cols-[1fr_max-content] gap-8">
-            <div className="left grid grid-flow-col gap-4 text-left justify-start">
+         <div className="grid grid-cols-[1fr_max-content] gap-4 md:gap-8">
+            <div className="left grid grid-flow-row md:grid-flow-col gap-1 md:gap-4 text-left justify-start">
                <TextButton icon={<FaEnvelope size={15} />} text="contact" />
                <TextButton icon={<FaDonate size={15} />} text="support" />
                <TextButton

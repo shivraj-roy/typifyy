@@ -36,13 +36,17 @@ const Header = () => {
    // Close menu when clicking outside
    useEffect(() => {
       const handleClickOutside = (event: MouseEvent) => {
-         if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+         if (
+            menuRef.current &&
+            !menuRef.current.contains(event.target as Node)
+         ) {
             setIsMenuOpen(false);
          }
       };
 
       document.addEventListener("mousedown", handleClickOutside);
-      return () => document.removeEventListener("mousedown", handleClickOutside);
+      return () =>
+         document.removeEventListener("mousedown", handleClickOutside);
    }, []);
 
    // Dispatch restart test event
@@ -103,18 +107,18 @@ const Header = () => {
                className="logo flex items-center gap-2"
                onClick={handleRestartTest}
             >
-               <div className="icon w-10">
+               <div className="icon w-10 hidden md:block">
                   <img src="/assets/typifyy.png" alt="typifyy-logo" />
                </div>
-               <h1 className="text relative text-4xl leading-8 font-logo tracking-wide text-glow-100">
-                  <div className="top-text text-[0.325em] leading-[0.325em] left-[0.35em] -top-[0.85em] absolute text-fade-100">
+               <h1 className="text relative text-2xl md:text-4xl leading-8 font-logo tracking-wide text-active md:text-glow-100">
+                  <div className="top-text text-[0.325em] leading-[0.325em] left-[0.35em] -top-[0.85em] absolute text-fade-100 hidden md:block">
                      on the beat
                   </div>
                   typifyy
                </h1>
             </Link>
-            <nav className="flex items-center justify-between w-full px-6">
-               <div className="left-nav flex items-center gap-3">
+            <nav className="flex items-center justify-between w-full px-1 md:px-6">
+               <div className="left-nav flex items-center gap-0.5 md:gap-3">
                   <NavIcon
                      to="/"
                      icon={<BsFillKeyboardFill size={20} />}
@@ -148,7 +152,9 @@ const Header = () => {
                         <button
                            onClick={() => {
                               // Only toggle on touch devices (non-hover devices)
-                              if (!window.matchMedia("(hover: hover)").matches) {
+                              if (
+                                 !window.matchMedia("(hover: hover)").matches
+                              ) {
                                  setIsMenuOpen(!isMenuOpen);
                               }
                            }}
