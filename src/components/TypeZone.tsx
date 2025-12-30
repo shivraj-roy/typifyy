@@ -703,11 +703,25 @@ const TypeZone = ({
    }, [restartTest]);
 
    return (
-      <div className="typeZoneContainer grid grid-rows-[auto_1fr] w-full h-full items-center">
-         <MenuBar testStart={testStart} />
+      <>
+         {/* Hero message for small devices */}
+         <div className="md:hidden w-full h-full flex items-center justify-center px-8 text-center">
+            <div>
+               <h2 className="text-2xl md:text-3xl text-glow mb-4">
+                  For better experience
+               </h2>
+               <p className="text-lg text-fade-100">
+                  Test your typing on a larger device
+               </p>
+            </div>
+         </div>
+
+         {/* TypeZone for medium and large devices */}
+         <div className="typeZoneContainer hidden md:grid grid-rows-[auto_1fr] w-full max-w-full h-full items-center overflow-hidden">
+            <MenuBar testStart={testStart} />
          {testEnd ? (
-            <div className="w-full flex flex-col items-center -mt-24">
-               <div className="w-full overflow-hidden h-[17rem]">
+            <div className="w-full max-w-full flex flex-col items-center justify-center -mt-24">
+               <div className="w-full max-w-full overflow-hidden lg:h-[17rem]">
                   <Stats
                      raw={calculateRAW()}
                      wpm={calculateWPM()}
@@ -852,6 +866,7 @@ const TypeZone = ({
             </div>
          )}
       </div>
+      </>
    );
 };
 export default TypeZone;
