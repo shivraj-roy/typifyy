@@ -702,6 +702,21 @@ const TypeZone = ({
       };
    }, [restartTest]);
 
+   // * Dispatch custom events when test starts or ends
+   useEffect(() => {
+      if (testStart) {
+         window.dispatchEvent(new CustomEvent("testStartEvent"));
+      } else {
+         window.dispatchEvent(new CustomEvent("testEndEvent"));
+      }
+   }, [testStart]);
+
+   useEffect(() => {
+      if (testEnd) {
+         window.dispatchEvent(new CustomEvent("testEndEvent"));
+      }
+   }, [testEnd]);
+
    return (
       <>
          {/* Hero message for small devices */}

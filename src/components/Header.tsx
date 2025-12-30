@@ -23,6 +23,7 @@ const Header = () => {
    const [user, setUser] = useState<User | null>(null);
    const [authLoading, setAuthLoading] = useState(true);
    const [isMenuOpen, setIsMenuOpen] = useState(false);
+   const [testInProgress, setTestInProgress] = useState(false);
    const menuRef = useRef<HTMLDivElement>(null);
 
    useEffect(() => {
@@ -31,6 +32,20 @@ const Header = () => {
          setAuthLoading(false);
       });
       return () => unsubscribe();
+   }, []);
+
+   // Listen for test start/end events
+   useEffect(() => {
+      const handleTestStart = () => setTestInProgress(true);
+      const handleTestEnd = () => setTestInProgress(false);
+
+      window.addEventListener("testStartEvent", handleTestStart);
+      window.addEventListener("testEndEvent", handleTestEnd);
+
+      return () => {
+         window.removeEventListener("testStartEvent", handleTestStart);
+         window.removeEventListener("testEndEvent", handleTestEnd);
+      };
    }, []);
 
    // Close menu when clicking outside
@@ -104,7 +119,9 @@ const Header = () => {
          <div className="header flex items-center">
             <Link
                to="/"
-               className="logo flex items-center gap-2"
+               className={`logo flex items-center gap-2 transition-opacity duration-300 ${
+                  testInProgress ? "opacity-50" : "opacity-100"
+               }`}
                onClick={handleRestartTest}
             >
                <div className="icon w-10 hidden md:block">
@@ -117,7 +134,9 @@ const Header = () => {
                   typifyy
                </h1>
             </Link>
-            <nav className="flex items-center justify-between w-full px-1 md:px-6">
+            <nav className={`flex items-center justify-between w-full px-1 md:px-6 transition-opacity duration-300 ${
+               testInProgress ? "opacity-0 pointer-events-none" : "opacity-100"
+            }`}>
                <div className="left-nav flex items-center gap-0.5 md:gap-3">
                   <NavIcon
                      to="/"
