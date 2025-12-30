@@ -151,7 +151,7 @@ const Settings = () => {
    return (
       <>
          {/* <div>Settings</div> */}
-         <div className="pageSettings flex flex-col gap-8">
+         <div className="pageSettings flex flex-col gap-4 md:gap-8">
             <button
                className="sectionDropdown text-[2rem] p-2 flex gap-4 items-center text-fade-100"
                id="group_settings"

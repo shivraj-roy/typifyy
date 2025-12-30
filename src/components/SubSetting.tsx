@@ -52,12 +52,15 @@ const SubSetting = ({
    inputName = "setting",
 }: SubSettingProps) => {
    return (
-      <div className="section grid grid-cols-[2fr_1fr] grid-rows-[auto_1fr] gap-4">
-         <div className="groupTitle text-[1rem] text-fade-100 flex items-center gap-1.5">
+      <div className="section grid grid-cols-1 lg:grid-cols-[2fr_1fr] lg:grid-rows-[auto_1fr] gap-4">
+         <div className="groupTitle text-base md:text-[1rem] text-fade-100 flex items-center gap-1.5">
             {icon}
             <span>{title}</span>
          </div>
-         <div className="inputs grid grid-rows-[auto_1fr] gap-2 row-span-2 mt-10">
+         <div className="text text-start text-sm md:text-base lg:order-3">
+            {description}
+         </div>
+         <div className="inputs grid grid-rows-[auto_1fr] gap-2 lg:row-span-2 lg:mt-10 lg:order-2">
             {showInput && (
                <div className="inputAndBtn">
                   <InputAndIndicator
@@ -119,7 +122,6 @@ const SubSetting = ({
                ))}
             </div>
          </div>
-         <div className="text text-start">{description}</div>
       </div>
    );
 };

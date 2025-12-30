@@ -161,7 +161,7 @@ const Header = () => {
                            className="relative items-center p-2 grid gap-[0.33em] grid-flow-col text-fade-100 hover:text-glow-100 transition-colors cursor-pointer "
                         >
                            <FaUserCircle size={20} />
-                           <div className="text text-sm self-center">
+                           <div className="text text-sm self-center hidden md:block">
                               {user?.displayName ||
                                  user?.email?.split("@")[0] ||
                                  "User"}

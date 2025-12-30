@@ -133,13 +133,19 @@
    .volumeSlider::-webkit-slider-thumb {
       -webkit-appearance: none;
       appearance: none;
-      width: 120px;
+      width: 80px;
       height: 20px;
       border-radius: 20px;
       background: var(--color-active);
       cursor: grab;
       transition: all 0.2s ease;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+   }
+
+   @media (min-width: 1024px) {
+      .volumeSlider::-webkit-slider-thumb {
+         width: 100px;
+      }
    }
 
    .volumeSlider::-webkit-slider-thumb:hover {
@@ -147,7 +153,7 @@
    }
 
    .volumeSlider::-moz-range-thumb {
-      width: 120px;
+      width: 80px;
       height: 20px;
       border-radius: 20px;
       background: var(--color-active);
@@ -155,6 +161,12 @@
       border: none;
       transition: all 0.2s ease;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+   }
+
+   @media (min-width: 1024px) {
+      .volumeSlider::-moz-range-thumb {
+         width: 100px;
+      }
    }
 
    .volumeSlider::-moz-range-thumb:hover {
