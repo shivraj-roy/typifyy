@@ -166,8 +166,8 @@ function Account() {
    };
 
    return (
-      <div className="account-container w-full max-w-full overflow-x-hidden">
-         <div className="profile grid gap-8">
+      <div className="account-container w-full">
+         <div className="profile grid gap-4 md:gap-8">
             <UserDetails
                username={username}
                joinedDate={joinedDate}

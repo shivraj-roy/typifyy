@@ -127,13 +127,13 @@ const UserDetails = ({ username, joinedDate, data }: UserDetailsProps) => {
    }, [data]);
 
    return (
-      <div className="details grid grid-cols-[20.5rem_auto_1fr] gap-4 px-4 py-6 bg-dark-100/40 rounded-lg mt-6">
+      <div className="details grid grid-cols-1 lg:grid-cols-[20.5rem_auto_1fr] gap-4 px-4 py-6 bg-dark-100/40 rounded-lg mt-6">
          <div className="avatarAndName grid grid-cols-[auto_1fr] items-center gap-4">
-            <div className="avatar w-20 h-20 grid content-center">
-               <FaUserCircle size={80} />
+            <div className="avatar w-16 h-16 md:w-20 md:h-20 grid content-center">
+               <FaUserCircle className="w-full h-full" />
             </div>
             <div className="text-left">
-               <div className="username text-3xl">{username}</div>
+               <div className="username text-2xl md:text-3xl">{username}</div>
                {joinedDate && (
                   <div className="joined relative group text-[0.8em] leading-[0.8em] mt-1.5 text-fade-100 cursor-default w-fit">
                      joined {formatJoinedDate(joinedDate)}
@@ -144,8 +144,8 @@ const UserDetails = ({ username, joinedDate, data }: UserDetailsProps) => {
                )}
             </div>
          </div>
-         <div className="separator w-2 h-auto bg-fade-100/40 rounded-md" />
-         <div className="typingStats grid grid-cols-3 gap-2 w-full h-full text-left self-center items-center">
+         <div className="separator hidden lg:block w-2 h-auto bg-fade-100/40 rounded-md" />
+         <div className="typingStats grid grid-cols-1 sm:grid-cols-3 gap-2 w-full h-full text-left self-center items-center">
             <DetailCard
                title="current streak"
                value={`${stats.currentStreak} ${

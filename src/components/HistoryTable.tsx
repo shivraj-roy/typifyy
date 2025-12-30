@@ -59,14 +59,16 @@ function HistoryTable({ data }: HistoryTableProps) {
       <>
          <div className="history mt-8">
             <table className="w-full">
-               <thead className="text-[0.75rem] text-left text-fade-100">
+               <thead className="text-[0.65rem] md:text-[0.75rem] text-left text-fade-100">
                   <tr>
-                     <TableCell />
+                     <TableCell className="hidden md:table-cell" />
                      <TableCell>wpm</TableCell>
-                     <TableCell>raw</TableCell>
-                     <TableCell>accuracy</TableCell>
-                     <TableCell>consistency</TableCell>
-                     <TableCell>
+                     <TableCell className="hidden sm:table-cell">raw</TableCell>
+                     <TableCell>acc</TableCell>
+                     <TableCell className="hidden lg:table-cell">
+                        consistency
+                     </TableCell>
+                     <TableCell className="hidden md:table-cell">
                         <div className="relative group cursor-pointer">
                            <span>char</span>
                            <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-max bg-dark text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -74,8 +76,12 @@ function HistoryTable({ data }: HistoryTableProps) {
                            </div>
                         </div>
                      </TableCell>
-                     <TableCell>mode</TableCell>
-                     <TableCell>info</TableCell>
+                     <TableCell className="hidden md:table-cell">
+                        mode
+                     </TableCell>
+                     <TableCell className="hidden lg:table-cell">
+                        info
+                     </TableCell>
                      <TableCell>date</TableCell>
                   </tr>
                </thead>
@@ -83,32 +89,38 @@ function HistoryTable({ data }: HistoryTableProps) {
                   {visibleData.map((entry, index) => (
                      <tr
                         key={index}
-                        className={`text-left rounded-lg text-md h-14 ${
+                        className={`text-left rounded-lg text-sm md:text-md h-12 md:h-14 ${
                            index % 2 === 0 ? "bg-dark-100/40" : ""
                         }`}
                      >
-                        <TableCell className="rounded-bl-lg rounded-tl-lg">
+                        <TableCell className="hidden md:table-cell rounded-bl-lg rounded-tl-lg">
                            <FaCrown size={16} className="opacity-0" />
                         </TableCell>
-                        <TableCell>{entry.wpm}</TableCell>
-                        <TableCell>{getRawValue(entry)}</TableCell>
+                        <TableCell className="md:rounded-none rounded-bl-lg rounded-tl-lg">
+                           {entry.wpm}
+                        </TableCell>
+                        <TableCell className="hidden sm:table-cell">
+                           {getRawValue(entry)}
+                        </TableCell>
                         <TableCell>{entry.accuracy}%</TableCell>
-                        <TableCell>{entry.consistency}%</TableCell>
-                        <TableCell>
+                        <TableCell className="hidden lg:table-cell">
+                           {entry.consistency}%
+                        </TableCell>
+                        <TableCell className="hidden md:table-cell">
                            {entry.correctChar}/{entry.incorrectChar}/
                            {entry.missedChar}/{entry.extraChar}
                         </TableCell>
-                        <TableCell>
+                        <TableCell className="hidden md:table-cell">
                            {entry.mode}{" "}
                            {entry.mode === "words"
                               ? `${entry.testWords}`
                               : `${entry.testTime}`}
                         </TableCell>
-                        <TableCell>
+                        <TableCell className="hidden lg:table-cell">
                            <FaChartLine size={16} />
                         </TableCell>
-                        <TableCell className="rounded-br-lg rounded-tr-lg">
-                           <div>
+                        <TableCell className="rounded-br-lg rounded-tr-lg text-xs md:text-sm">
+                           <div className="leading-tight">
                               {new Date(
                                  entry.timestamp.seconds * 1000
                               ).toLocaleDateString("en-GB", {
@@ -117,7 +129,7 @@ function HistoryTable({ data }: HistoryTableProps) {
                                  year: "numeric",
                               })}
                            </div>
-                           <div>
+                           <div className="leading-tight">
                               {new Date(
                                  entry.timestamp.seconds * 1000
                               ).toLocaleTimeString("en-GB", {

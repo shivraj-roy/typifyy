@@ -16,7 +16,7 @@ interface PersonalBestsProps {
 
 const PersonalBests = ({ time, words }: PersonalBestsProps) => {
    return (
-      <div className="personalBests grid grid-cols-2 items-center justify-center gap-8">
+      <div className="personalBests grid grid-cols-1 lg:grid-cols-2 items-center justify-center gap-4 md:gap-8">
          <div className="pbsTime grid grid-cols-3 items-center justify-center gap-4 p-4 bg-dark-100/40 rounded-lg">
             <PersonalBestCard label="15 seconds" data={time[15]} />
             <PersonalBestCard label="30 seconds" data={time[30]} />

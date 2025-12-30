@@ -197,7 +197,7 @@ function ActivityHeatMap({ data }: ActivityHeatMapProps) {
    const weekLabels = ["", "monday", "", "wednesday", "", "friday", ""];
 
    return (
-      <div className="w-full bg-dark-100/40 rounded-lg p-6 mt-6">
+      <div className="w-full bg-dark-100/40 rounded-lg p-6 mt-6 hidden lg:block">
          <div className="flex justify-center">
             <div className="wrapper w-full max-w-full">
                {/* Header */}

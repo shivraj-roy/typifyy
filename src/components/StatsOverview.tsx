@@ -26,9 +26,13 @@ interface StatCardProps {
 function StatCard({ title, value, subtitle }: StatCardProps) {
    return (
       <div>
-         <div className="title text-fade-100">{title}</div>
-         <div className="value text-5xl leading-tight">{value}</div>
-         {subtitle && <div className="mode">{subtitle}</div>}
+         <div className="title text-fade-100 text-sm md:text-base">{title}</div>
+         <div className="value text-3xl md:text-4xl lg:text-5xl leading-tight">
+            {value}
+         </div>
+         {subtitle && (
+            <div className="mode text-sm md:text-base">{subtitle}</div>
+         )}
       </div>
    );
 }
@@ -171,7 +175,7 @@ function StatsOverview({ data }: StatsOverviewProps) {
    }
 
    return (
-      <div className="statsOverview grid grid-cols-3 gap-4 text-left mt-8">
+      <div className="statsOverview grid grid-cols-2 md:grid-cols-3 gap-4 text-left mt-8">
          {/* WPM Stats */}
          <StatCard
             title="highest wpm"

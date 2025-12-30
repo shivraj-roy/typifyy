@@ -41,7 +41,7 @@ const LoadingBar = ({ initialMessage = "Loading..." }: LoadingBarProps) => {
       <div className="flex items-center justify-center w-full h-full">
          <div className="flex flex-col items-center gap-6">
             {/* Progress bar container */}
-            <div className="w-80 h-2 bg-fade-100/20 rounded-full overflow-hidden">
+            <div className="w-48 md:w-80 h-2 bg-fade-100/20 rounded-full overflow-hidden">
                {/* Animated progress bar */}
                <div
                   className="h-full bg-active rounded-full transition-all duration-300 ease-out"
@@ -51,7 +51,7 @@ const LoadingBar = ({ initialMessage = "Loading..." }: LoadingBarProps) => {
 
             {/* Loading message */}
             <p
-               className={`text-lg font-mono tracking-wide transition-all duration-300 ${
+               className={`text-sm md:text-lg font-mono tracking-wide transition-all duration-300 ${
                   progress >= 100
                      ? "text-active font-semibold"
                      : "text-fade animate-pulse"
