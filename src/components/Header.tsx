@@ -124,19 +124,23 @@ const Header = () => {
                }`}
                onClick={handleRestartTest}
             >
-               <div className="icon w-10 hidden md:block">
-                  <img src="/assets/typifyy.png" alt="typifyy-logo" />
+               <div className="icon w-12">
+                  <img src="/assets/logo.svg" alt="typifyy-logo" />
                </div>
-               <h1 className="text relative text-2xl md:text-4xl leading-8 font-logo tracking-wide text-active md:text-glow-100">
+               <h1 className="text relative text-2xl md:text-4xl leading-8 font-logo tracking-wide text-active md:text-glow-100 hidden md:block">
                   <div className="top-text text-[0.325em] leading-[0.325em] left-[0.35em] -top-[0.85em] absolute text-fade-100 hidden md:block">
                      on the beat
                   </div>
                   typifyy
                </h1>
             </Link>
-            <nav className={`flex items-center justify-between w-full px-1 md:px-6 transition-opacity duration-300 ${
-               testInProgress ? "opacity-0 pointer-events-none" : "opacity-100"
-            }`}>
+            <nav
+               className={`flex items-center justify-between w-full px-1 md:px-6 transition-opacity duration-300 ${
+                  testInProgress
+                     ? "opacity-0 pointer-events-none"
+                     : "opacity-100"
+               }`}
+            >
                <div className="left-nav flex items-center gap-0.5 md:gap-3">
                   <NavIcon
                      to="/"
@@ -201,7 +205,7 @@ const Header = () => {
                                  text="user stats"
                                  className="rounded-t-md"
                               />
-                              <MenuItem
+                              {/* <MenuItem
                                  to="/account"
                                  icon={<FaGlobeAsia size={16} />}
                                  text="public profile"
@@ -210,7 +214,7 @@ const Header = () => {
                                  to="/account-settings"
                                  icon={<FaCog size={16} />}
                                  text="account settings"
-                              />
+                              /> */}
                               <MenuItem
                                  onClick={handleLogout}
                                  icon={<FaSignOutAlt size={16} />}
