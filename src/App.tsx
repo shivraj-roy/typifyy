@@ -5,6 +5,7 @@ import Login from "./pages/Login";
 import { ToastContainer } from "react-toastify";
 import Account from "./pages/Account";
 import Settings from "./pages/Settings";
+import About from "./pages/About";
 
 const router = createBrowserRouter([
    {
@@ -26,6 +27,10 @@ const router = createBrowserRouter([
          {
             path: "settings",
             element: <Settings />,
+         },
+         {
+            path: "about",
+            element: <About />,
          },
       ],
    },

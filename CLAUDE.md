@@ -37,7 +37,7 @@ npm run preview  # Preview production build
     index.ts          # Barrel export
   /context            # React Context for state management
   /layouts            # Layout components (RootLayout)
-  /pages              # Page components (Home, Login, Account)
+  /pages              # Page components (Home, Login, Account, About, Settings)
   /types              # TypeScript type definitions
   /ui                 # Legacy UI components (Button)
   /utils              # Utility functions (errorMapping.ts)
@@ -56,7 +56,7 @@ npm run preview  # Preview production build
    -  **Loading State**: Uses `useNavigation()` hook to detect route transitions
    -  During navigation: Header/Footer fade to 30% opacity, LoadingBar shows in outlet area
    -  After navigation: Normal rendering resumes
--  Pages: `Home` (typing test), `Login` (auth forms), `Account` (user history)
+-  Pages: `Home` (typing test), `Login` (auth forms), `Account` (user history), `About` (project info), `Settings` (user settings)
 -  Header nav links: `/`, `/about`, `/settings`, `/login` (or account dropdown when logged in)
 
 ### State Management
@@ -80,6 +80,12 @@ npm run preview  # Preview production build
 
 ### Core Typing Logic (TypeZone.tsx)
 
+-  **Responsive Design**:
+   -  **Mobile Hero Message**: On small devices (< 768px), TypeZone is hidden and replaced with hero message
+      -  Message: "For better experience / Test your typing on a larger device"
+      -  Centered layout with larger text for better readability
+      -  TypeZone only visible on md (768px) and larger devices
+   -  Container uses `grid max-w-full overflow-hidden` to prevent content overflow
 -  **Layout Structure**: Grid layout with `grid-rows-[auto_1fr]` and `items-center` for vertical centering
    -  MenuBar at top (auto height)
    -  Content section below (1fr - takes remaining space)
@@ -166,6 +172,15 @@ npm run preview  # Preview production build
    -  **Conditional Rendering**: Only shows when `capsLockOn && capsLockWarningMode === "show"`
    -  **State Management**: `capsLockOn` state tracks current Caps Lock status in real-time
    -  **No Layout Shift**: Absolute positioning ensures warning doesn't push content down when appearing
+-  **Opacity During Test**:
+   -  **Custom Events**: TypeZone dispatches `testStartEvent` and `testEndEvent` when test state changes
+   -  **Header Opacity**:
+      -  Logo fades to `opacity-50` during test (stays partially visible)
+      -  Navigation elements fade to `opacity-0` with `pointer-events-none` during test
+   -  **Footer Opacity**: All elements fade to `opacity-0` with `pointer-events-none` during test
+   -  **MenuBar Opacity**: Fades to `opacity-0` with `pointer-events-none` during test
+   -  **Implementation**: Header and Footer listen for custom events via `window.addEventListener`
+   -  **Transitions**: All opacity changes use smooth 300ms transitions
 
 ### Firebase Integration
 
@@ -245,6 +260,11 @@ npm run preview  # Preview production build
       -  Supports custom validators via `validator` prop
       -  Supports `onBlur` and `onKeyDown` event handlers for commit actions
    -  `CustomToast` - Styled toast notifications (success, error, warning, info)
+      -  **Responsive Design**: Different sizes for mobile and desktop
+         -  Mobile: `w-64 p-2` with smaller icons (16px) and text (`text-xs`)
+         -  Desktop: `w-80 p-3` with larger icons (18px) and text (`text-sm`)
+      -  Four types: success (green), error (red), warning (yellow), info (blue)
+      -  Each type has icon, background color, border color, and text color
    -  `NavIcon` - Navigation link with delayed tooltip (900ms delay), supports optional onClick
    -  `MenuItem` - Dropdown menu item (renders as Link or button based on props)
    -  `PersonalBestCard` - Displays personal best for a specific test mode with hover detail view
@@ -262,7 +282,10 @@ npm run preview  # Preview production build
       -  "Done" message styled with active color and bold font
       -  Smooth 300ms transitions for all changes
       -  Used in RootLayout (route transitions) and Account page (data loading)
--  Toast notifications via `react-toastify` (position: top-right, auto-close: 5000ms)
+-  Toast notifications via `react-toastify`:
+   -  **Responsive Positioning**: top-center on mobile (< 768px), top-right on desktop
+   -  Configured in `App.tsx` with dynamic position based on window width
+   -  Auto-close: 5000ms, transparent background, no close button
 
 ### Footer Component
 
@@ -416,9 +439,36 @@ npm run preview  # Preview production build
 -  **Animation**: Smooth 1-second transition for width changes (`transition-all duration-1000 ease-linear`)
 -  Integrated in TypeZone component, conditionally rendered based on `liveProgressMode` setting
 
+### About Page
+
+-  `src/pages/About.tsx` - Project information and documentation page
+-  **Layout**: Centered container with `max-w-4xl` and responsive gaps (`gap-6 md:gap-8`)
+-  **Sections**:
+   1. **Hero**: Project intro with Monkeytype attribution link
+   2. **Why Typifyy?**: Developer motivation and learning goals (FaLightbulb icon)
+   3. **Features**: 2-column grid of 8 key features (FaKeyboard icon)
+   4. **Built With**: Tech stack one-liner (FaCode icon)
+   5. **Made By**: Developer bio with GitHub/Portfolio links (FaHeart icon)
+      -  2-column grid of larger buttons (`grid-cols-1 sm:grid-cols-2`)
+      -  Buttons: `px-3.5 py-3.5 md:py-6` with `text-sm md:text-2xl`
+   6. **What's Next?**: Future roadmap with bullet list (FaRocket icon)
+      -  Roadmap items: Error mapping in graph, custom themes, music mode (Spotify integration), more settings
+      -  Call-to-action buttons in 3-column grid (`grid-cols-1 sm:grid-cols-2 lg:grid-cols-3`)
+      -  Buttons: Report an Issue (FaBug), Contribute (FaHandsHelping), Start Typing (FaPlay - active styled)
+   7. **Footer Note**: Thanks to Monkeytype and open-source community
+-  **Button Styling**: Settings-style buttons with icons
+   -  Normal buttons: `bg-dark-100/40 hover:bg-glow-100 hover:text-dark-100`
+   -  Active button (Start Typing): `activeBtn hover:bg-glow-100`
+   -  Larger padding: `px-3.5 py-3.5 md:py-6` with responsive text sizing
+-  **External Links**: GitHub repo, portfolio, issue tracker - all with `target="_blank" rel="noopener noreferrer"`
+
 ### Settings Page
 
 -  `src/pages/Settings.tsx` - User settings configuration page
+-  **Responsive Design**:
+   -  SubSetting component has responsive layout order (description before buttons on mobile)
+   -  Volume slider thumb width: 80px on mobile, 100px on desktop (1024px+ breakpoint)
+   -  Button grid adapts based on button count (3 or fewer use auto-fit grid, more than 3 use single column)
 -  **Settings Section**: Section header with FaTools icon and "settings" label
    -  **Min Speed Setting**:
       -  Icon: FaBolt
@@ -514,6 +564,25 @@ npm run preview  # Preview production build
    -  Passes validation to InputAndIndicator for visual feedback
    -  Slider support: pill-shaped handle with dynamic styling
    -  **Grid Layout**: 2-column grid (2fr for content, 1fr for controls) with gap-4 spacing
+   -  **Responsive Layout**: Uses CSS Grid `order` property to reorder elements on different breakpoints
+      -  Mobile: Title → Description → Inputs/Buttons (natural flow)
+      -  Desktop: Title and Inputs side-by-side, Description below Title (lg:order-3), Inputs get lg:order-2
+
+### Stats Component
+
+-  `src/components/Stats.tsx` - Test results display after test completion
+-  **Responsive Design**:
+   -  **Layout Changes**:
+      -  Mobile: Stacked vertical layout (`flex-col`)
+      -  Desktop: Horizontal layout (`lg:flex-row`)
+   -  **Left Stats Section** (WPM & Accuracy):
+      -  Mobile: Horizontal row (`flex-row`) with centered items
+      -  Desktop: Vertical column (`lg:flex-col`) taking 10% width
+      -  Text sizes: `text-xl lg:text-3xl` for labels, `text-4xl lg:text-6xl` for values
+   -  **Bottom Stats Section**:
+      -  Mobile: Wraps to multiple rows (`flex-wrap`) with gaps
+      -  Desktop: Single row (`lg:flex-nowrap`)
+   -  **Container**: Uses `w-full max-w-full overflow-hidden` to prevent horizontal overflow
 
 ### Sound Player Utility
 
@@ -555,7 +624,6 @@ npm run preview  # Preview production build
 
 ## Unimplemented Features
 
--  About page (linked but no route/component)
 -  Account settings page `/account-settings` (linked but no route/component)
 -  Public profile page (menu item exists but no route/component)
 -  GitHub sign-in (UI ready, handler not implemented)

@@ -21,9 +21,11 @@ const Footer = () => {
 
    return (
       <>
-         <div className={`keyTips text-[0.7em] text-fade-100 mb-4 lg:mt-4 transition-opacity duration-300 ${
-            testInProgress ? "opacity-0 pointer-events-none" : "opacity-100"
-         }`}>
+         <div
+            className={`keyTips text-[0.7em] text-fade-100 mb-4 lg:mt-4 transition-opacity duration-300 ${
+               testInProgress ? "opacity-0 pointer-events-none" : "opacity-100"
+            }`}
+         >
             <kbd className="text-dark-100 bg-fade-100 py-0.5 px-1.5 rounded-sm">
                tab
             </kbd>{" "}
@@ -33,16 +35,24 @@ const Footer = () => {
             </kbd>{" "}
             - restart test
          </div>
-         <div className={`grid grid-cols-[1fr_max-content] gap-4 md:gap-8 transition-opacity duration-300 ${
-            testInProgress ? "opacity-0 pointer-events-none" : "opacity-100"
-         }`}>
+         <div
+            className={`grid grid-cols-[1fr_max-content] gap-4 md:gap-8 transition-opacity duration-300 ${
+               testInProgress ? "opacity-0 pointer-events-none" : "opacity-100"
+            }`}
+         >
             <div className="left grid grid-flow-row md:grid-flow-col gap-1 md:gap-4 text-left justify-start">
-               <TextButton icon={<FaEnvelope size={15} />} text="contact" />
-               <TextButton icon={<FaDonate size={15} />} text="support" />
+               <TextButton
+                  icon={<FaEnvelope size={15} />}
+                  text="contact"
+                  href="https://www.linkedin.com/in/shivraj-roy10/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+               />
+               {/* <TextButton icon={<FaDonate size={15} />} text="support" /> */}
                <TextButton
                   icon={<FaCode size={15} />}
                   text="github"
-                  href="https://github.com/shivrajroy/typifyy"
+                  href="https://github.com/shivraj-roy/typifyy"
                   target="_blank"
                   rel="noopener noreferrer"
                />
@@ -50,7 +60,7 @@ const Footer = () => {
             <div className="right grid gap-4 justify-end text-right">
                <TextButton
                   icon={<FaPaintBrush size={15} />}
-                  text="made by shroy"
+                  text="made by shivraj"
                />
             </div>
          </div>
