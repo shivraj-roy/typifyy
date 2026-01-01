@@ -1,6 +1,13 @@
-import { FaCode, FaDonate, FaEnvelope, FaPaintBrush } from "react-icons/fa";
+import {
+   FaCode,
+   FaCodeBranch,
+   FaDonate,
+   FaEnvelope,
+   FaPaintBrush,
+} from "react-icons/fa";
 import { useEffect, useState } from "react";
 import TextButton from "./ui/TextButton";
+import packageJson from "../../package.json";
 
 const Footer = () => {
    const [testInProgress, setTestInProgress] = useState(false);
@@ -57,10 +64,15 @@ const Footer = () => {
                   rel="noopener noreferrer"
                />
             </div>
-            <div className="right grid gap-4 justify-end text-right">
+            <div className="right grid grid-flow-row md:grid-flow-col gap-1 md:gap-4 justify-end text-right">
                <TextButton
                   icon={<FaPaintBrush size={15} />}
                   text="made by shivraj"
+               />
+               <TextButton
+                  icon={<FaCodeBranch size={15} />}
+                  text={`v${packageJson.version}`}
+                  className="justify-end"
                />
             </div>
          </div>

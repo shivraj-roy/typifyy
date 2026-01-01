@@ -23,7 +23,7 @@ const TextButton = ({
    className = "",
 }: TextButtonProps) => {
    const baseClasses =
-      "textButton grid gap-1 grid-flow-col align-baseline items-center text-[0.75rem] leading-4 py-[0.25em] px-[0.5em] text-fade-100 cursor-pointer hover:text-glow-100 transition-colors no-underline";
+      "textButton flex gap-1 items-center text-[0.75rem] leading-4 py-[0.25em] px-[0.5em] text-fade-100 cursor-pointer hover:text-glow-100 transition-colors no-underline";
 
    // External link
    if (href) {

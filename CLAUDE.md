@@ -9,10 +9,12 @@ Typifyy is a typing test application built with React 19, TypeScript, and Vite. 
 ## Commands
 
 ```bash
-npm run dev      # Start development server
-npm run build    # TypeScript compile + Vite build
-npm run lint     # ESLint check
-npm run preview  # Preview production build
+npm run dev          # Start development server
+npm run build        # TypeScript compile + Vite build
+npm run lint         # ESLint check
+npm run preview      # Preview production build
+npm run format       # Format code with Prettier
+npm run format:check # Check code formatting without modifying files
 ```
 
 ## Directory Structure
@@ -289,13 +291,17 @@ npm run preview  # Preview production build
 
 ### Footer Component
 
--  `src/components/Footer.tsx` - Application footer with keyboard shortcuts and links
--  **Keyboard Shortcuts Section**: Shows "tab + enter - restart test" with styled `<kbd>` elements, positioned with `-mb-8`
+-  `src/components/Footer.tsx` - Application footer with keyboard shortcuts, links, and version display
+-  **Opacity During Test**: Fades to opacity-0 when typing test is active (listens to testStartEvent/testEndEvent)
+-  **Keyboard Shortcuts Section**: Shows "tab + enter - restart test" with styled `<kbd>` elements
 -  **Links Section**: Two-column grid layout
-   -  Left column: contact, support, and GitHub link (external link to repository)
-   -  Right column: "made by shroy" credit
--  All buttons use the reusable `TextButton` component
--  GitHub link opens in new tab with security attributes (`target="_blank"`, `rel="noopener noreferrer"`)
+   -  Left column: Contact (LinkedIn), GitHub link (external links to repository)
+   -  Right column: "made by shivraj" credit and version display
+-  **Version Display**: Shows current app version from `package.json` with FaCodeBranch icon
+   -  Format: `v1.0.0` (dynamically imports from package.json)
+   -  Responsive grid layout (stacks on mobile, horizontal on desktop)
+-  All buttons use the reusable `TextButton` component (flex layout with gap-1 for tight spacing)
+-  External links open in new tab with security attributes (`target="_blank"`, `rel="noopener noreferrer"`)
 -  Consistent hover styling (text-fade-100 → text-glow-100 transition)
 
 ### Header Component
@@ -621,6 +627,39 @@ npm run preview  # Preview production build
 -  Firebase 12.6.0 (auth + Firestore)
 -  Chart.js 4.5.1 + react-chartjs-2
 -  react-toastify, react-icons, random-words
+
+## Project Configuration
+
+### Version Management
+
+-  **package.json version**: Currently `1.0.0` (follows semantic versioning: MAJOR.MINOR.PATCH)
+-  **Version Display**: App version shown in Footer component (dynamically imported from package.json)
+-  **Updating Version**: Use `npm version [patch|minor|major]` to bump version
+   -  Creates git commit with version update
+   -  Creates git tag for the version (e.g., `v1.0.1`)
+   -  Example: `npm version patch` → updates 1.0.0 to 1.0.1
+   -  **Important**: Run `git push --follow-tags` after version bump to push both commits and tags
+
+### Development Environment
+
+-  **.nvmrc**: Specifies Node.js version `22.18.0` for nvm users
+   -  Use `nvm use` to automatically switch to correct Node version
+-  **package.json engines**: Minimum requirements for contributors
+   -  Node.js: `>=22.0.0`
+   -  npm: `>=10.0.0`
+   -  Note: npm version is advisory (shows warning, not enforced)
+
+### Code Formatting
+
+-  **Prettier**: Configured for consistent code formatting across contributors
+-  **.prettierrc**: Custom configuration with only one setting changed from defaults
+   -  `tabWidth: 3` (all other settings use Prettier defaults)
+-  **.prettierignore**: Excludes node_modules, dist, build, .vite, and other generated files
+-  **IDE Integration**:
+   -  Prettier is in package.json devDependencies (auto-installed with `npm install`)
+   -  Most IDEs auto-detect Prettier and offer to enable formatting on save
+   -  Works across all IDEs (VS Code, WebStorm, Sublime, etc.)
+-  **Manual Formatting**: Use `npm run format` to format all files, or `npm run format:check` to check without modifying
 
 ## Unimplemented Features
 
