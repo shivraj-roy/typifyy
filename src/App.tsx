@@ -1,4 +1,5 @@
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import { createPortal } from "react-dom";
 import RootLayout from "./layouts/RootLayout";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
@@ -37,13 +38,19 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
+   const popupsContainer = document.getElementById("popups");
+
    return (
       <>
-         <ToastContainer
-            toastClassName="!bg-transparent !shadow-none !p-0"
-            closeButton={false}
-            newestOnTop={true}
-         />
+         {popupsContainer &&
+            createPortal(
+               <ToastContainer
+                  toastClassName="!bg-transparent !shadow-none !p-0"
+                  closeButton={false}
+                  newestOnTop={true}
+               />,
+               popupsContainer,
+            )}
          <RouterProvider router={router} />
       </>
    );

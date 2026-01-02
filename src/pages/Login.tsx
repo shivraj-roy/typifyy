@@ -1,17 +1,25 @@
 import { FiUserPlus } from "react-icons/fi";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaCheck, FaGithub, FaGoogle, FaSignInAlt } from "react-icons/fa";
+import {
+   FaCheck,
+   FaGithub,
+   FaGoogle,
+   FaRedo,
+   FaSignInAlt,
+} from "react-icons/fa";
 import {
    createUserWithEmailAndPassword,
    signInWithEmailAndPassword,
    signInWithPopup,
    GoogleAuthProvider,
    updateProfile,
+   sendPasswordResetEmail,
 } from "firebase/auth";
 import { Bounce, toast } from "react-toastify";
 import InputAndIndicator from "../components/ui/InputAndIndicator";
 import IconButton from "../components/ui/IconButton";
+import Modal from "../components/ui/Modal";
 import { auth } from "../firebaseConfig";
 import CustomToast from "../components/ui/CustomToast";
 import errorMapping from "../utils/errorMapping";
@@ -28,6 +36,11 @@ const Login = () => {
    // Login form state
    const [loginEmail, setLoginEmail] = useState("");
    const [loginPassword, setLoginPassword] = useState("");
+
+   // Forgot password modal state
+   const [showForgotPasswordModal, setShowForgotPasswordModal] =
+      useState(false);
+   const [forgotPasswordEmail, setForgotPasswordEmail] = useState("");
 
    const validateUsername = (value: string) => {
       if (value.length < 6) {
@@ -108,7 +121,7 @@ const Login = () => {
          const userCredential = await createUserWithEmailAndPassword(
             auth,
             email,
-            password
+            password,
          );
          const user = userCredential.user;
 
@@ -136,7 +149,7 @@ const Login = () => {
                pauseOnHover: true,
                draggable: false,
                transition: Bounce,
-            }
+            },
          );
          console.log("Registered user:", user);
          navigate("/account");
@@ -159,12 +172,12 @@ const Login = () => {
                pauseOnHover: true,
                draggable: false,
                transition: Bounce,
-            }
+            },
          );
          console.error(
             "Registration error:",
             firebaseError.code,
-            firebaseError.message
+            firebaseError.message,
          );
       }
    };
@@ -187,7 +200,7 @@ const Login = () => {
                pauseOnHover: true,
                draggable: false,
                transition: Bounce,
-            }
+            },
          );
          return;
       }
@@ -209,7 +222,7 @@ const Login = () => {
                   pauseOnHover: true,
                   draggable: false,
                   transition: Bounce,
-               }
+               },
             );
             console.log("Logged in user:", user);
             navigate("/account");
@@ -231,7 +244,7 @@ const Login = () => {
                   pauseOnHover: true,
                   draggable: false,
                   transition: Bounce,
-               }
+               },
             );
             console.error("Login error:", error.code, error.message);
          });
@@ -256,7 +269,7 @@ const Login = () => {
                   pauseOnHover: true,
                   draggable: false,
                   transition: Bounce,
-               }
+               },
             );
             console.log("Google Sign-In user:", user);
             navigate("/account");
@@ -278,13 +291,124 @@ const Login = () => {
                   pauseOnHover: true,
                   draggable: false,
                   transition: Bounce,
-               }
+               },
             );
             console.error("Google Sign-In error:", error.code, error.message);
          });
    };
 
    // Todo: GitHub sign-in handler
+
+   const handleForgotPassword = async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+
+      // Client-side rate limiting (1 request per 2 minutes per device)
+      const COOLDOWN_MS = 120000; // 2 minutes
+      const lastResetTime = localStorage.getItem("lastPasswordResetTime");
+
+      if (lastResetTime) {
+         const timeSinceLastReset = Date.now() - parseInt(lastResetTime);
+         if (timeSinceLastReset < COOLDOWN_MS) {
+            toast(
+               <CustomToast
+                  type="error"
+                  title="Too Many Requests"
+                  message="You're doing that too fast. Please wait a moment before trying again."
+               />,
+               {
+                  position: "top-right",
+                  autoClose: 5000,
+                  hideProgressBar: true,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: false,
+                  transition: Bounce,
+               },
+            );
+            setShowForgotPasswordModal(false);
+            setForgotPasswordEmail("");
+            return;
+         }
+      }
+
+      if (!forgotPasswordEmail || !validateEmail(forgotPasswordEmail).valid) {
+         toast(
+            <CustomToast
+               type="error"
+               title="Error"
+               message="Please enter a valid email"
+            />,
+            {
+               position: "top-right",
+               autoClose: 5000,
+               hideProgressBar: true,
+               closeOnClick: true,
+               pauseOnHover: true,
+               draggable: false,
+               transition: Bounce,
+            },
+         );
+         return;
+      }
+
+      try {
+         await sendPasswordResetEmail(auth, forgotPasswordEmail);
+
+         // Store timestamp to enforce client-side rate limiting
+         localStorage.setItem("lastPasswordResetTime", Date.now().toString());
+
+         toast(
+            <CustomToast
+               type="success"
+               title="Request Received"
+               message="Password reset request received. If the email is valid, a reset link has been sent."
+            />,
+            {
+               position: "top-right",
+               autoClose: 5000,
+               hideProgressBar: true,
+               closeOnClick: true,
+               pauseOnHover: true,
+               draggable: false,
+               transition: Bounce,
+            },
+         );
+         setShowForgotPasswordModal(false);
+         setForgotPasswordEmail("");
+      } catch (error: unknown) {
+         const firebaseError = error as { code?: string; message?: string };
+
+         // Handle rate limiting specifically
+         let errorMessage: string;
+         if (firebaseError.code === "auth/too-many-requests") {
+            errorMessage = "Request limit reached. Please try again later.";
+         } else {
+            errorMessage =
+               errorMapping[firebaseError.code || ""] ||
+               "Failed to send password reset email. Please try again.";
+         }
+
+         toast(
+            <CustomToast type="error" title="Error" message={errorMessage} />,
+            {
+               position: "top-right",
+               autoClose: 5000,
+               hideProgressBar: true,
+               closeOnClick: true,
+               pauseOnHover: true,
+               draggable: false,
+               transition: Bounce,
+            },
+         );
+         setShowForgotPasswordModal(false);
+         setForgotPasswordEmail("");
+         console.error(
+            "Password reset error:",
+            firebaseError.code,
+            firebaseError.message,
+         );
+      }
+   };
 
    return (
       <>
@@ -362,9 +486,9 @@ const Login = () => {
                      icon={<FaGoogle size={16} className="signInWithGoogle" />}
                      onClick={handleGoogleSignIn}
                   />
-                  <IconButton
+                  {/* <IconButton
                      icon={<FaGithub size={16} className="signInWithGithub" />}
-                  />
+                  /> */}
                </div>
 
                <form onSubmit={handleLoginSubmit} className="w-full gap-2 grid">
@@ -404,11 +528,45 @@ const Login = () => {
                      text="log in"
                   />
                </form>
-               <button className="text-[0.75rem] w-full p-1.5 flex items-center justify-end text-glow-100/40 hover:text-glow-100 transition-colors cursor-pointer">
+               <button
+                  type="button"
+                  onClick={() => setShowForgotPasswordModal(true)}
+                  className="text-[0.75rem] w-full p-1.5 flex items-center justify-end text-glow-100/40 hover:text-glow-100 transition-colors cursor-pointer"
+               >
                   forget password?
                </button>
             </div>
          </div>
+
+         {/* Forgot Password Modal */}
+         <Modal
+            isOpen={showForgotPasswordModal}
+            onClose={() => setShowForgotPasswordModal(false)}
+         >
+            <div className="bg-fade-100 rounded-lg p-8 max-w-[400px] w-full">
+               <h2 className="text-2xl text-fade mb-6 text-left">
+                  Forgot password
+               </h2>
+               <form
+                  onSubmit={handleForgotPassword}
+                  className="w-full gap-4 grid"
+               >
+                  <InputAndIndicator
+                     type="email"
+                     name="forgot-password-email"
+                     placeholder="email"
+                     value={forgotPasswordEmail}
+                     onChange={setForgotPasswordEmail}
+                     validator={validateEmail}
+                  />
+                  <IconButton
+                     type="submit"
+                     icon={<FaRedo size={18} />}
+                     text="submit"
+                  />
+               </form>
+            </div>
+         </Modal>
       </>
    );
 };

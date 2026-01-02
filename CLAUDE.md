@@ -22,7 +22,7 @@ npm run format:check # Check code formatting without modifying files
 ```
 /src
   /components
-    /ui/              # Reusable UI components (IconButton, InputAndIndicator, CustomToast, NavIcon, MenuItem, PersonalBestCard, DetailCard, TextButton, LoadingBar)
+    /ui/              # Reusable UI components (IconButton, InputAndIndicator, CustomToast, NavIcon, MenuItem, PersonalBestCard, DetailCard, TextButton, LoadingBar, Modal)
     TypeZone.tsx      # Core typing test component with grid layout (650+ lines)
     Header.tsx        # Navigation header with logo, nav icons, account dropdown menu, and auth loading spinner
     Footer.tsx        # Footer with keyboard shortcuts and social links
@@ -54,10 +54,16 @@ npm run format:check # Check code formatting without modifying files
 ### Routing & Layout
 
 -  `src/App.tsx` - React Router configuration with `RootLayout` wrapper
+   -  **ToastContainer Portal**: Uses `createPortal` to render ToastContainer into `#popups` container
+   -  All toast notifications render outside the main React app tree for cleaner DOM structure
 -  `src/layouts/RootLayout.tsx` - Grid layout with Header, Outlet, Footer
    -  **Loading State**: Uses `useNavigation()` hook to detect route transitions
    -  During navigation: Header/Footer fade to 30% opacity, LoadingBar shows in outlet area
    -  After navigation: Normal rendering resumes
+-  **Portal Container**: `index.html` has dedicated `<div id="popups"></div>` container
+   -  Positioned before `#root` div in DOM
+   -  All modals and toasts render here via React Portal
+   -  Keeps overlay components separate from main app tree
 -  Pages: `Home` (typing test), `Login` (auth forms), `Account` (user history), `About` (project info), `Settings` (user settings)
 -  Header nav links: `/`, `/about`, `/settings`, `/login` (or account dropdown when logged in)
 
@@ -284,10 +290,22 @@ npm run format:check # Check code formatting without modifying files
       -  "Done" message styled with active color and bold font
       -  Smooth 300ms transitions for all changes
       -  Used in RootLayout (route transitions) and Account page (data loading)
+   -  `Modal` - Reusable modal/dialog component with portal rendering
+      -  **Native Dialog Element**: Uses semantic `<dialog>` element with `.showModal()` API
+      -  **Portal Rendering**: Uses `createPortal` to render into `#popups` container
+      -  **Backdrop Click**: Closes when clicking outside modal content
+      -  **Escape Key**: Closes when pressing Escape key
+      -  **Body Scroll Lock**: Prevents background scrolling when modal is open
+      -  **Conditional Rendering**: Only renders when `isOpen` prop is true
+      -  **Styling**: Fixed positioning, grid layout with centered content, 2rem padding
+      -  **Background**: Semi-transparent black backdrop (`#00000080`)
+      -  **Grid Template**: `grid-template-columns: 100%` for proper content width control
+      -  Used in Login page for forgot password modal
 -  Toast notifications via `react-toastify`:
+   -  **Portal Rendering**: ToastContainer uses `createPortal` to render into `#popups` container
    -  **Responsive Positioning**: top-center on mobile (< 768px), top-right on desktop
-   -  Configured in `App.tsx` with dynamic position based on window width
    -  Auto-close: 5000ms, transparent background, no close button
+   -  All toasts render outside main app tree for cleaner DOM structure
 
 ### Footer Component
 
@@ -329,6 +347,25 @@ npm run format:check # Check code formatting without modifying files
    -  Email registration: Username saved as `displayName` via Firebase `updateProfile`, user reloaded after update
    -  Google sign-in: `displayName` automatically set by Google to account name
 -  Navigation: Redirects to `/account` after successful login/signup (email, Google)
+-  **Forgot Password Feature**:
+   -  **Trigger**: "forget password?" button below login form opens modal
+   -  **Modal Implementation**: Uses `Modal` component with portal rendering to `#popups`
+   -  **Form**: Single email input with real-time validation, submit button with redo icon
+   -  **Firebase Integration**: Uses `sendPasswordResetEmail(auth, email)` API
+   -  **Success Message**: "Password reset request received. If the email is valid, a reset link has been sent."
+      -  Ambiguous message for security (doesn't reveal if email exists)
+      -  Modal auto-closes on success
+   -  **Client-Side Rate Limiting**: 2-minute cooldown per device via localStorage
+      -  Stores timestamp in `lastPasswordResetTime` key
+      -  Prevents spam of different emails from same browser
+      -  Error message: "You're doing that too fast. Please wait a moment before trying again."
+      -  Clears email and closes modal on rate limit error
+   -  **Firebase Rate Limiting**: Handles `auth/too-many-requests` error (5 requests/hour per email)
+      -  Custom error message: "Request limit reached. Please try again later."
+      -  Modal auto-closes on Firebase errors
+   -  **Validation Errors**: Invalid email keeps modal open for user to fix
+   -  **Error Handling**: Uses `errorMapping` utility for user-friendly Firebase error messages
+   -  **Modal Styling**: 500px max-width, dark background, rounded corners, consistent with app theme
 
 ### Account Page
 
@@ -621,7 +658,7 @@ npm run format:check # Check code formatting without modifying files
 
 ## Tech Stack
 
--  React 19.0.0, TypeScript 5.7.2, Vite 6.3.1
+-  React 19.2.3, TypeScript 5.7.2, Vite 6.3.1
 -  React Router 7.9.5
 -  Tailwind CSS 4.1.4
 -  Firebase 12.6.0 (auth + Firestore)
