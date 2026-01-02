@@ -11,8 +11,10 @@ import {
    FaUserCircle,
 } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import useDocumentTitle from "../hooks/useDocumentTitle";
 
 const About = () => {
+   useDocumentTitle("About");
    return (
       <>
          <div className="pageAbout flex flex-col gap-6 md:gap-8 max-w-4xl mx-auto">

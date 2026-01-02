@@ -14,6 +14,7 @@ import { Bounce, toast } from "react-toastify";
 import SubSetting from "../components/SubSetting";
 import { useSettings } from "../context/Settings";
 import CustomToast from "../components/ui/CustomToast";
+import useDocumentTitle from "../hooks/useDocumentTitle";
 import {
    playKeySound,
    preloadSounds,
@@ -21,6 +22,7 @@ import {
 } from "../utils/soundPlayer";
 
 const Settings = () => {
+   useDocumentTitle("Settings");
    const {
       minSpeedMode,
       setMinSpeedMode,

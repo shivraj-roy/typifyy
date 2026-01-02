@@ -23,8 +23,10 @@ import Modal from "../components/ui/Modal";
 import { auth } from "../firebaseConfig";
 import CustomToast from "../components/ui/CustomToast";
 import errorMapping from "../utils/errorMapping";
+import useDocumentTitle from "../hooks/useDocumentTitle";
 
 const Login = () => {
+   useDocumentTitle("Login");
    const navigate = useNavigate();
    const [username, setUsername] = useState("");
    const [email, setEmail] = useState("");

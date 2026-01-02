@@ -9,6 +9,7 @@ import StatsOverview from "../components/StatsOverview";
 import UserDetails from "../components/UserDetails";
 import LoadingBar from "../components/ui/LoadingBar";
 import { PersonalBestData } from "../types";
+import useDocumentTitle from "../hooks/useDocumentTitle";
 
 interface TestResult {
    wpm: number;
@@ -97,6 +98,7 @@ function calculatePersonalBests(data: TestResult[]): PersonalBests {
 }
 
 function Account() {
+   useDocumentTitle("Account");
    const [data, setData] = useState<TestResult[] | null>(null);
    const [loading, setLoading] = useState(true);
    const [error, setError] = useState<string | null>(null);
