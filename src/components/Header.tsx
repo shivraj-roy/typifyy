@@ -88,7 +88,7 @@ const Header = () => {
                   pauseOnHover: true,
                   draggable: false,
                   transition: Bounce,
-               }
+               },
             );
             // Redirect to home page after logout
             navigate("/");
@@ -108,7 +108,7 @@ const Header = () => {
                   pauseOnHover: true,
                   draggable: false,
                   transition: Bounce,
-               }
+               },
             );
             console.error("Error logging out:", error);
          });
@@ -125,10 +125,10 @@ const Header = () => {
                onClick={handleRestartTest}
             >
                <div className="icon w-12">
-                  <img src="/assets/logo.svg" alt="typifyy-logo" />
+                  <img src="/assets/icon/icon.svg" alt="typifyy-logo" />
                </div>
-               <h1 className="text relative text-2xl md:text-4xl leading-8 font-logo tracking-wide text-active md:text-glow-100 hidden md:block">
-                  <div className="top-text text-[0.325em] leading-[0.325em] left-[0.35em] -top-[0.85em] absolute text-fade-100 hidden md:block">
+               <h1 className="text relative text-2xl md:text-4xl leading-8 font-satoshi font-medium tracking-wide text-active md:text-glow-100 hidden md:block">
+                  <div className="top-text text-[0.255em] leading-[0.255em] -right-[2.35em] top-0.5 absolute text-fade-100 hidden md:block">
                      on the beat
                   </div>
                   typifyy

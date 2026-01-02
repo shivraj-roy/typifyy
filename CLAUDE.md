@@ -236,10 +236,19 @@ npm run format:check # Check code formatting without modifying files
 
 -  Tailwind CSS v4 with custom theme in `src/index.css`
 -  Custom colors: `--color-dark`, `--color-dark-100`, `--color-fade`, `--color-active`, `--color-glow`
--  Fonts: Roboto Mono, Space Mono, Softura-Demo (logo)
+-  Fonts:
+   -  Roboto Mono (main monospace font)
+   -  Space Mono (secondary monospace font)
+   -  Satoshi (logo and branding) - Custom font loaded from `/public/assets/font/`
+      -  Satoshi-Regular.woff (400 weight)
+      -  Satoshi-Medium.woff (500 weight)
+      -  Font variable: `--font-satoshi`
 -  Typing character states: `.correct`, `.incorrect`, `.extra-key`
 -  Word error state: `.word-error` - Red underline (2px thickness, 4px offset) applied to words with errors when space is pressed
 -  Animations: `blinking` (caret), `crazyCaret` (active caret)
+-  **Favicon**: Custom SVG logo at `/public/assets/favicon/favicon.svg`
+   -  "ty" logo in orange (#EB5E29) on dark background (#252422)
+   -  Referenced in `index.html`
 
 ### Types
 
