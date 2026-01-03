@@ -66,7 +66,7 @@ const CustomToast = ({ type, title, message }: CustomToastProps) => {
             <span className="hidden md:inline">{config.icon}</span>
             <span className="font-semibold text-xs md:text-sm">{title}</span>
          </div>
-         <span className="text-xs md:text-sm text-glow">{message}</span>
+         <span className="text-xs md:text-sm text-white">{message}</span>
       </div>
    );
 };

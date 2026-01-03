@@ -9,7 +9,7 @@ interface ButtonConfig {
 }
 
 type ValidatorFn = (
-   value: string
+   value: string,
 ) =>
    | { valid: boolean; error?: string }
    | Promise<{ valid: boolean; error?: string }>;
@@ -53,7 +53,7 @@ const SubSetting = ({
 }: SubSettingProps) => {
    return (
       <div className="section grid grid-cols-1 lg:grid-cols-[2fr_1fr] lg:grid-rows-[auto_1fr] gap-4">
-         <div className="groupTitle text-base md:text-[1rem] text-fade-100 flex items-center gap-1.5">
+         <div className="groupTitle text-base md:text-[1rem] text-secondary flex items-center gap-1.5">
             {icon}
             <span>{title}</span>
          </div>
@@ -89,7 +89,7 @@ const SubSetting = ({
             )}
             {showSlider && (
                <div className="sliderContainer flex items-center gap-4">
-                  <div className="sliderValue text-[1em] text-fade-100 min-w-[3rem]">
+                  <div className="sliderValue text-[1em] min-w-[3rem]">
                      {sliderValue.toFixed(1)}
                   </div>
                   <input
@@ -112,8 +112,8 @@ const SubSetting = ({
                      onClick={button.onClick}
                      className={
                         button.className ||
-                        `cursor-pointer p-2 rounded-lg text-center h-min text-[1em] gap-2 justify-center align-baseline hover:bg-glow-100 hover:text-dark-100 ${
-                           button.isActive ? "activeBtn" : "bg-dark-100/40"
+                        `cursor-pointer p-2 rounded-lg text-center h-min text-[1em] gap-2 justify-center align-baseline hover:bg-primary hover:text-bg ${
+                           button.isActive ? "activeBtn" : "bg-alt-bg"
                         }`
                      }
                   >

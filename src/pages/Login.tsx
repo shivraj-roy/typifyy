@@ -495,9 +495,9 @@ const Login = () => {
 
                <form onSubmit={handleLoginSubmit} className="w-full gap-2 grid">
                   <div className="orWithLine flex items-center gap-5">
-                     <div className="line h-1 w-full bg-dark-100/40 rounded-[0.5rem]" />
-                     <div className="text text-glow">or</div>
-                     <div className="line h-1 w-full bg-dark-100/40 rounded-[0.5rem]" />
+                     <div className="line h-1 w-full bg-alt-bg rounded-[0.5rem]" />
+                     <div className="text text-primary">or</div>
+                     <div className="line h-1 w-full bg-alt-bg rounded-[0.5rem]" />
                   </div>
                   <InputAndIndicator
                      type="email"
@@ -517,9 +517,9 @@ const Login = () => {
                      className="flex gap-2 items-center h-6 cursor-pointer"
                      onClick={() => setRememberMe(!rememberMe)}
                   >
-                     <div className="w-5 h-5 rounded-sm bg-dark-100/40 border-[1.5px] border-transparent flex items-center justify-center">
+                     <div className="w-5 h-5 rounded-sm bg-alt-bg border-[1.5px] border-transparent flex items-center justify-center">
                         {rememberMe && (
-                           <FaCheck size={14} className="text-active" />
+                           <FaCheck size={14} className="text-accent" />
                         )}
                      </div>
                      <span className="text-sm">remember me</span>
@@ -533,7 +533,7 @@ const Login = () => {
                <button
                   type="button"
                   onClick={() => setShowForgotPasswordModal(true)}
-                  className="text-[0.75rem] w-full p-1.5 flex items-center justify-end text-glow-100/40 hover:text-glow-100 transition-colors cursor-pointer"
+                  className="text-[0.75rem] w-full p-1.5 flex items-center justify-end text-secondary hover:text-primary transition-colors cursor-pointer"
                >
                   forget password?
                </button>
@@ -545,8 +545,8 @@ const Login = () => {
             isOpen={showForgotPasswordModal}
             onClose={() => setShowForgotPasswordModal(false)}
          >
-            <div className="bg-fade-100 rounded-lg p-8 max-w-[400px] w-full">
-               <h2 className="text-2xl text-fade mb-6 text-left">
+            <div className="bg-bg rounded-lg p-8 max-w-[400px] w-full">
+               <h2 className="text-2xl text-secondary mb-6 text-left">
                   Forgot password
                </h2>
                <form

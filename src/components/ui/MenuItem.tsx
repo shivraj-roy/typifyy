@@ -14,7 +14,7 @@ const MenuItem = ({
    onClick,
    className = "",
 }: MenuItemProps) => {
-   const baseClasses = `flex items-center gap-2 py-2 hover:text-dark-100 hover:bg-glow-100 transition-colors duration-300 ${className}`;
+   const baseClasses = `flex items-center gap-2 py-2 hover:text-bg hover:bg-primary transition-colors duration-300 ${className}`;
 
    const content = (
       <>

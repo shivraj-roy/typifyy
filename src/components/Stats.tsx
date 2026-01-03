@@ -71,7 +71,7 @@ const Stats = ({
                pauseOnHover: true,
                draggable: false,
                transition: Bounce,
-            }
+            },
          );
          return;
       }
@@ -98,7 +98,7 @@ const Stats = ({
                pauseOnHover: true,
                draggable: false,
                transition: Bounce,
-            }
+            },
          );
          return;
       }
@@ -141,7 +141,7 @@ const Stats = ({
                   pauseOnHover: true,
                   draggable: false,
                   transition: Bounce,
-               }
+               },
             );
             console.error("Error pushing stats to DB:", error);
          }
@@ -152,16 +152,16 @@ const Stats = ({
 
    return (
       <>
-         <div className="w-full max-w-full h-full text-fade-100 cursor-default overflow-hidden">
+         <div className="w-full max-w-full h-full text-secondary cursor-default overflow-hidden">
             <div className="stats-box flex flex-col lg:flex-row justify-between h-[80%]">
                <div className="left-stats w-full lg:w-[10%] h-full flex flex-row lg:flex-col justify-center items-center gap-2">
                   <div className="stat flex flex-row-reverse lg:flex-col gap-0.5 lg:gap-0 justify-center items-center lg:items-baseline w-full">
                      <h3 className="text-xl lg:text-3xl lowercase">WPM</h3>
-                     <p className="text-4xl lg:text-6xl text-active">{wpm}</p>
+                     <p className="text-4xl lg:text-6xl text-accent">{wpm}</p>
                   </div>
                   <div className="stat flex flex-row-reverse lg:flex-col gap-0.5 lg:gap-0 justify-center items-center lg:items-baseline w-full">
                      <h3 className="text-xl lg:text-3xl lowercase">Acc</h3>
-                     <p className="text-4xl lg:text-6xl text-active">
+                     <p className="text-4xl lg:text-6xl text-accent">
                         {accuracy}%
                      </p>
                   </div>
@@ -173,7 +173,7 @@ const Stats = ({
             <div className="w-full max-w-full flex flex-wrap lg:flex-nowrap justify-between items-center gap-2 lg:gap-0 h-[20%] mt-1">
                <div>
                   <h3 className="text-xs lowercase">Test Type</h3>
-                  <p className="text-base lg:text-xl text-active">
+                  <p className="text-base lg:text-xl text-accent">
                      {mode === "words"
                         ? `words ${testWords}`
                         : `time ${testTime}s`}
@@ -182,34 +182,34 @@ const Stats = ({
                {(isAfk || failReason) && (
                   <div>
                      <h3 className="text-xs lowercase">other</h3>
-                     <p className="text-base lg:text-xl text-active">
+                     <p className="text-base lg:text-xl text-accent">
                         {failReason ? `failed - ${failReason}` : "afk detected"}
                      </p>
                   </div>
                )}
                <div>
                   <h3 className="text-xs">raw</h3>
-                  <p className="text-base lg:text-3xl text-active">{raw}</p>
+                  <p className="text-base lg:text-3xl text-accent">{raw}</p>
                </div>
                <div>
                   <h3 className="text-xs">Words</h3>
-                  <p className="text-base lg:text-3xl text-active">
+                  <p className="text-base lg:text-3xl text-accent">
                      {correctWord}
                   </p>
                </div>
                <div className="relative group cursor-pointer">
                   <h3 className="text-xs">Characters</h3>
-                  <p className="text-base lg:text-3xl text-active">
+                  <p className="text-base lg:text-3xl text-accent">
                      {correctChar}/{incorrectChar}/{missedChar}/{extraChar}
                   </p>
-                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-max bg-dark text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-max bg-alt-bg text-primary text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                      Correct: {correctChar}, Incorrect: {incorrectChar}, Missed:{" "}
                      {missedChar}, Extra: {extraChar}
                   </div>
                </div>
                <div>
                   <h3 className="text-xs">Consistency</h3>
-                  <p className="text-base lg:text-3xl text-active">
+                  <p className="text-base lg:text-3xl text-accent">
                      {consistency}%
                   </p>
                </div>

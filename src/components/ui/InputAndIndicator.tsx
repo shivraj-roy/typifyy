@@ -3,7 +3,11 @@ import { useState, useRef } from "react";
 
 type ValidationStatus = "idle" | "checking" | "success" | "failed";
 
-type ValidatorFn = (value: string) => { valid: boolean; error?: string } | Promise<{ valid: boolean; error?: string }>;
+type ValidatorFn = (
+   value: string,
+) =>
+   | { valid: boolean; error?: string }
+   | Promise<{ valid: boolean; error?: string }>;
 
 interface InputAndIndicatorProps {
    type?: "text" | "email" | "password";
@@ -81,7 +85,7 @@ const InputAndIndicator = ({
             onBlur={onBlur}
             onKeyDown={onKeyDown}
             placeholder={placeholder}
-            className="w-full h-9 text-[1em] bg-dark-100/40 outline-none border-[1.5px] border-transparent focus:border-glow-100 rounded-[8px] p-2 pr-[2.1em] leading-5 caret-active text-glow-100 transition-colors"
+            className="w-full h-9 text-[1em] bg-alt-bg outline-none border-[1.5px] border-transparent focus:border-primary rounded-[8px] p-2 pr-[2.1em] leading-5 caret-accent text-primary transition-colors"
             autoComplete={autoComplete}
          />
          <div
@@ -89,15 +93,15 @@ const InputAndIndicator = ({
                status === "success" ? "flex" : "hidden"
             }`}
          >
-            <FaCheck size={20} className="text-active" />
+            <FaCheck size={20} className="text-accent" />
          </div>
          <div
             className={`statusIndicator absolute right-0 top-0 w-9 h-9 items-center justify-center cursor-pointer group ${
                status === "failed" ? "flex" : "hidden"
             }`}
          >
-            <FaTimes size={20} className="text-red-500" />
-            <span className="absolute right-full top-1/2 -translate-y-1/2 mr-1 px-2 py-1 text-sm bg-dark text-glow rounded opacity-0 group-hover:opacity-100 transition-opacity w-max max-w-72 pointer-events-none">
+            <FaTimes size={20} className="text-error" />
+            <span className="absolute right-full top-1/2 -translate-y-1/2 mr-1 px-2 py-1 text-sm bg-black text-primary rounded opacity-0 group-hover:opacity-100 transition-opacity w-max max-w-72 pointer-events-none">
                {error}
             </span>
          </div>
@@ -106,7 +110,7 @@ const InputAndIndicator = ({
                status === "checking" ? "flex" : "hidden"
             }`}
          >
-            <FaCircleNotch size={20} className="text-glow-100 animate-spin" />
+            <FaCircleNotch size={20} className="text-primary animate-spin" />
          </div>
       </div>
    );

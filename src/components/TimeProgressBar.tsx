@@ -35,13 +35,13 @@ const TimeProgressBar = ({
 
    return (
       <div
-         className="fixed top-0 left-0 right-0 h-1 bg-dark-100/40 z-50"
+         className="fixed top-0 left-0 right-0 h-1.5 z-50"
          style={{
             width: "100%",
          }}
       >
          <div
-            className="h-full bg-active transition-all duration-1000 ease-linear"
+            className="h-full bg-accent transition-all duration-1000 ease-linear"
             style={{
                width: `${progress}%`,
             }}

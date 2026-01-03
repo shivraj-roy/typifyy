@@ -6,7 +6,7 @@ interface DetailCardProps {
 const DetailCard = ({ title, value }: DetailCardProps) => {
    return (
       <div className="detailCard">
-         <div className="title text-fade-100 text-[0.8rem]">{title}</div>
+         <div className="title text-secondary text-[0.8rem]">{title}</div>
          <div className="value text-[2rem] leading-8">{value}</div>
       </div>
    );

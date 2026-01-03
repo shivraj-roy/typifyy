@@ -109,7 +109,7 @@ const TypeZone = ({
       const hasError = Array.from(chars).some(
          (char) =>
             char.className.includes("incorrect") ||
-            char.className.includes("extra")
+            char.className.includes("extra"),
       );
 
       if (hasError) {
@@ -222,15 +222,15 @@ const TypeZone = ({
                   // Calculate raw WPM and WPM
                   const rawWPM = Math.max(
                      0,
-                     Math.floor(currentCorrectChars / 5 / (timeElapsed / 60))
+                     Math.floor(currentCorrectChars / 5 / (timeElapsed / 60)),
                   );
                   const WPM = Math.max(
                      0,
                      Math.floor(
                         (currentCorrectChars - currentIncorrectChars) /
                            5 /
-                           (timeElapsed / 60)
-                     )
+                           (timeElapsed / 60),
+                     ),
                   );
 
                   // Add data point for current second (starting from 1s)
@@ -254,15 +254,15 @@ const TypeZone = ({
                // Calculate raw WPM and WPM based on elapsed time
                const rawWPM = Math.max(
                   0,
-                  Math.floor(currentCorrectChars / 5 / (timeElapsed / 60))
+                  Math.floor(currentCorrectChars / 5 / (timeElapsed / 60)),
                );
                const WPM = Math.max(
                   0,
                   Math.floor(
                      (currentCorrectChars - currentIncorrectChars) /
                         5 /
-                        (timeElapsed / 60)
-                  )
+                        (timeElapsed / 60),
+                  ),
                );
 
                // Add data point for current second
@@ -426,7 +426,7 @@ const TypeZone = ({
                const hasIncorrect = Array.from(prevWordChars).some(
                   (char) =>
                      char.className.includes("incorrect") ||
-                     char.className.includes("extra")
+                     char.className.includes("extra"),
                );
 
                if (hasIncorrect) {
@@ -605,7 +605,7 @@ const TypeZone = ({
                pauseOnHover: true,
                draggable: false,
                transition: Bounce,
-            }
+            },
          );
       }
    }, [testFailed]);
@@ -624,7 +624,7 @@ const TypeZone = ({
       const totalTimeInMinutes = timeUsed / 60;
       const netWPM = Math.max(
          0,
-         Math.floor((correctChar - incorrectChar) / 5 / totalTimeInMinutes)
+         Math.floor((correctChar - incorrectChar) / 5 / totalTimeInMinutes),
       );
       return netWPM;
    };
@@ -643,7 +643,7 @@ const TypeZone = ({
       if (totalChars === 0) return 0;
       const consistency = Math.max(
          0,
-         Math.floor(((correctChar - incorrectChar) / totalChars) * 100)
+         Math.floor(((correctChar - incorrectChar) / totalChars) * 100),
       );
       return consistency;
    };
@@ -722,10 +722,10 @@ const TypeZone = ({
          {/* Hero message for small devices */}
          <div className="md:hidden w-full h-full flex items-center justify-center px-8 text-center">
             <div>
-               <h2 className="text-2xl md:text-3xl text-glow mb-4">
+               <h2 className="text-2xl md:text-3xl text-secondary mb-4">
                   For better experience
                </h2>
-               <p className="text-lg text-fade-100">
+               <p className="text-lg text-primary">
                   Test your typing on a larger device
                </p>
             </div>
@@ -734,153 +734,153 @@ const TypeZone = ({
          {/* TypeZone for medium and large devices */}
          <div className="typeZoneContainer hidden md:grid grid-rows-[auto_1fr] w-full max-w-full h-full items-center overflow-hidden">
             <MenuBar testStart={testStart} />
-         {testEnd ? (
-            <div className="w-full max-w-full flex flex-col items-center justify-center -mt-24">
-               <div className="w-full max-w-full overflow-hidden lg:h-[17rem]">
-                  <Stats
-                     raw={calculateRAW()}
-                     wpm={calculateWPM()}
-                     accuracy={calculateAccuracy()}
-                     correctChar={correctChar}
-                     incorrectChar={incorrectChar}
-                     missedChar={missedChar}
-                     extraChar={extraChar}
-                     correctWord={correctWord}
-                     consistency={calculateConsistency()}
-                     graphData={graphData}
-                     elapsedTime={elapsedSecondsRef.current}
-                     mode={mode}
-                     testWords={testWords}
-                     isAfk={isAfk}
-                     testFailed={testFailed}
-                  />
-               </div>
-               <div className="nextTestSection flex flex-col items-center mt-8">
-                  <button
-                     ref={nextTestBtnRef}
-                     onClick={restartTest}
-                     className="relative group px-8 py-3 text-fade-100 hover:text-glow-100 border-2 border-transparent focus:border-fade-100 rounded-lg focus:outline-none transition-all cursor-pointer"
-                     tabIndex={0}
-                  >
-                     <FaChevronRight size={20} />
-                     <span className="absolute top-full left-1/2 -translate-x-1/2 mt-3 px-3 py-1.5 text-sm bg-dark-100 text-glow-100 border border-fade/30 rounded invisible opacity-0 group-hover:visible group-hover:opacity-100 group-focus:visible group-focus:opacity-100 transition-all whitespace-nowrap pointer-events-none z-10">
-                        Next Test
-                     </span>
-                  </button>
-                  {!auth.currentUser && (
-                     <div className="signInPrompt text-center mt-4 text-fade-100 text-sm">
-                        <Link
-                           to="/login"
-                           className="underline hover:text-glow-100 transition-colors"
-                        >
-                           Sign in
-                        </Link>{" "}
-                        to save your result
-                     </div>
-                  )}
-               </div>
-            </div>
-         ) : (
-            <div className="w-full flex flex-col items-center -mt-24">
-               <div className="w-full overflow-visible" onClick={focusInput}>
-                  <div className="testModesNotice flex justify-center text-center gap-2 transition-opacity duration-150 relative">
-                     {capsLockOn && capsLockWarningMode === "show" && (
-                        <div className="capsWarning absolute -top-16 left-1/2 -translate-x-1/2 flex gap-2.5 items-center text-dark-100 text-[1rem] bg-active w-fit p-4 rounded-lg pointer-events-none z-50">
-                           <FaLock size={16} />
-                           <span>Caps Lock</span>
-                        </div>
-                     )}
-                     {minSpeedMode === "custom" && (
-                        <TextButton
-                           icon={<FaBolt size={16} />}
-                           text={`min ${minSpeedValue} wpm`}
-                           className="text-[1em] !gap-2"
-                        />
-                     )}
-                     {minAccuracyMode === "custom" && (
-                        <TextButton
-                           icon={<FaBullseye size={16} />}
-                           text={`min ${minAccuracyValue}% wpm`}
-                           className="text-[1em] !gap-2"
-                        />
-                     )}
-                  </div>
-                  {liveProgressMode === "mini" && (
-                     <TimeCounter
-                        countDown={counter}
-                        className={testStart ? "opacity-100" : "opacity-0"}
+            {testEnd ? (
+               <div className="w-full max-w-full flex flex-col items-center justify-center -mt-24">
+                  <div className="w-full max-w-full overflow-hidden lg:h-[17rem]">
+                     <Stats
+                        raw={calculateRAW()}
+                        wpm={calculateWPM()}
+                        accuracy={calculateAccuracy()}
+                        correctChar={correctChar}
+                        incorrectChar={incorrectChar}
+                        missedChar={missedChar}
+                        extraChar={extraChar}
+                        correctWord={correctWord}
+                        consistency={calculateConsistency()}
+                        graphData={graphData}
+                        elapsedTime={elapsedSecondsRef.current}
                         mode={mode}
-                        current={completedWords}
-                        total={testWords}
-                     />
-                  )}
-                  {liveProgressMode === "bar" && (
-                     <TimeProgressBar
-                        mode={mode}
-                        counter={counter}
-                        testTime={testTime}
-                        completedWords={completedWords}
                         testWords={testWords}
-                        testStart={testStart}
-                        testEnd={testEnd}
+                        isAfk={isAfk}
+                        testFailed={testFailed}
                      />
-                  )}
-                  <div
-                     ref={wordsContainerRef}
-                     className="text-3xl flex flex-wrap leading-[3rem] tracking-tight relative text-fade-100 h-36 overflow-hidden w-full"
-                  >
-                     {!isFocused && (
-                        <div
-                           className="cursor-default absolute top-0 left-0 w-full h-full flex items-center justify-center backdrop-blur-sm z-10"
-                           onClick={focusInput}
-                        >
-                           <span className="flex items-center justify-around text-xl text-fade gap-5 font-mono tracking-wider">
-                              <HiCursorClick />
-                              Click here to focus
-                           </span>
+                  </div>
+                  <div className="nextTestSection flex flex-col items-center mt-8">
+                     <button
+                        ref={nextTestBtnRef}
+                        onClick={restartTest}
+                        className="relative group px-8 py-3 text-secondary hover:text-primary border-2 border-transparent focus:border-secondary rounded-lg focus:outline-none transition-all cursor-pointer"
+                        tabIndex={0}
+                     >
+                        <FaChevronRight size={20} />
+                        <span className="absolute top-full left-1/2 -translate-x-1/2 mt-3 px-3 py-1.5 text-sm bg-alt-bg text-primary rounded invisible opacity-0 group-hover:visible group-hover:opacity-100 group-focus:visible group-focus:opacity-100 transition-all whitespace-nowrap pointer-events-none z-10">
+                           Next Test
+                        </span>
+                     </button>
+                     {!auth.currentUser && (
+                        <div className="signInPrompt text-center mt-4 text-secondary text-sm">
+                           <Link
+                              to="/login"
+                              className="underline hover:text-primary transition-colors"
+                           >
+                              Sign in
+                           </Link>{" "}
+                           to save your result
                         </div>
                      )}
-                     {words.map((word, wordIndex) => (
-                        <span
-                           key={`${wordIndex}-${word}`}
-                           className="mx-2"
-                           ref={wordSpanRef[wordIndex]}
-                        >
-                           {word.split("").map((letter, letterIndex) => (
-                              <span
-                                 key={`${letterIndex}-${wordIndex}`}
-                                 // className="caret"
-                              >
-                                 {letter}
-                              </span>
-                           ))}
-                        </span>
-                     ))}
                   </div>
-                  <input
-                     type="text"
-                     className="opacity-0 pointer-events-none absolute"
-                     onKeyDown={handleUserInput}
-                     ref={inputRef}
-                     onFocus={() => setIsFocused(true)}
-                     onBlur={() => setIsFocused(false)}
-                  />
                </div>
-               <div className="restartBtn flex justify-center mt-8">
-                  <button
-                     onClick={restartTest}
-                     className="relative group px-8 py-3 text-fade-100 hover:text-glow-100 border-2 border-transparent focus:border-fade-100 rounded-lg focus:outline-none transition-all cursor-pointer"
-                     tabIndex={0}
-                  >
-                     <FaRedoAlt size={20} />
-                     <span className="absolute top-full left-1/2 -translate-x-1/2 mt-3 px-3 py-1.5 text-sm bg-dark-100 text-glow-100 border border-fade/30 rounded invisible opacity-0 group-hover:visible group-hover:opacity-100 group-focus:visible group-focus:opacity-100 transition-all whitespace-nowrap pointer-events-none z-10">
-                        Restart Test
-                     </span>
-                  </button>
+            ) : (
+               <div className="w-full flex flex-col items-center -mt-24">
+                  <div className="w-full overflow-visible" onClick={focusInput}>
+                     <div className="testModesNotice flex justify-center text-center gap-2 transition-opacity duration-150 relative">
+                        {capsLockOn && capsLockWarningMode === "show" && (
+                           <div className="capsWarning absolute -top-16 left-1/2 -translate-x-1/2 flex gap-2.5 items-center text-bg text-[1rem] bg-accent w-fit p-4 rounded-lg pointer-events-none z-50">
+                              <FaLock size={16} />
+                              <span>Caps Lock</span>
+                           </div>
+                        )}
+                        {minSpeedMode === "custom" && (
+                           <TextButton
+                              icon={<FaBolt size={16} />}
+                              text={`min ${minSpeedValue} wpm`}
+                              className="text-[1em] !gap-2"
+                           />
+                        )}
+                        {minAccuracyMode === "custom" && (
+                           <TextButton
+                              icon={<FaBullseye size={16} />}
+                              text={`min ${minAccuracyValue}% wpm`}
+                              className="text-[1em] !gap-2"
+                           />
+                        )}
+                     </div>
+                     {liveProgressMode === "mini" && (
+                        <TimeCounter
+                           countDown={counter}
+                           className={testStart ? "opacity-100" : "opacity-0"}
+                           mode={mode}
+                           current={completedWords}
+                           total={testWords}
+                        />
+                     )}
+                     {liveProgressMode === "bar" && (
+                        <TimeProgressBar
+                           mode={mode}
+                           counter={counter}
+                           testTime={testTime}
+                           completedWords={completedWords}
+                           testWords={testWords}
+                           testStart={testStart}
+                           testEnd={testEnd}
+                        />
+                     )}
+                     <div
+                        ref={wordsContainerRef}
+                        className="text-3xl flex flex-wrap leading-[3rem] tracking-tight relative text-secondary h-36 overflow-hidden w-full"
+                     >
+                        {!isFocused && (
+                           <div
+                              className="cursor-default absolute top-0 left-0 w-full h-full flex items-center justify-center backdrop-blur-sm z-10"
+                              onClick={focusInput}
+                           >
+                              <span className="flex items-center justify-around text-xl text-primary gap-5 font-mono tracking-wider">
+                                 <HiCursorClick />
+                                 Click here to focus
+                              </span>
+                           </div>
+                        )}
+                        {words.map((word, wordIndex) => (
+                           <span
+                              key={`${wordIndex}-${word}`}
+                              className="mx-2"
+                              ref={wordSpanRef[wordIndex]}
+                           >
+                              {word.split("").map((letter, letterIndex) => (
+                                 <span
+                                    key={`${letterIndex}-${wordIndex}`}
+                                    // className="caret"
+                                 >
+                                    {letter}
+                                 </span>
+                              ))}
+                           </span>
+                        ))}
+                     </div>
+                     <input
+                        type="text"
+                        className="opacity-0 pointer-events-none absolute"
+                        onKeyDown={handleUserInput}
+                        ref={inputRef}
+                        onFocus={() => setIsFocused(true)}
+                        onBlur={() => setIsFocused(false)}
+                     />
+                  </div>
+                  <div className="restartBtn flex justify-center mt-8">
+                     <button
+                        onClick={restartTest}
+                        className="relative group px-8 py-3 text-secondary hover:text-primary border-2 border-transparent focus:border-secondary rounded-lg focus:outline-none transition-all cursor-pointer"
+                        tabIndex={0}
+                     >
+                        <FaRedoAlt size={20} />
+                        <span className="absolute top-full left-1/2 -translate-x-1/2 mt-3 px-3 py-1.5 text-sm bg-alt-bg text-primary rounded invisible opacity-0 group-hover:visible group-hover:opacity-100 group-focus:visible group-focus:opacity-100 transition-all whitespace-nowrap pointer-events-none z-10">
+                           Restart Test
+                        </span>
+                     </button>
+                  </div>
                </div>
-            </div>
-         )}
-      </div>
+            )}
+         </div>
       </>
    );
 };

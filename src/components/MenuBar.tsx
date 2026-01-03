@@ -31,22 +31,22 @@ const MenuBar = ({ testStart }: { testStart: boolean }) => {
             testStart ? "opacity-0 pointer-events-none" : "opacity-100"
          }`}
       >
-         <div className="flex bg-dark-100 px-3 py-2 rounded-xl">
+         <div className="flex bg-alt-bg px-3 py-2 rounded-xl">
             <div className="flex">
                <Button
                   btnIcon={<MdTimer />}
                   btnTxt="time"
-                  btnClass={mode === "time" ? "active" : ""}
+                  btnClass={mode === "time" ? "active" : "text-secondary"}
                   btnClick={() => handleModeChange("time")}
                />
                <Button
                   btnIcon={<span className="font-serif">A</span>}
                   btnTxt="words"
-                  btnClass={mode === "words" ? "active" : ""}
+                  btnClass={mode === "words" ? "active" : "text-secondary"}
                   btnClick={() => handleModeChange("words")}
                />
             </div>
-            <div className="w-1 h-auto bg-fade rounded-2xl mr-2 ml-3 my-1" />
+            <div className="w-1.5 h-auto bg-bg rounded-2xl mr-2 ml-3 my-1" />
             <div className="flex">
                {mode === "time" ? (
                   <>
@@ -54,19 +54,19 @@ const MenuBar = ({ testStart }: { testStart: boolean }) => {
                         btnTxt="15"
                         btnId={15}
                         btnClick={handleTime}
-                        btnClass={testTime === 15 ? "active" : ""}
+                        btnClass={testTime === 15 ? "active" : "text-secondary"}
                      />
                      <Button
                         btnTxt="30"
                         btnId={30}
                         btnClick={handleTime}
-                        btnClass={testTime === 30 ? "active" : ""}
+                        btnClass={testTime === 30 ? "active" : "text-secondary"}
                      />
                      <Button
                         btnTxt="60"
                         btnId={60}
                         btnClick={handleTime}
-                        btnClass={testTime === 60 ? "active" : ""}
+                        btnClass={testTime === 60 ? "active" : "text-secondary"}
                      />
                   </>
                ) : (
@@ -75,19 +75,25 @@ const MenuBar = ({ testStart }: { testStart: boolean }) => {
                         btnTxt="10"
                         btnId={10}
                         btnClick={handleWords}
-                        btnClass={testWords === 10 ? "active" : ""}
+                        btnClass={
+                           testWords === 10 ? "active" : "text-secondary"
+                        }
                      />
                      <Button
                         btnTxt="25"
                         btnId={25}
                         btnClick={handleWords}
-                        btnClass={testWords === 25 ? "active" : ""}
+                        btnClass={
+                           testWords === 25 ? "active" : "text-secondary"
+                        }
                      />
                      <Button
                         btnTxt="50"
                         btnId={50}
                         btnClick={handleWords}
-                        btnClass={testWords === 50 ? "active" : ""}
+                        btnClass={
+                           testWords === 50 ? "active" : "text-secondary"
+                        }
                      />
                   </>
                )}

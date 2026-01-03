@@ -26,7 +26,9 @@ interface StatCardProps {
 function StatCard({ title, value, subtitle }: StatCardProps) {
    return (
       <div>
-         <div className="title text-fade-100 text-sm md:text-base">{title}</div>
+         <div className="title text-secondary text-sm md:text-base">
+            {title}
+         </div>
          <div className="value text-3xl md:text-4xl lg:text-5xl leading-tight">
             {value}
          </div>
@@ -81,7 +83,7 @@ function StatsOverview({ data }: StatsOverviewProps) {
       // Find highest WPM with mode
       const highestWpmResult = resultsWithRaw.reduce(
          (max, result) => (result.wpm > max.wpm ? result : max),
-         resultsWithRaw[0]
+         resultsWithRaw[0],
       );
       const highestWpm: HighestResult = {
          value: highestWpmResult.wpm,
@@ -91,7 +93,7 @@ function StatsOverview({ data }: StatsOverviewProps) {
       // Find highest Raw with mode
       const highestRawResult = resultsWithRaw.reduce(
          (max, result) => (result.raw > max.raw ? result : max),
-         resultsWithRaw[0]
+         resultsWithRaw[0],
       );
       const highestRaw: HighestResult = {
          value: highestRawResult.raw,
@@ -101,7 +103,7 @@ function StatsOverview({ data }: StatsOverviewProps) {
       // Find highest Accuracy with mode
       const highestAccuracyResult = resultsWithRaw.reduce(
          (max, result) => (result.accuracy > max.accuracy ? result : max),
-         resultsWithRaw[0]
+         resultsWithRaw[0],
       );
       const highestAccuracy: HighestResult = {
          value: highestAccuracyResult.accuracy,
@@ -111,7 +113,7 @@ function StatsOverview({ data }: StatsOverviewProps) {
       // Find highest Consistency with mode
       const highestConsistencyResult = resultsWithRaw.reduce(
          (max, result) => (result.consistency > max.consistency ? result : max),
-         resultsWithRaw[0]
+         resultsWithRaw[0],
       );
       const highestConsistency: HighestResult = {
          value: highestConsistencyResult.consistency,
@@ -123,11 +125,11 @@ function StatsOverview({ data }: StatsOverviewProps) {
       const totalRaw = resultsWithRaw.reduce((sum, r) => sum + r.raw, 0);
       const totalAccuracy = resultsWithRaw.reduce(
          (sum, r) => sum + r.accuracy,
-         0
+         0,
       );
       const totalConsistency = resultsWithRaw.reduce(
          (sum, r) => sum + r.consistency,
-         0
+         0,
       );
       const count = resultsWithRaw.length;
 
@@ -141,16 +143,16 @@ function StatsOverview({ data }: StatsOverviewProps) {
       const last10Count = last10.length;
 
       const last10Wpm = Math.round(
-         last10.reduce((sum, r) => sum + r.wpm, 0) / last10Count
+         last10.reduce((sum, r) => sum + r.wpm, 0) / last10Count,
       );
       const last10Raw = Math.round(
-         last10.reduce((sum, r) => sum + r.raw, 0) / last10Count
+         last10.reduce((sum, r) => sum + r.raw, 0) / last10Count,
       );
       const last10Accuracy = Math.round(
-         last10.reduce((sum, r) => sum + r.accuracy, 0) / last10Count
+         last10.reduce((sum, r) => sum + r.accuracy, 0) / last10Count,
       );
       const last10Consistency = Math.round(
-         last10.reduce((sum, r) => sum + r.consistency, 0) / last10Count
+         last10.reduce((sum, r) => sum + r.consistency, 0) / last10Count,
       );
 
       return {

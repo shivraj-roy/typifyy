@@ -57,7 +57,7 @@ const Settings = () => {
             pauseOnHover: true,
             draggable: false,
             transition: Bounce,
-         }
+         },
       );
    };
 
@@ -76,7 +76,7 @@ const Settings = () => {
             pauseOnHover: true,
             draggable: false,
             transition: Bounce,
-         }
+         },
       );
    };
 
@@ -108,7 +108,7 @@ const Settings = () => {
                pauseOnHover: true,
                draggable: false,
                transition: Bounce,
-            }
+            },
          );
       } catch {
          showErrorToast();
@@ -155,7 +155,7 @@ const Settings = () => {
          {/* <div>Settings</div> */}
          <div className="pageSettings flex flex-col gap-4 md:gap-8">
             <button
-               className="sectionDropdown text-[2rem] p-2 flex gap-4 items-center text-fade-100"
+               className="sectionDropdown text-[2rem] p-2 flex gap-4 items-center text-secondary"
                id="group_settings"
             >
                <FaTools size={28} />
@@ -177,7 +177,7 @@ const Settings = () => {
                   onInputCommit={() => {
                      try {
                         const validation = validateMinSpeed(
-                           minSpeedValue.toString()
+                           minSpeedValue.toString(),
                         );
                         if (validation.valid) {
                            showSavedToast();
@@ -234,7 +234,7 @@ const Settings = () => {
                   onInputCommit={() => {
                      try {
                         const validation = validateMinAccuracy(
-                           minAccuracyValue.toString()
+                           minAccuracyValue.toString(),
                         );
                         if (validation.valid) {
                            showSavedToast();
@@ -572,7 +572,7 @@ const Settings = () => {
                   description={
                      <>
                         Resets settings to the default.{" "}
-                        <span className="text-red-500/70 font-semibold">
+                        <span className="text-error-extra font-semibold">
                            You can't undo this action!
                         </span>
                      </>
@@ -584,7 +584,7 @@ const Settings = () => {
                         isActive: false,
                         onClick: resetSettings,
                         className:
-                           "cursor-pointer p-2 rounded-lg text-center h-min text-[1em] bg-red-500/60 hover:bg-fade text-fade-100 hover:text-dark-100 transition-colors",
+                           "cursor-pointer p-2 rounded-lg text-center h-min text-[1em] bg-error-extra hover:bg-primary text-primary hover:text-bg transition-colors",
                      },
                   ]}
                />

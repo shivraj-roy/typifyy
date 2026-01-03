@@ -61,7 +61,7 @@ function ActivityHeatMap({ data }: ActivityHeatMapProps) {
       data.forEach((result) => {
          const date = new Date(result.timestamp.seconds * 1000);
          const dateKey = `${date.getFullYear()}-${String(
-            date.getMonth() + 1
+            date.getMonth() + 1,
          ).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
          map.set(dateKey, (map.get(dateKey) || 0) + 1);
       });
@@ -101,10 +101,10 @@ function ActivityHeatMap({ data }: ActivityHeatMapProps) {
 
          for (let day = 0; day < 7; day++) {
             const dateKey = `${currentDate.getFullYear()}-${String(
-               currentDate.getMonth() + 1
+               currentDate.getMonth() + 1,
             ).padStart(2, "0")}-${String(currentDate.getDate()).padStart(
                2,
-               "0"
+               "0",
             )}`;
 
             const isInRange =
@@ -197,7 +197,7 @@ function ActivityHeatMap({ data }: ActivityHeatMapProps) {
    const weekLabels = ["", "monday", "", "wednesday", "", "friday", ""];
 
    return (
-      <div className="w-full bg-dark-100/40 rounded-lg p-6 mt-6 hidden lg:block">
+      <div className="w-full bg-alt-bg rounded-lg p-6 mt-6 hidden lg:block">
          <div className="flex justify-center">
             <div className="wrapper w-full max-w-full">
                {/* Header */}
@@ -207,28 +207,28 @@ function ActivityHeatMap({ data }: ActivityHeatMapProps) {
                      <div className="relative" ref={dropdownRef}>
                         <button
                            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                           className="flex items-center justify-between gap-4 bg-dark-100/10 border border-fade/30 text-fade-100 px-4 py-2 rounded-md text-[1rem] cursor-pointer hover:border-fade/50 transition-colors w-52"
+                           className="flex items-center justify-between gap-4 bg-alt-bg border border-secondary/30 text-secondary px-4 py-2 rounded-md text-[1rem] cursor-pointer hover:border-secondary/40 transition-colors w-52"
                         >
                            <span>{getFilterLabel(selectedFilter)}</span>
                            {isDropdownOpen ? (
-                              <IoChevronUp className="text-fade" />
+                              <IoChevronUp className="text-primary" />
                            ) : (
-                              <IoChevronDown className="text-fade" />
+                              <IoChevronDown className="text-secondary" />
                            )}
                         </button>
 
                         {/* Dropdown Menu */}
                         {isDropdownOpen && (
-                           <div className="absolute top-full left-0 mt-1 w-full bg-dark-100 rounded-md overflow-hidden z-50 shadow-lg">
+                           <div className="absolute top-full left-0 mt-1 w-full bg-black rounded-md overflow-hidden z-50 shadow-lg">
                               <button
                                  onClick={() => {
                                     setSelectedFilter("last12months");
                                     setIsDropdownOpen(false);
                                  }}
-                                 className={`w-full text-left px-4 py-2 text-sm transition-colors ${
+                                 className={`w-full text-left px-4 py-2 text-sm transition-colors cursor-pointer ${
                                     selectedFilter === "last12months"
-                                       ? "bg-active text-dark font-medium"
-                                       : "text-fade hover:bg-glow-100 hover:text-dark-100"
+                                       ? "bg-accent text-bg font-medium"
+                                       : "text-secondary hover:bg-primary hover:text-bg"
                                  }`}
                               >
                                  last 12 months
@@ -240,10 +240,10 @@ function ActivityHeatMap({ data }: ActivityHeatMapProps) {
                                        setSelectedFilter(year);
                                        setIsDropdownOpen(false);
                                     }}
-                                    className={`w-full text-left px-4 py-2 text-sm transition-colors ${
+                                    className={`w-full text-left px-4 py-2 text-sm transition-colors cursor-pointer ${
                                        selectedFilter === year
-                                          ? "bg-active text-dark font-medium"
-                                          : "text-fade hover:bg-glow-100 hover:text-dark-100"
+                                          ? "bg-accent text-bg font-medium"
+                                          : "text-secondary hover:bg-primary hover:text-bg"
                                     }`}
                                  >
                                     {year}
@@ -253,11 +253,11 @@ function ActivityHeatMap({ data }: ActivityHeatMapProps) {
                         )}
                      </div>
 
-                     <span className="text-fade-100 text-[1rem]">
+                     <span className="text-secondary text-[1rem]">
                         {totalTests} tests
                      </span>
                   </div>
-                  <div className="flex items-center gap-2 text-[1rem] text-fade-100">
+                  <div className="flex items-center gap-2 text-[1rem] text-secondary">
                      <span>less</span>
                      <div className="flex gap-[3px]">
                         {legendColors.map((color, index) => (
@@ -282,7 +282,7 @@ function ActivityHeatMap({ data }: ActivityHeatMapProps) {
                      {weekLabels.map((label, index) => (
                         <span
                            key={index}
-                           className="text-fade-100 text-[1rem] leading-4"
+                           className="text-secondary text-[1rem] leading-4"
                            style={{ height: "18px" }}
                         >
                            {label}
@@ -303,7 +303,7 @@ function ActivityHeatMap({ data }: ActivityHeatMapProps) {
                                  {week.days.map((day, dayIndex) => (
                                     <div
                                        key={dayIndex}
-                                       className="w-[18px] h-[18px] rounded-[3px] cursor-pointer border-[1.5px] border-transparent hover:border-glow-100 transition-colors"
+                                       className="w-[18px] h-[18px] rounded-[3px] cursor-pointer border-[1.5px] border-transparent hover:border-primary transition-colors"
                                        style={{
                                           backgroundColor: day
                                              ? getColor(day.count)
@@ -316,14 +316,14 @@ function ActivityHeatMap({ data }: ActivityHeatMapProps) {
                                              const tooltipText =
                                                 day.count === 0
                                                    ? `No tests on ${formatTooltipDate(
-                                                        day.date
+                                                        day.date,
                                                      )}`
                                                    : `${day.count} ${
                                                         day.count === 1
                                                            ? "test"
                                                            : "tests"
                                                      } on ${formatTooltipDate(
-                                                        day.date
+                                                        day.date,
                                                      )}`;
                                              setTooltipContent(tooltipText);
                                              setTooltipPosition({
@@ -346,7 +346,7 @@ function ActivityHeatMap({ data }: ActivityHeatMapProps) {
                            {monthLabels.map((label, index) => (
                               <span
                                  key={index}
-                                 className="absolute text-fade-100 text-[1rem] leading-4"
+                                 className="absolute text-secondary text-[1rem] leading-4"
                                  style={{
                                     left: `${
                                        (label.weekIndex / weeks.length) * 100
@@ -362,14 +362,14 @@ function ActivityHeatMap({ data }: ActivityHeatMapProps) {
                </div>
 
                {/* Note */}
-               <p className="text-center text-fade-100/60 text-xs mt-4">
+               <p className="text-center text-secondary/50 text-xs mt-4">
                   Note: All activity data is using UTC time.
                </p>
 
                {/* Tooltip */}
                {tooltipContent && (
                   <div
-                     className="fixed z-50 px-3 py-2 text-xs text-glow bg-dark border border-fade/30 rounded-md shadow-lg pointer-events-none transform -translate-x-1/2 -translate-y-full whitespace-nowrap"
+                     className="fixed z-50 px-3 py-2 text-xs text-primary bg-black border border-secondary/30 rounded-md shadow-lg pointer-events-none transform -translate-x-1/2 -translate-y-full whitespace-nowrap"
                      style={{
                         left: tooltipPosition.x,
                         top: tooltipPosition.y,

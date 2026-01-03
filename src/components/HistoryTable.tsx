@@ -59,7 +59,7 @@ function HistoryTable({ data }: HistoryTableProps) {
       <>
          <div className="history mt-8">
             <table className="w-full">
-               <thead className="text-[0.65rem] md:text-[0.75rem] text-left text-fade-100">
+               <thead className="text-[0.65rem] md:text-[0.75rem] text-left text-secondary">
                   <tr>
                      <TableCell className="hidden md:table-cell" />
                      <TableCell>wpm</TableCell>
@@ -71,7 +71,7 @@ function HistoryTable({ data }: HistoryTableProps) {
                      <TableCell className="hidden md:table-cell">
                         <div className="relative group cursor-pointer">
                            <span>char</span>
-                           <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-max bg-dark text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                           <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-max bg-black text-primary text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                               correct/incorrect/missed/extra
                            </div>
                         </div>
@@ -90,7 +90,7 @@ function HistoryTable({ data }: HistoryTableProps) {
                      <tr
                         key={index}
                         className={`text-left rounded-lg text-sm md:text-md h-12 md:h-14 ${
-                           index % 2 === 0 ? "bg-dark-100/40" : ""
+                           index % 2 === 0 ? "bg-alt-bg" : ""
                         }`}
                      >
                         <TableCell className="hidden md:table-cell rounded-bl-lg rounded-tl-lg">
@@ -122,7 +122,7 @@ function HistoryTable({ data }: HistoryTableProps) {
                         <TableCell className="rounded-br-lg rounded-tr-lg text-xs md:text-sm">
                            <div className="leading-tight">
                               {new Date(
-                                 entry.timestamp.seconds * 1000
+                                 entry.timestamp.seconds * 1000,
                               ).toLocaleDateString("en-GB", {
                                  day: "2-digit",
                                  month: "short",
@@ -131,7 +131,7 @@ function HistoryTable({ data }: HistoryTableProps) {
                            </div>
                            <div className="leading-tight">
                               {new Date(
-                                 entry.timestamp.seconds * 1000
+                                 entry.timestamp.seconds * 1000,
                               ).toLocaleTimeString("en-GB", {
                                  hour: "2-digit",
                                  minute: "2-digit",
@@ -146,7 +146,7 @@ function HistoryTable({ data }: HistoryTableProps) {
          </div>
          {data.length > 10 && hasMore && (
             <div
-               className="loadMoreButton bg-dark-100/40 p-2 rounded-lg mt-4 cursor-pointer hover:bg-fade hover:text-dark-100 transition-colors text-center"
+               className="loadMoreButton bg-alt-bg p-2 rounded-lg mt-4 cursor-pointer hover:bg-primary hover:text-bg transition-colors text-center"
                onClick={loadMore}
             >
                load more

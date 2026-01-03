@@ -29,15 +29,15 @@ const Footer = () => {
    return (
       <>
          <div
-            className={`keyTips text-[0.7em] text-fade-100 mb-4 lg:mt-4 transition-opacity duration-300 ${
+            className={`keyTips text-[0.7em] text-secondary mb-4 lg:mt-4 transition-opacity duration-300 ${
                testInProgress ? "opacity-0 pointer-events-none" : "opacity-100"
             }`}
          >
-            <kbd className="text-dark-100 bg-fade-100 py-0.5 px-1.5 rounded-sm">
+            <kbd className="text-bg bg-secondary py-0.5 px-1.5 rounded-sm">
                tab
             </kbd>{" "}
             +{" "}
-            <kbd className="text-dark-100 bg-fade-100 py-0.5 px-1.5 rounded-sm">
+            <kbd className="text-bg bg-secondary py-0.5 px-1.5 rounded-sm">
                enter
             </kbd>{" "}
             - restart test

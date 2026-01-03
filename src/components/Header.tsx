@@ -127,8 +127,8 @@ const Header = () => {
                <div className="icon w-12">
                   <img src="/assets/icon/icon.svg" alt="typifyy-logo" />
                </div>
-               <h1 className="text relative text-2xl md:text-4xl leading-8 font-satoshi font-medium tracking-wide text-active md:text-glow-100 hidden md:block">
-                  <div className="top-text text-[0.255em] leading-[0.255em] -right-[2.35em] top-0.5 absolute text-fade-100 hidden md:block">
+               <h1 className="text relative text-2xl md:text-4xl leading-8 font-satoshi font-medium tracking-wide text-accent md:text-primary hidden md:block">
+                  <div className="top-text text-[0.255em] leading-[0.255em] -right-[2.35em] top-0.5 absolute text-secondary hidden md:block">
                      on the beat
                   </div>
                   typifyy
@@ -164,7 +164,7 @@ const Header = () => {
                      <div className="p-2">
                         <FaCircleNotch
                            size={20}
-                           className="text-fade-100 animate-spin"
+                           className="text-secondary animate-spin"
                         />
                      </div>
                   ) : user ? (
@@ -181,7 +181,7 @@ const Header = () => {
                                  setIsMenuOpen(!isMenuOpen);
                               }
                            }}
-                           className="relative items-center p-2 grid gap-[0.33em] grid-flow-col text-fade-100 hover:text-glow-100 transition-colors cursor-pointer "
+                           className="relative items-center p-2 grid gap-[0.33em] grid-flow-col text-secondary hover:text-primary transition-colors cursor-pointer "
                         >
                            <FaUserCircle size={20} />
                            <div className="text text-sm self-center hidden md:block">
@@ -198,7 +198,7 @@ const Header = () => {
                            }`}
                         >
                            <div className="spacer h-2 "></div>
-                           <div className="item bg-dark-100 grid gap-0.5 rounded-md shadow-[0_0_0_0.5em_rgba(13,_13,_13,_0.871)]">
+                           <div className="item bg-alt-bg grid gap-0.5 rounded-md shadow-[0_0_0_0.5em_rgba(var(--bg-color))]">
                               <MenuItem
                                  to="/account"
                                  icon={<FaChartLine size={16} />}

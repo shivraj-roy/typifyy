@@ -1,14 +1,24 @@
 @import "tailwindcss";
-@import url("https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap");
+
+:root {
+   --main-color: #eb5e29;
+   --bg-color: #252422;
+   --bg-alt-color: #1e1d1b;
+   --text-color: #ccc5b9;
+   --sub-color: #676461;
+   --text-alt-color: #fffcf2;
+   --error-color: #ca4754;
+   --error-extra-color: #7e2a33;
+}
 
 @theme {
-   --color-dark: #0d0d0d;
-   --color-dark-100: rgba(13, 13, 13, 0.871);
-   --color-fade: #b7ab98;
-   --color-fade-100: rgba(183, 171, 152, 0.385);
-   --color-active: #eb5939;
-   --color-glow: #fffcf2;
-   --color-glow-100: #ccc5b9;
+   --color-accent: #eb5e29;
+   --color-bg: #252422;
+   --color-alt-bg: #1e1d1b;
+   --color-primary: #ccc5b9;
+   --color-secondary: #676461;
+   --color-error: #ca4754;
+   --color-error-extra: #7e2a33;
 
    --font-mono: "Roboto Mono", monospace;
    --font-space-mono: "Space Mono", "Roboto Mono", monospace;
@@ -62,6 +72,27 @@
    font-style: normal;
 }
 
+@font-face {
+   font-family: "Space Mono";
+   src: url("/assets/font/SpaceMono-Regular.woff2") format("woff2");
+   font-weight: 400;
+   font-style: normal;
+}
+
+@font-face {
+   font-family: "Space Mono";
+   src: url("/assets/font/SpaceMono-Bold.woff2") format("woff2");
+   font-weight: 700;
+   font-style: normal;
+}
+
+@font-face {
+   font-family: "Roboto Mono";
+   src: url("/assets/font/RobotoMono-Regular.woff2") format("woff2");
+   font-weight: 400;
+   font-style: normal;
+}
+
 @layer base {
    * {
       box-sizing: border-box;
@@ -72,8 +103,8 @@
       margin: 0;
       padding: 0;
       transition: all 0.3s linear;
-      background-color: var(--color-dark-100);
-      color: var(--color-fade);
+      background-color: var(--bg-color);
+      color: var(--text-color);
       overflow-x: hidden;
    }
 }
@@ -84,14 +115,14 @@
    }
 
    .active {
-      @apply text-active;
+      @apply text-accent;
    }
 
    .caret {
       @apply relative;
    }
    .caret::after {
-      @apply absolute top-0 left-0 content-[""] block w-[2.8px] h-9 bg-(--color-active) animate-blinking rounded-4xl;
+      @apply absolute top-0 left-0 content-[""] block w-[2.8px] h-9 bg-(--color-accent) animate-blinking rounded-4xl;
       /* position: absolute;
       top: 0;
       left: 0;
@@ -108,34 +139,34 @@
       @apply relative;
    }
    .caret_end::before {
-      @apply absolute top-0 right-0 content-[""] block w-[2px] h-9 bg-(--color-active) animate-blinking rounded-4xl;
+      @apply absolute top-0 right-0 content-[""] block w-[2px] h-9 bg-(--color-accent) animate-blinking rounded-4xl;
    }
 
    .correct {
-      @apply text-fade;
+      @apply text-primary;
    }
 
    .incorrect {
-      @apply text-red-500;
+      @apply text-error;
    }
 
    .extra-key {
-      @apply text-red-500/50;
+      @apply text-error-extra;
    }
 
    .word-error {
-      @apply decoration-red-500 underline decoration-2 underline-offset-4;
+      @apply text-error underline decoration-2 underline-offset-4;
    }
 
    .activeBtn {
-      @apply bg-active text-dark-100;
+      @apply bg-accent text-bg;
    }
 
    /* Volume Slider Styles */
    .volumeSlider {
       -webkit-appearance: none;
       appearance: none;
-      background: rgba(183, 171, 152, 0.2);
+      background: var(--color-alt-bg);
       outline: none;
    }
 
@@ -145,7 +176,7 @@
       width: 80px;
       height: 20px;
       border-radius: 20px;
-      background: var(--color-active);
+      background: var(--color-accent);
       cursor: grab;
       transition: all 0.2s ease;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
@@ -158,14 +189,14 @@
    }
 
    .volumeSlider::-webkit-slider-thumb:hover {
-      background: var(--color-glow-100);
+      background: var(--color-primary);
    }
 
    .volumeSlider::-moz-range-thumb {
       width: 80px;
       height: 20px;
       border-radius: 20px;
-      background: var(--color-active);
+      background: var(--color-accent);
       cursor: grab;
       border: none;
       transition: all 0.2s ease;
@@ -179,7 +210,7 @@
    }
 
    .volumeSlider::-moz-range-thumb:hover {
-      background: var(--color-glow-100);
+      background: var(--color-primary);
    }
 
    .volumeSlider::-moz-range-track {

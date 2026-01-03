@@ -17,7 +17,7 @@ ChartJS.register(
    LineElement,
    Title,
    Tooltip,
-   Legend
+   Legend,
 );
 
 const Graph = ({ graphData }: { graphData: number[][] }) => {
@@ -27,16 +27,17 @@ const Graph = ({ graphData }: { graphData: number[][] }) => {
          {
             label: "raw",
             data: graphData.map(([, rawWpm]) => rawWpm),
-            borderColor: "rgb(183, 171, 152, 0.5)",
-            borderDash: [10, 10],
+            borderColor: "#eb5e2980",
+            backgroundColor: "#eb5e2980",
+            borderDash: [8, 8],
             tension: 0.3,
             pointRadius: 0,
          },
          {
             label: "wpm",
             data: graphData.map(([, , Wpm]) => Wpm),
-            borderColor: "rgb(235, 89, 57)",
-            backgroundColor: "rgb(235, 89, 57)",
+            borderColor: "#eb5e29",
+            backgroundColor: "#eb5e29",
             tension: 0.3,
             pointRadius: 2.5,
          },
@@ -47,7 +48,7 @@ const Graph = ({ graphData }: { graphData: number[][] }) => {
    const maxRawWPM = Math.max(...graphData.map(([, rawWpm]) => rawWpm || 0), 0);
    const maxNetWPM = Math.max(
       ...graphData.map(([, , netWpm]) => netWpm || 0),
-      0
+      0,
    );
    const maxWPM = Math.max(maxRawWPM, maxNetWPM);
    const stepSize = maxWPM <= 30 ? 10 : 20;

@@ -13,7 +13,7 @@ const TimeCounter = ({
 }) => {
    return (
       <div>
-         <div className={`flex text-3xl ml-2 text-active ${className}`}>
+         <div className={`flex text-3xl ml-2 text-accent ${className}`}>
             {mode === "time" ? countDown : `${current}/${total}`}
          </div>
       </div>
