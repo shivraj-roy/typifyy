@@ -9,6 +9,73 @@ import {
    SettingsContextType,
 } from "../types";
 
+const STORAGE_KEY = "settingConfig";
+
+interface SettingConfig {
+   minSpeedMode: SettingMode;
+   minSpeedValue: number;
+   minAccuracyMode: SettingMode;
+   minAccuracyValue: number;
+   soundVolume: number;
+   soundMode: SoundMode;
+   errorSoundMode: ErrorSoundMode;
+   timeWarningMode: TimeWarningMode;
+   liveProgressMode: LiveProgressMode;
+   capsLockWarningMode: CapsLockWarningMode;
+}
+
+const DEFAULT_CONFIG: SettingConfig = {
+   minSpeedMode: "off",
+   minSpeedValue: 100,
+   minAccuracyMode: "off",
+   minAccuracyValue: 75,
+   soundVolume: 0.5,
+   soundMode: "off",
+   errorSoundMode: "off",
+   timeWarningMode: "off",
+   liveProgressMode: "mini",
+   capsLockWarningMode: "show",
+};
+
+// Load config from localStorage
+const loadConfig = (): SettingConfig => {
+   try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+         const parsed = JSON.parse(saved);
+         return {
+            minSpeedMode: parsed.minSpeedMode || DEFAULT_CONFIG.minSpeedMode,
+            minSpeedValue: parsed.minSpeedValue ?? DEFAULT_CONFIG.minSpeedValue,
+            minAccuracyMode:
+               parsed.minAccuracyMode || DEFAULT_CONFIG.minAccuracyMode,
+            minAccuracyValue:
+               parsed.minAccuracyValue ?? DEFAULT_CONFIG.minAccuracyValue,
+            soundVolume: parsed.soundVolume ?? DEFAULT_CONFIG.soundVolume,
+            soundMode: parsed.soundMode || DEFAULT_CONFIG.soundMode,
+            errorSoundMode: parsed.errorSoundMode || DEFAULT_CONFIG.errorSoundMode,
+            timeWarningMode:
+               parsed.timeWarningMode || DEFAULT_CONFIG.timeWarningMode,
+            liveProgressMode:
+               parsed.liveProgressMode || DEFAULT_CONFIG.liveProgressMode,
+            capsLockWarningMode:
+               parsed.capsLockWarningMode || DEFAULT_CONFIG.capsLockWarningMode,
+         };
+      }
+   } catch (error) {
+      console.error("Failed to load settingConfig from localStorage:", error);
+   }
+   return DEFAULT_CONFIG;
+};
+
+// Save config to localStorage
+const saveConfig = (config: SettingConfig) => {
+   try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
+   } catch (error) {
+      console.error("Failed to save settingConfig to localStorage:", error);
+   }
+};
+
 const SettingsContext = createContext<SettingsContextType | null>(null);
 
 export const SettingsContextProvider = ({
@@ -16,159 +83,76 @@ export const SettingsContextProvider = ({
 }: {
    children: ReactNode;
 }) => {
-   const [minSpeedMode, setMinSpeedMode] = useState<SettingMode>(() => {
-      const saved = localStorage.getItem("minSpeedMode");
-      return (saved as SettingMode) || "off";
-   });
+   const [config, setConfig] = useState<SettingConfig>(loadConfig);
 
-   const [minSpeedValue, setMinSpeedValue] = useState<number>(() => {
-      const saved = localStorage.getItem("minSpeedValue");
-      return saved ? parseInt(saved, 10) : 100;
-   });
-
-   const [minAccuracyMode, setMinAccuracyMode] = useState<SettingMode>(() => {
-      const saved = localStorage.getItem("minAccuracyMode");
-      return (saved as SettingMode) || "off";
-   });
-
-   const [minAccuracyValue, setMinAccuracyValue] = useState<number>(() => {
-      const saved = localStorage.getItem("minAccuracyValue");
-      return saved ? parseInt(saved, 10) : 75;
-   });
-
-   const [soundVolume, setSoundVolume] = useState<number>(() => {
-      const saved = localStorage.getItem("soundVolume");
-      return saved ? parseFloat(saved) : 0.5;
-   });
-
-   const [soundMode, setSoundMode] = useState<SoundMode>(() => {
-      const saved = localStorage.getItem("soundMode");
-      return (saved as SoundMode) || "off";
-   });
-
-   const [errorSoundMode, setErrorSoundMode] = useState<ErrorSoundMode>(() => {
-      const saved = localStorage.getItem("errorSoundMode");
-      return (saved as ErrorSoundMode) || "off";
-   });
-
-   const [timeWarningMode, setTimeWarningMode] = useState<TimeWarningMode>(() => {
-      const saved = localStorage.getItem("timeWarningMode");
-      return (saved as TimeWarningMode) || "off";
-   });
-
-   const [liveProgressMode, setLiveProgressMode] = useState<LiveProgressMode>(() => {
-      const saved = localStorage.getItem("liveProgressMode");
-      return (saved as LiveProgressMode) || "mini";
-   });
-
-   const [capsLockWarningMode, setCapsLockWarningMode] = useState<CapsLockWarningMode>(() => {
-      const saved = localStorage.getItem("capsLockWarningMode");
-      return (saved as CapsLockWarningMode) || "show";
-   });
-
-   // Save to localStorage whenever settings change
+   // Save to localStorage whenever config changes
    useEffect(() => {
-      try {
-         localStorage.setItem("minSpeedMode", minSpeedMode);
-      } catch (error) {
-         console.error("Failed to save minSpeedMode to localStorage:", error);
-      }
-   }, [minSpeedMode]);
+      saveConfig(config);
+   }, [config]);
 
-   useEffect(() => {
-      try {
-         localStorage.setItem("minSpeedValue", minSpeedValue.toString());
-      } catch (error) {
-         console.error("Failed to save minSpeedValue to localStorage:", error);
-      }
-   }, [minSpeedValue]);
+   // Wrapper setters that update the config object
+   const setMinSpeedMode = (minSpeedMode: SettingMode) => {
+      setConfig((prev) => ({ ...prev, minSpeedMode }));
+   };
 
-   useEffect(() => {
-      try {
-         localStorage.setItem("minAccuracyMode", minAccuracyMode);
-      } catch (error) {
-         console.error("Failed to save minAccuracyMode to localStorage:", error);
-      }
-   }, [minAccuracyMode]);
+   const setMinSpeedValue = (minSpeedValue: number) => {
+      setConfig((prev) => ({ ...prev, minSpeedValue }));
+   };
 
-   useEffect(() => {
-      try {
-         localStorage.setItem("minAccuracyValue", minAccuracyValue.toString());
-      } catch (error) {
-         console.error("Failed to save minAccuracyValue to localStorage:", error);
-      }
-   }, [minAccuracyValue]);
+   const setMinAccuracyMode = (minAccuracyMode: SettingMode) => {
+      setConfig((prev) => ({ ...prev, minAccuracyMode }));
+   };
 
-   useEffect(() => {
-      try {
-         localStorage.setItem("soundVolume", soundVolume.toString());
-      } catch (error) {
-         console.error("Failed to save soundVolume to localStorage:", error);
-      }
-   }, [soundVolume]);
+   const setMinAccuracyValue = (minAccuracyValue: number) => {
+      setConfig((prev) => ({ ...prev, minAccuracyValue }));
+   };
 
-   useEffect(() => {
-      try {
-         localStorage.setItem("soundMode", soundMode);
-      } catch (error) {
-         console.error("Failed to save soundMode to localStorage:", error);
-      }
-   }, [soundMode]);
+   const setSoundVolume = (soundVolume: number) => {
+      setConfig((prev) => ({ ...prev, soundVolume }));
+   };
 
-   useEffect(() => {
-      try {
-         localStorage.setItem("errorSoundMode", errorSoundMode);
-      } catch (error) {
-         console.error("Failed to save errorSoundMode to localStorage:", error);
-      }
-   }, [errorSoundMode]);
+   const setSoundMode = (soundMode: SoundMode) => {
+      setConfig((prev) => ({ ...prev, soundMode }));
+   };
 
-   useEffect(() => {
-      try {
-         localStorage.setItem("timeWarningMode", timeWarningMode);
-      } catch (error) {
-         console.error("Failed to save timeWarningMode to localStorage:", error);
-      }
-   }, [timeWarningMode]);
+   const setErrorSoundMode = (errorSoundMode: ErrorSoundMode) => {
+      setConfig((prev) => ({ ...prev, errorSoundMode }));
+   };
 
-   useEffect(() => {
-      try {
-         localStorage.setItem("liveProgressMode", liveProgressMode);
-      } catch (error) {
-         console.error("Failed to save liveProgressMode to localStorage:", error);
-      }
-   }, [liveProgressMode]);
+   const setTimeWarningMode = (timeWarningMode: TimeWarningMode) => {
+      setConfig((prev) => ({ ...prev, timeWarningMode }));
+   };
 
-   useEffect(() => {
-      try {
-         localStorage.setItem("capsLockWarningMode", capsLockWarningMode);
-      } catch (error) {
-         console.error("Failed to save capsLockWarningMode to localStorage:", error);
-      }
-   }, [capsLockWarningMode]);
+   const setLiveProgressMode = (liveProgressMode: LiveProgressMode) => {
+      setConfig((prev) => ({ ...prev, liveProgressMode }));
+   };
+
+   const setCapsLockWarningMode = (capsLockWarningMode: CapsLockWarningMode) => {
+      setConfig((prev) => ({ ...prev, capsLockWarningMode }));
+   };
 
    return (
       <SettingsContext.Provider
          value={{
-            minSpeedMode,
+            minSpeedMode: config.minSpeedMode,
             setMinSpeedMode,
-            minSpeedValue,
+            minSpeedValue: config.minSpeedValue,
             setMinSpeedValue,
-            minAccuracyMode,
+            minAccuracyMode: config.minAccuracyMode,
             setMinAccuracyMode,
-            minAccuracyValue,
+            minAccuracyValue: config.minAccuracyValue,
             setMinAccuracyValue,
-            soundVolume,
+            soundVolume: config.soundVolume,
             setSoundVolume,
-            soundMode,
+            soundMode: config.soundMode,
             setSoundMode,
-            errorSoundMode,
+            errorSoundMode: config.errorSoundMode,
             setErrorSoundMode,
-            timeWarningMode,
+            timeWarningMode: config.timeWarningMode,
             setTimeWarningMode,
-            liveProgressMode,
+            liveProgressMode: config.liveProgressMode,
             setLiveProgressMode,
-            capsLockWarningMode,
+            capsLockWarningMode: config.capsLockWarningMode,
             setCapsLockWarningMode,
          }}
       >

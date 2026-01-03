@@ -304,6 +304,11 @@ const TypeZone = ({
          return; // Let Tab work normally for button focus
       }
 
+      // ? Ignore keyboard shortcuts (Ctrl/Cmd/Alt + key combinations)
+      if (e.ctrlKey || e.metaKey || e.altKey) {
+         return; // Don't interfere with browser shortcuts (zoom, refresh, etc.)
+      }
+
       // ? Prevent default behavior for non-character keys
       if (e.keyCode !== 8 && e.key.length > 1) {
          e.preventDefault();

@@ -1,13 +1,7 @@
 import { FiUserPlus } from "react-icons/fi";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-   FaCheck,
-   FaGithub,
-   FaGoogle,
-   FaRedo,
-   FaSignInAlt,
-} from "react-icons/fa";
+import { FaCheck, FaGoogle, FaRedo, FaSignInAlt } from "react-icons/fa";
 import {
    createUserWithEmailAndPassword,
    signInWithEmailAndPassword,
@@ -113,6 +107,11 @@ const Login = () => {
          validatePassword(password).valid &&
          validateVerifyPassword(verifyPassword).valid
       );
+   };
+
+   // Check if forgot password email is valid
+   const isForgotPasswordEmailValid = () => {
+      return validateEmail(forgotPasswordEmail).valid;
    };
 
    const handleRegisterSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -565,6 +564,7 @@ const Login = () => {
                      type="submit"
                      icon={<FaRedo size={18} />}
                      text="submit"
+                     disabled={!isForgotPasswordEmailValid()}
                   />
                </form>
             </div>

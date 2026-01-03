@@ -1,7 +1,6 @@
 import {
    FaCode,
    FaCodeBranch,
-   FaDonate,
    FaEnvelope,
    FaPaintBrush,
 } from "react-icons/fa";
