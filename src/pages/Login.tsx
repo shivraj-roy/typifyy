@@ -1,11 +1,12 @@
 import { FiUserPlus } from "react-icons/fi";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaCheck, FaGoogle, FaRedo, FaSignInAlt } from "react-icons/fa";
 import {
    createUserWithEmailAndPassword,
    signInWithEmailAndPassword,
-   signInWithPopup,
+   signInWithRedirect,
+   getRedirectResult,
    GoogleAuthProvider,
    updateProfile,
    sendPasswordResetEmail,
@@ -37,6 +38,55 @@ const Login = () => {
    const [showForgotPasswordModal, setShowForgotPasswordModal] =
       useState(false);
    const [forgotPasswordEmail, setForgotPasswordEmail] = useState("");
+
+   // Handle Google Sign-In redirect result
+   useEffect(() => {
+      getRedirectResult(auth)
+         .then((result) => {
+            if (result) {
+               const user = result.user;
+               toast(
+                  <CustomToast
+                     type="success"
+                     title="Success"
+                     message="Logged in with Google!"
+                  />,
+                  {
+                     position: "top-right",
+                     autoClose: 5000,
+                     hideProgressBar: true,
+                     closeOnClick: true,
+                     pauseOnHover: true,
+                     draggable: false,
+                     transition: Bounce,
+                  },
+               );
+               console.log("Google Sign-In user:", user);
+               navigate("/account");
+            }
+         })
+         .catch((error) => {
+            toast(
+               <CustomToast
+                  type="error"
+                  title="Error"
+                  message={
+                     errorMapping[error.code] || "An unexpected error occurred."
+                  }
+               />,
+               {
+                  position: "top-right",
+                  autoClose: 5000,
+                  hideProgressBar: true,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: false,
+                  transition: Bounce,
+               },
+            );
+            console.error("Google Sign-In error:", error.code, error.message);
+         });
+   }, [navigate]);
 
    const validateUsername = (value: string) => {
       if (value.length < 6) {
@@ -253,49 +303,7 @@ const Login = () => {
 
    const googleProvider = new GoogleAuthProvider();
    const handleGoogleSignIn = () => {
-      signInWithPopup(auth, googleProvider)
-         .then((result) => {
-            const user = result.user;
-            toast(
-               <CustomToast
-                  type="success"
-                  title="Success"
-                  message="Logged in with Google!"
-               />,
-               {
-                  position: "top-right",
-                  autoClose: 5000,
-                  hideProgressBar: true,
-                  closeOnClick: true,
-                  pauseOnHover: true,
-                  draggable: false,
-                  transition: Bounce,
-               },
-            );
-            console.log("Google Sign-In user:", user);
-            navigate("/account");
-         })
-         .catch((error) => {
-            toast(
-               <CustomToast
-                  type="error"
-                  title="Error"
-                  message={
-                     errorMapping[error.code] || "An unexpected error occurred."
-                  }
-               />,
-               {
-                  position: "top-right",
-                  autoClose: 5000,
-                  hideProgressBar: true,
-                  closeOnClick: true,
-                  pauseOnHover: true,
-                  draggable: false,
-                  transition: Bounce,
-               },
-            );
-            console.error("Google Sign-In error:", error.code, error.message);
-         });
+      signInWithRedirect(auth, googleProvider);
    };
 
    // Todo: GitHub sign-in handler
