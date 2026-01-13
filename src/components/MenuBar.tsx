@@ -1,5 +1,5 @@
 import { MdTimer } from "react-icons/md";
-import Button from "../ui/Button";
+import Button from "./ui/Button";
 import { useTestMode } from "../context/TestMode";
 
 const MenuBar = ({ testStart }: { testStart: boolean }) => {

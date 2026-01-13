@@ -81,6 +81,7 @@ const TypeZone = ({
    const inputRef = useRef<HTMLInputElement>(null);
    const wordsContainerRef = useRef<HTMLDivElement>(null);
    const nextTestBtnRef = useRef<HTMLButtonElement>(null);
+   const caretRef = useRef<HTMLDivElement>(null);
    const correctCharRef = useRef<number>(0);
    const incorrectCharRef = useRef<number>(0);
    const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -140,14 +141,59 @@ const TypeZone = ({
       }
    };
 
+   // * Update caret position based on current character
+   const updateCaretPosition = useCallback(() => {
+      const caret = caretRef.current;
+      const container = wordsContainerRef.current;
+      const currentWordRef = wordSpanRef[onWordIndex]?.current;
+
+      if (!caret || !container || !currentWordRef) return;
+
+      const currentWord = currentWordRef.childNodes as NodeListOf<HTMLElement>;
+
+      // Get the target character element
+      let targetChar: HTMLElement | null = null;
+      let isAtEnd = false;
+
+      if (onCharIndex < currentWord.length) {
+         targetChar = currentWord[onCharIndex];
+      } else if (onCharIndex > 0 && onCharIndex === currentWord.length) {
+         // At the end of the word
+         targetChar = currentWord[onCharIndex - 1];
+         isAtEnd = true;
+      }
+
+      if (!targetChar) return;
+
+      // Calculate position relative to container
+      const containerRect = container.getBoundingClientRect();
+      const charRect = targetChar.getBoundingClientRect();
+
+      const left = charRect.left - containerRect.left + container.scrollLeft;
+      const top = charRect.top - containerRect.top + container.scrollTop;
+
+      // Position caret (offset slightly to the left for better positioning)
+      const caretOffset = 1.5; // pixels to offset left
+      const caretTopOffset = 5.5; // pixels to offset down from top
+      if (isAtEnd) {
+         // Position at the end (right side) of character
+         caret.style.left = `${left + charRect.width - caretOffset}px`;
+      } else {
+         // Position at the start (left side) of character
+         caret.style.left = `${left - caretOffset}px`;
+      }
+      caret.style.top = `${top + caretTopOffset}px`;
+      caret.style.height = `1.2em`;
+   }, [onWordIndex, onCharIndex, wordSpanRef]);
+
    useEffect(() => {
       focusInput();
       console.log("focused");
-      const firstChild = wordSpanRef[0].current?.childNodes[0] as HTMLElement;
-      if (firstChild) {
-         firstChild.className = " caret ";
-      }
-   }, []);
+      // Initialize caret position with a small delay to ensure DOM is ready
+      setTimeout(() => {
+         updateCaretPosition();
+      }, 50);
+   }, [updateCaretPosition]);
 
    // * Keep correctCharRef in sync with correctChar state
    useEffect(() => {
@@ -159,28 +205,35 @@ const TypeZone = ({
       incorrectCharRef.current = incorrectChar;
    }, [incorrectChar]);
 
-   // * Hide caret when focus is lost, show when focused
+   // * Update caret position when word/char index changes
    useEffect(() => {
-      if (!isFocused && !testEnd) {
-         // Remove caret classes when unfocused
-         const allSpans = document.querySelectorAll(".caret, .caret_end");
-         allSpans.forEach((span) => {
-            span.classList.remove("caret", "caret_end");
-         });
-      } else if (isFocused && !testEnd) {
-         // Restore caret when focused
-         const currentWordRef = wordSpanRef[onWordIndex]?.current;
-         if (currentWordRef) {
-            const currentWord =
-               currentWordRef.childNodes as NodeListOf<HTMLElement>;
-            if (onCharIndex < currentWord.length) {
-               currentWord[onCharIndex].classList.add("caret");
-            } else if (onCharIndex > 0 && onCharIndex === currentWord.length) {
-               currentWord[onCharIndex - 1].classList.add("caret_end");
-            }
-         }
+      if (!testEnd) {
+         updateCaretPosition();
       }
-   }, [isFocused, testEnd, onWordIndex, onCharIndex, wordSpanRef]);
+   }, [onWordIndex, onCharIndex, testEnd, updateCaretPosition]);
+
+   // * Recalculate caret position when test starts (layout might shift)
+   useEffect(() => {
+      if (testStart) {
+         // Small delay to allow layout to settle after blinking stops
+         const timer = setTimeout(() => {
+            updateCaretPosition();
+         }, 100);
+         return () => clearTimeout(timer);
+      }
+   }, [testStart, updateCaretPosition]);
+
+   // * Hide/show caret based on focus state
+   useEffect(() => {
+      const caret = caretRef.current;
+      if (!caret) return;
+
+      if (!isFocused || testEnd) {
+         caret.style.opacity = "0";
+      } else {
+         caret.style.opacity = "1";
+      }
+   }, [isFocused, testEnd]);
 
    // * Preload sounds when sound mode changes
    useEffect(() => {
@@ -366,10 +419,7 @@ const TypeZone = ({
             }
          }
 
-         if (currentWord.length <= onCharIndex) {
-            currentWord[onCharIndex - 1].classList.remove("caret_end");
-         } else {
-            currentWord[onCharIndex].classList.remove("caret");
+         if (currentWord.length > onCharIndex) {
             setMissedChar((prev) => prev + (currentWord.length - onCharIndex));
          }
 
@@ -377,11 +427,6 @@ const TypeZone = ({
          updateWordErrorClass(onWordIndex);
 
          if (onWordIndex + 1 < words.length) {
-            const nextWordFirstChild = wordSpanRef[onWordIndex + 1].current
-               ?.childNodes[0] as HTMLElement;
-            if (nextWordFirstChild) {
-               nextWordFirstChild.className = "caret";
-            }
             setOnWordIndex((prev) => prev + 1);
             setOnCharIndex(0);
 
@@ -412,15 +457,14 @@ const TypeZone = ({
             if (currentWord.length === onCharIndex) {
                if (currentWord[onCharIndex - 1].className.includes("extra")) {
                   currentWord[onCharIndex - 1].remove();
-                  currentWord[onCharIndex - 2].className += " caret_end";
                } else {
-                  currentWord[onCharIndex - 1].className = "caret";
+                  // Clear the className of the last character
+                  currentWord[onCharIndex - 1].className = "";
                }
                setOnCharIndex((prev) => prev - 1);
                return;
             }
-            currentWord[onCharIndex].className = "";
-            currentWord[onCharIndex - 1].className = "caret";
+            currentWord[onCharIndex - 1].className = "";
             setOnCharIndex((prev) => prev - 1);
          } else if (onCharIndex === 0 && onWordIndex > 0) {
             // Check if previous word has incorrect characters
@@ -435,20 +479,12 @@ const TypeZone = ({
                );
 
                if (hasIncorrect) {
-                  // Remove caret from current word
-                  currentWord[0].classList.remove("caret");
-
                   // Move to previous word
                   setOnWordIndex((prev) => prev - 1);
 
                   // Set char index to end of previous word
                   const newCharIndex = prevWordChars.length;
                   setOnCharIndex(newCharIndex);
-
-                  // Add caret to last character of previous word
-                  if (prevWordChars[newCharIndex - 1]) {
-                     prevWordChars[newCharIndex - 1].className += " caret_end";
-                  }
                }
             }
          }
@@ -463,8 +499,7 @@ const TypeZone = ({
          }
          const newSpan = document.createElement("span");
          newSpan.innerText = e.key;
-         newSpan.className = "extra-key caret_end extra"; // "extra" className is for key reference for backspace key
-         currentWord[onCharIndex - 1].classList.remove("caret_end");
+         newSpan.className = "extra-key extra"; // "extra" className is for key reference for backspace key
          wordSpanRef[onWordIndex].current?.appendChild(newSpan);
          setOnCharIndex((prev) => prev + 1);
          setExtraChar((prev) => prev + 1);
@@ -490,22 +525,19 @@ const TypeZone = ({
          setOnCharIndex((prev) => prev + 1);
       }
 
-      // ? Handle caret movement
-      if (currentWord[onCharIndex + 1]) {
-         currentWord[onCharIndex + 1].className = "caret";
-      } else if (onCharIndex === currentWord.length - 1) {
-         currentWord[onCharIndex].className += " caret_end";
-
-         // Check if we're on the last word in words mode and just typed the last character
-         if (mode === "words" && onWordIndex === words.length - 1) {
-            // End the test
-            setCompletedWords((prev) => prev + 1);
-            if (timerRef.current) {
-               clearInterval(timerRef.current);
-               timerRef.current = null;
-            }
-            setTestEnd(true);
+      // Check if we're on the last word in words mode and just typed the last character
+      if (
+         onCharIndex === currentWord.length - 1 &&
+         mode === "words" &&
+         onWordIndex === words.length - 1
+      ) {
+         // End the test
+         setCompletedWords((prev) => prev + 1);
+         if (timerRef.current) {
+            clearInterval(timerRef.current);
+            timerRef.current = null;
          }
+         setTestEnd(true);
       }
    };
 
@@ -832,8 +864,23 @@ const TypeZone = ({
                      )}
                      <div
                         ref={wordsContainerRef}
-                        className="text-3xl flex flex-wrap leading-[3rem] tracking-tight relative text-secondary h-36 overflow-hidden w-full"
+                        className="text-3xl flex flex-wrap content-start leading-[3rem] tracking-normal relative text-secondary h-36 overflow-hidden w-full"
                      >
+                        {/* Absolute positioned caret */}
+                        <div
+                           ref={caretRef}
+                           className={`absolute pointer-events-none rounded-full ${
+                              !testStart ? "animate-blinking" : ""
+                           }`}
+                           style={{
+                              width: "0.1em",
+                              height: "1.2em",
+                              backgroundColor: "var(--color-accent)",
+                              opacity: 0,
+                              transition:
+                                 "left 0.08s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+                           }}
+                        />
                         {!isFocused && (
                            <div
                               className="cursor-default absolute top-0 left-0 w-full h-full flex items-center justify-center backdrop-blur-sm z-10"
@@ -852,10 +899,7 @@ const TypeZone = ({
                               ref={wordSpanRef[wordIndex]}
                            >
                               {word.split("").map((letter, letterIndex) => (
-                                 <span
-                                    key={`${letterIndex}-${wordIndex}`}
-                                    // className="caret"
-                                 >
+                                 <span key={`${letterIndex}-${wordIndex}`}>
                                     {letter}
                                  </span>
                               ))}

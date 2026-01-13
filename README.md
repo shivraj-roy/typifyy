@@ -1,54 +1,121 @@
-# React + TypeScript + Vite
+[![Typifyy Banner](./public/assets/typifyy-github-banner.png)](https://typifyy.vercel.app/)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+<br />
 
-Currently, two official plugins are available:
+[![React](https://img.shields.io/badge/react-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/typescript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Vite](https://img.shields.io/badge/vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
+[![Firebase](https://img.shields.io/badge/firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)](https://firebase.google.com/)
+[![Tailwind CSS](https://img.shields.io/badge/tailwind_css-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+[![Chart.js](https://img.shields.io/badge/chart.js-FF6384?style=for-the-badge&logo=chartdotjs&logoColor=white)](https://www.chartjs.org/)
+[![Vercel](https://img.shields.io/badge/vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://vercel.com/)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+# About
 
-## Expanding the ESLint configuration
+Typifyy is a minimalistic and customizable [typing test](https://typifyy.vercel.app/) application. Inspired by [Monkeytype](https://monkeytype.com), it focuses on simplicity and essential features to help you measure and improve your typing speed. The app features multiple test modes, real-time performance tracking, an account system to save your typing history, and user-configurable settings including sounds, custom thresholds, and visual feedback.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Built as a portfolio project to sharpen React 19 and TypeScript skills while creating something fun and useful, Typifyy attempts to provide a clean, focused typing experience with straightforward, real-time feedback on speed and accuracy.
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+# Features
+
+- **Minimalistic design** with a clean, distraction-free interface
+- **Type what you see, see what you type** - real-time character validation
+- **Multiple test modes**:
+  - Time-based tests (15s, 30s, 60s)
+  - Word-count tests (10, 25, 50 words)
+- **Real-time statistics**:
+  - Live WPM (Words Per Minute) tracking
+  - Accuracy percentage
+  - Consistency score
+  - Detailed character breakdown
+- **Performance graphs** - visualize your typing speed over time with Chart.js
+- **Account system**:
+  - Firebase authentication (Email/Password & Google Sign-in)
+  - Save typing history automatically
+  - Personal best tracking for each test mode
+  - Activity heatmap visualization
+  - Typing statistics overview
+- **Customizable settings**:
+  - Min speed/accuracy thresholds
+  - Keyboard click sounds (NK Cream, Osu)
+  - Error sounds (Blow, Slap, Whoosh)
+  - Time warning alerts
+  - Live progress display options
+  - Caps Lock warning
+- **Smooth caret animation** - absolute positioned caret with smooth transitions
+- **Keyboard shortcuts** - Tab + Enter to restart test
+- **Responsive design** - optimized for desktop, mobile-friendly message
+- **Self-hosted fonts** - no external CDN dependencies for better performance
+
+# Bug Report or Feature Request
+
+If you encounter a bug or have a feature request:
+- [Create an issue](https://github.com/shivraj-roy/typifyy/issues)
+- [Start a discussion](https://github.com/shivraj-roy/typifyy/discussions)
+
+# Want to Contribute?
+
+Contributions are welcome! Please read [CONTRIBUTING.md](./docs/CONTRIBUTING.md) to get started.
+
+# Tech Stack
+
+- **Frontend**: React 19, TypeScript, Vite
+- **Styling**: Tailwind CSS v4
+- **Backend**: Firebase (Authentication, Firestore)
+- **Charts**: Chart.js with react-chartjs-2
+- **Icons**: React Icons
+- **Analytics**: Vercel Analytics
+- **Deployment**: Vercel
+
+# Local Development
+
+1. Clone the repository:
+```bash
+git clone https://github.com/shivraj-roy/typifyy.git
+cd typifyy
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+2. Install dependencies:
+```bash
+npm install
 ```
+
+3. Create a `.env` file in the root directory and add your Firebase configuration:
+```env
+VITE_FIREBASE_API_KEY=your_api_key
+VITE_FIREBASE_AUTH_DOMAIN=your_auth_domain
+VITE_FIREBASE_PROJECT_ID=your_project_id
+VITE_FIREBASE_STORAGE_BUCKET=your_storage_bucket
+VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+VITE_FIREBASE_APP_ID=your_app_id
+```
+
+4. Start the development server:
+```bash
+npm run dev
+```
+
+5. Build for production:
+```bash
+npm run build
+```
+
+# Credits
+
+- **Inspiration**: [Monkeytype](https://monkeytype.com) for setting the bar for typing tests
+- **Word generation**: [random-words](https://www.npmjs.com/package/random-words) library
+- **Fonts**: Roboto Mono, Space Mono, Satoshi (self-hosted)
+- **Sound effects**: NK Cream, Osu click sounds, various error sounds
+- **Icons**: React Icons library
+
+Special thanks to the open-source community and everyone who provided feedback to make this project better.
+
+# License
+
+This project is open source and available under the [MIT License](LICENSE).
+
+---
+
+**Made with ❤️ by [Shivraj Roy](https://github.com/shivraj-roy)**
+
+*Designed to keep you in flow*

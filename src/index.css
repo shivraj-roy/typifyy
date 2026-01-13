@@ -107,6 +107,11 @@
       color: var(--text-color);
       overflow-x: hidden;
    }
+
+   ::selection {
+      background-color: var(--color-accent);
+      color: var(--color-bg);
+   }
 }
 
 @layer components {
@@ -116,30 +121,6 @@
 
    .active {
       @apply text-accent;
-   }
-
-   .caret {
-      @apply relative;
-   }
-   .caret::after {
-      @apply absolute top-0 left-0 content-[""] block w-[2.8px] h-9 bg-(--color-accent) animate-blinking rounded-4xl;
-      /* position: absolute;
-      top: 0;
-      left: 0;
-      content: "";
-      display: block;
-      width: 2px;
-      height: 2.5rem;
-      background-color: var(--color-active);
-      animation: blinking 1s infinite;
-      border-radius: 100px; */
-   }
-
-   .caret_end {
-      @apply relative;
-   }
-   .caret_end::before {
-      @apply absolute top-0 right-0 content-[""] block w-[2px] h-9 bg-(--color-accent) animate-blinking rounded-4xl;
    }
 
    .correct {
