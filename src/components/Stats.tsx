@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Timestamp, collection, addDoc } from "firebase/firestore";
-import { useTestMode } from "../context/TestMode";
-import { useSettings } from "../context/Settings";
+import { useTestModeStore } from "../stores/testModeStore";
+import { useSettingsStore } from "../stores/settingsStore";
 import { auth, db } from "../firebaseConfig";
 import { StatsProps } from "../types";
 import Graph from "./Graph";
@@ -25,11 +25,10 @@ const Stats = ({
    isAfk,
    testFailed,
 }: StatsProps) => {
-   const testModeContext = useTestMode();
-   const testTime = testModeContext?.testTime || 30;
+   const testTime = useTestModeStore((state) => state.testTime);
    const hasPushed = useRef(false);
    const { minSpeedMode, minSpeedValue, minAccuracyMode, minAccuracyValue } =
-      useSettings();
+      useSettingsStore();
    const [failReason, setFailReason] = useState<string | null>(null);
 
    useEffect(() => {

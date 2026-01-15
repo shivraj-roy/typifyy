@@ -15,8 +15,8 @@ import {
    FaBullseye,
    FaLock,
 } from "react-icons/fa";
-import { useTestMode } from "../context/TestMode";
-import { useSettings } from "../context/Settings";
+import { useTestModeStore } from "../stores/testModeStore";
+import { useSettingsStore } from "../stores/settingsStore";
 import TimeCounter from "./TimeCounter";
 import TimeProgressBar from "./TimeProgressBar";
 import { HiCursorClick } from "react-icons/hi";
@@ -40,10 +40,7 @@ const TypeZone = ({
    setTestStart: React.Dispatch<React.SetStateAction<boolean>>;
    testStart: boolean;
 }) => {
-   const testMode = useTestMode();
-   const mode = testMode?.mode || "time";
-   const testTime = testMode?.testTime || 30;
-   const testWords = testMode?.testWords || 25;
+   const { mode, testTime, testWords } = useTestModeStore();
    const {
       minSpeedMode,
       minSpeedValue,
@@ -55,7 +52,7 @@ const TypeZone = ({
       timeWarningMode,
       liveProgressMode,
       capsLockWarningMode,
-   } = useSettings();
+   } = useSettingsStore();
 
    const [words, setWords] = useState<string[]>(() => {
       const wordCount = mode === "words" ? testWords : 50;

@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from "react";
 import {
-   SettingMode,
+   ThresholdMode,
    SoundMode,
    ErrorSoundMode,
    TimeWarningMode,
@@ -12,9 +12,9 @@ import {
 const STORAGE_KEY = "settingConfig";
 
 interface SettingConfig {
-   minSpeedMode: SettingMode;
+   minSpeedMode: ThresholdMode;
    minSpeedValue: number;
-   minAccuracyMode: SettingMode;
+   minAccuracyMode: ThresholdMode;
    minAccuracyValue: number;
    soundVolume: number;
    soundMode: SoundMode;
@@ -91,7 +91,7 @@ export const SettingsContextProvider = ({
    }, [config]);
 
    // Wrapper setters that update the config object
-   const setMinSpeedMode = (minSpeedMode: SettingMode) => {
+   const setMinSpeedMode = (minSpeedMode: ThresholdMode) => {
       setConfig((prev) => ({ ...prev, minSpeedMode }));
    };
 
@@ -99,7 +99,7 @@ export const SettingsContextProvider = ({
       setConfig((prev) => ({ ...prev, minSpeedValue }));
    };
 
-   const setMinAccuracyMode = (minAccuracyMode: SettingMode) => {
+   const setMinAccuracyMode = (minAccuracyMode: ThresholdMode) => {
       setConfig((prev) => ({ ...prev, minAccuracyMode }));
    };
 

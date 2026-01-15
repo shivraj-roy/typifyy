@@ -12,7 +12,7 @@ import {
 } from "react-icons/fa";
 import { Bounce, toast } from "react-toastify";
 import SubSetting from "../components/SubSetting";
-import { useSettings } from "../context/Settings";
+import { useSettingsStore } from "../stores/settingsStore";
 import CustomToast from "../components/ui/CustomToast";
 import useDocumentTitle from "../hooks/useDocumentTitle";
 import {
@@ -44,7 +44,8 @@ const Settings = () => {
       setLiveProgressMode,
       capsLockWarningMode,
       setCapsLockWarningMode,
-   } = useSettings();
+      resetSettings: resetSettingsStore,
+   } = useSettingsStore();
 
    const showSavedToast = () => {
       toast(
@@ -83,16 +84,7 @@ const Settings = () => {
    // Reset all settings to default values
    const resetSettings = () => {
       try {
-         setMinSpeedMode("off");
-         setMinSpeedValue(100);
-         setMinAccuracyMode("off");
-         setMinAccuracyValue(75);
-         setSoundVolume(0.5);
-         setSoundMode("off");
-         setErrorSoundMode("off");
-         setTimeWarningMode("off");
-         setLiveProgressMode("mini");
-         setCapsLockWarningMode("show");
+         resetSettingsStore();
 
          toast(
             <CustomToast

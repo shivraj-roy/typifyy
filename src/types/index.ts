@@ -54,7 +54,7 @@ export interface TestModeContextType {
 }
 
 // * Settings Types
-export type SettingMode = "off" | "custom";
+export type ThresholdMode = "off" | "custom";
 export type SoundMode = "off" | "nk cream" | "osu";
 export type ErrorSoundMode = "off" | "blow" | "slap" | "whoosh";
 export type TimeWarningMode = "off" | "1" | "3" | "5";
@@ -62,12 +62,12 @@ export type LiveProgressMode = "off" | "mini" | "bar";
 export type CapsLockWarningMode = "hide" | "show";
 
 export interface SettingsContextType {
-   minSpeedMode: SettingMode;
-   setMinSpeedMode: (mode: SettingMode) => void;
+   minSpeedMode: ThresholdMode;
+   setMinSpeedMode: (mode: ThresholdMode) => void;
    minSpeedValue: number;
    setMinSpeedValue: (value: number) => void;
-   minAccuracyMode: SettingMode;
-   setMinAccuracyMode: (mode: SettingMode) => void;
+   minAccuracyMode: ThresholdMode;
+   setMinAccuracyMode: (mode: ThresholdMode) => void;
    minAccuracyValue: number;
    setMinAccuracyValue: (value: number) => void;
    soundVolume: number;

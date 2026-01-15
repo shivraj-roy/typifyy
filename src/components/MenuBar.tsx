@@ -1,15 +1,10 @@
 import { MdTimer } from "react-icons/md";
 import Button from "./ui/Button";
-import { useTestMode } from "../context/TestMode";
+import { useTestModeStore } from "../stores/testModeStore";
 
 const MenuBar = ({ testStart }: { testStart: boolean }) => {
-   const testMode = useTestMode();
-   const mode = testMode?.mode || "time";
-   const setMode = testMode?.setMode || (() => {});
-   const setTestTime = testMode?.setTestTime || (() => {});
-   const setTestWords = testMode?.setTestWords || (() => {});
-   const testTime = testMode?.testTime || 30;
-   const testWords = testMode?.testWords || 25;
+   const { mode, testTime, testWords, setMode, setTestTime, setTestWords } =
+      useTestModeStore();
 
    const handleModeChange = (newMode: "time" | "words") => {
       setMode(newMode);
