@@ -5,6 +5,7 @@
 [![React](https://img.shields.io/badge/react-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/typescript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Vite](https://img.shields.io/badge/vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
+[![Zustand](https://img.shields.io/badge/🐻_zustand-443E38?style=for-the-badge)](https://zustand-demo.pmnd.rs/)
 [![Firebase](https://img.shields.io/badge/firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)](https://firebase.google.com/)
 [![Tailwind CSS](https://img.shields.io/badge/tailwind_css-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 [![Chart.js](https://img.shields.io/badge/chart.js-FF6384?style=for-the-badge&logo=chartdotjs&logoColor=white)](https://www.chartjs.org/)
@@ -60,6 +61,7 @@ Contributions are welcome! Please read [CONTRIBUTING.md](./docs/CONTRIBUTING.md)
 # Tech Stack
 
 - **Frontend**: React 19, TypeScript, Vite
+- **State Management**: Zustand
 - **Styling**: Tailwind CSS v4
 - **Backend**: Firebase (Authentication, Firestore)
 - **Charts**: Chart.js with react-chartjs-2
