@@ -107,8 +107,8 @@ const About = () => {
                   </h2>
                </div>
                <p className="text-sm md:text-base text-primary">
-                  React 19 • TypeScript • Vite • Firebase • Tailwind CSS •
-                  Chart.js
+                  React 19 • TypeScript • Vite • Zustand • Firebase • Tailwind
+                  CSS • Chart.js
                </p>
             </div>
 
