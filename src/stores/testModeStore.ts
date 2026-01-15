@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { persist, createJSONStorage } from "zustand/middleware";
 import { TestMode } from "../types";
 
 interface TestModeStore {
@@ -26,6 +26,7 @@ export const useTestModeStore = create<TestModeStore>()(
       }),
       {
          name: "modeConfig", // localStorage key (same as before)
+         storage: createJSONStorage(() => localStorage),
       }
    )
 );

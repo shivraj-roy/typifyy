@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { persist, createJSONStorage } from "zustand/middleware";
 import {
    ThresholdMode,
    SoundMode,
@@ -68,6 +68,7 @@ export const useSettingsStore = create<SettingsStore>()(
       }),
       {
          name: "settingConfig", // localStorage key (same as before)
+         storage: createJSONStorage(() => localStorage),
       }
    )
 );
