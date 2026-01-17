@@ -7,6 +7,7 @@ import { ToastContainer } from "react-toastify";
 import Account from "./pages/Account";
 import Settings from "./pages/Settings";
 import About from "./pages/About";
+import NotFound from "./pages/NotFound";
 
 const router = createBrowserRouter([
    {
@@ -32,6 +33,10 @@ const router = createBrowserRouter([
          {
             path: "about",
             element: <About />,
+         },
+         {
+            path: "*",
+            element: <NotFound />,
          },
       ],
    },
