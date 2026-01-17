@@ -69,6 +69,6 @@ export const useSettingsStore = create<SettingsStore>()(
       {
          name: "settingConfig", // localStorage key (same as before)
          storage: createJSONStorage(() => localStorage),
-      }
-   )
+      },
+   ),
 );

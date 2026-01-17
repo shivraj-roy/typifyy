@@ -115,7 +115,7 @@ function Account() {
          if (user) {
             // Set user info
             setUsername(
-               user.displayName || user.email?.split("@")[0] || "User"
+               user.displayName || user.email?.split("@")[0] || "User",
             );
             if (user.metadata.creationTime) {
                setJoinedDate(new Date(user.metadata.creationTime));
@@ -125,11 +125,11 @@ function Account() {
                const q = query(
                   collection(db, "results"),
                   where("userId", "==", user.uid),
-                  orderBy("timestamp", "desc")
+                  orderBy("timestamp", "desc"),
                );
                const querySnapshot = await getDocs(q);
                const resultsData = querySnapshot.docs.map(
-                  (doc) => doc.data() as TestResult
+                  (doc) => doc.data() as TestResult,
                );
                if (resultsData.length > 0) {
                   console.log("Documents data:", resultsData);

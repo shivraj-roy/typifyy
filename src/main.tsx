@@ -11,5 +11,5 @@ createRoot(document.getElementById("root")!).render(
       <OfflineNotice />
       <App />
       <Analytics />
-   </StrictMode>
+   </StrictMode>,
 );

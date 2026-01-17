@@ -14,7 +14,8 @@ const errorMapping: { [key: string]: string } = {
 
    // General errors
    "auth/too-many-requests": "Too many attempts. Please try again later.",
-   "auth/network-request-failed": "Network error. Please check your connection.",
+   "auth/network-request-failed":
+      "Network error. Please check your connection.",
    "auth/internal-error": "An internal error occurred. Please try again.",
    "auth/invalid-api-key": "Invalid API key.",
 };

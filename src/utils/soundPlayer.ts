@@ -49,7 +49,7 @@ const preloadSound = (path: string) => {
 export const playKeySound = (
    keyCode: number,
    mode: SoundMode,
-   volume: number = 0.5
+   volume: number = 0.5,
 ) => {
    if (mode === "off") return;
    if (!keyCode || keyCode === 0) return; // Skip if keyCode is invalid
@@ -98,7 +98,7 @@ export const preloadSounds = async (mode: SoundMode) => {
 
    // Preload common key sounds
    const commonKeys = Object.values(config.defines).filter(
-      (file) => file !== null
+      (file) => file !== null,
    ) as string[];
    const uniqueSounds = [...new Set(commonKeys)];
 

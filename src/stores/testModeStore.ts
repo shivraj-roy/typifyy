@@ -27,6 +27,6 @@ export const useTestModeStore = create<TestModeStore>()(
       {
          name: "modeConfig", // localStorage key (same as before)
          storage: createJSONStorage(() => localStorage),
-      }
-   )
+      },
+   ),
 );

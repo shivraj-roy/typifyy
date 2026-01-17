@@ -7,7 +7,9 @@ import { useEffect } from "react";
 const useDocumentTitle = (title: string) => {
    useEffect(() => {
       const prevTitle = document.title;
-      document.title = title ? `${title} | Typifyy` : "Typifyy | Test Your Typing Speed";
+      document.title = title
+         ? `${title} | Typifyy`
+         : "Typifyy | Test Your Typing Speed";
 
       // Cleanup: restore previous title on unmount (optional)
       return () => {

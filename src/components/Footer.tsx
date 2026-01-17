@@ -1,9 +1,4 @@
-import {
-   FaCode,
-   FaCodeBranch,
-   FaEnvelope,
-   FaPaintBrush,
-} from "react-icons/fa";
+import { FaCode, FaCodeBranch, FaEnvelope, FaPaintBrush } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import TextButton from "./ui/TextButton";
 import packageJson from "../../package.json";
