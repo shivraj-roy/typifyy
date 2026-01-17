@@ -4,9 +4,11 @@ import { Analytics } from "@vercel/analytics/react";
 import "./index.css";
 import "react-toastify/dist/ReactToastify.css";
 import App from "./App.tsx";
+import OfflineNotice from "./components/OfflineNotice.tsx";
 
 createRoot(document.getElementById("root")!).render(
    <StrictMode>
+      <OfflineNotice />
       <App />
       <Analytics />
    </StrictMode>

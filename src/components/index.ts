@@ -5,3 +5,4 @@ export { default as TypeZone } from "./TypeZone";
 export { default as Stats } from "./Stats";
 export { default as Footer } from "./Footer";
 export { default as ActivityHeatMap } from "./ActivityHeatMap";
+export { default as OfflineNotice } from "./OfflineNotice";
