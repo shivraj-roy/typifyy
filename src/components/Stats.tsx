@@ -27,12 +27,13 @@ const Stats = ({
 }: StatsProps) => {
    const testTime = useTestModeStore((state) => state.testTime);
    const hasPushed = useRef(false);
+   const isPushing = useRef(false);
    const { minSpeedMode, minSpeedValue, minAccuracyMode, minAccuracyValue } =
       useSettingsStore();
    const [failReason, setFailReason] = useState<string | null>(null);
 
    useEffect(() => {
-      if (hasPushed.current) return;
+      if (hasPushed.current || isPushing.current) return;
 
       // Check if test failed due to inactivity or timeout (word mode auto-end)
       if (testFailed) {
@@ -103,7 +104,11 @@ const Stats = ({
       }
 
       const pushStatsToDB = async () => {
+         // In-flight guard: prevent concurrent executions
+         if (isPushing.current) return;
+
          try {
+            isPushing.current = true;
             const { uid } = auth.currentUser!;
             await addDoc(collection(db, "results"), {
                userId: uid,
@@ -124,7 +129,6 @@ const Stats = ({
                isAfk,
             });
             console.log("Stats pushed to DB");
-            hasPushed.current = true;
          } catch (error) {
             toast(
                <CustomToast
@@ -143,6 +147,9 @@ const Stats = ({
                },
             );
             console.error("Error pushing stats to DB:", error);
+         } finally {
+            isPushing.current = false;
+            hasPushed.current = true;
          }
       };
 
