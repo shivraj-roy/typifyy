@@ -129,6 +129,7 @@ const Stats = ({
                isAfk,
             });
             console.log("Stats pushed to DB");
+            hasPushed.current = true;
          } catch (error) {
             toast(
                <CustomToast
@@ -149,7 +150,6 @@ const Stats = ({
             console.error("Error pushing stats to DB:", error);
          } finally {
             isPushing.current = false;
-            hasPushed.current = true;
          }
       };
 
