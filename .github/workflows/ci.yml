@@ -1,0 +1,55 @@
+name: CI Pipeline
+
+# Run on pushes to main and on pull requests targeting main
+on:
+   push:
+      branches: [main]
+   pull_request:
+      branches: [main]
+
+jobs:
+   code-quality:
+      name: Code Quality & Build
+      runs-on: ubuntu-latest
+
+      steps:
+         # Checkout code from repository
+         - name: Checkout code
+           uses: actions/checkout@v4
+
+         # Setup Node.js environment
+         - name: Setup Node.js
+           uses: actions/setup-node@v4
+           with:
+              node-version: "22"
+              cache: "npm"
+
+         # Install dependencies using npm ci (faster and more reliable than npm install)
+         - name: Install dependencies
+           run: npm ci
+
+         # Run ESLint to check code quality
+         - name: Run ESLint
+           run: npm run lint
+
+         # Check Prettier formatting
+         - name: Check Prettier formatting
+           run: npm run format:check
+
+         # TypeScript type checking (no emit, just check types)
+         - name: TypeScript type check
+           run: npx tsc --noEmit
+
+         # Build the project to ensure it compiles
+         - name: Build project
+           run: npm run build
+
+         # Display build size for monitoring
+         - name: Display build size
+           run: |
+              echo "📦 Build completed successfully!"
+              echo "Build size:"
+              du -sh dist
+              echo ""
+              echo "Assets:"
+              du -sh dist/assets/* | sort -h

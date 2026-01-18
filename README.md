@@ -11,6 +11,8 @@
 [![Chart.js](https://img.shields.io/badge/chart.js-FF6384?style=for-the-badge&logo=chartdotjs&logoColor=white)](https://www.chartjs.org/)
 [![Vercel](https://img.shields.io/badge/vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://vercel.com/)
 
+[![CI Pipeline](https://github.com/shivraj-roy/typifyy/workflows/CI%20Pipeline/badge.svg)](https://github.com/shivraj-roy/typifyy/actions)
+
 # About
 
 Typifyy is a minimalistic and customizable [typing test](https://typifyy.vercel.app/) application. Inspired by [Monkeytype](https://monkeytype.com), it focuses on simplicity and essential features to help you measure and improve your typing speed. The app features multiple test modes, real-time performance tracking, an account system to save your typing history, and user-configurable settings including sounds, custom thresholds, and visual feedback.
