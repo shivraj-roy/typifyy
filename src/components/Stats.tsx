@@ -147,7 +147,27 @@ const Stats = ({
       };
 
       pushStatsToDB();
-   }, []);
+   }, [
+      testFailed,
+      minSpeedMode,
+      minSpeedValue,
+      wpm,
+      minAccuracyMode,
+      minAccuracyValue,
+      accuracy,
+      isAfk,
+      raw,
+      correctChar,
+      incorrectChar,
+      missedChar,
+      extraChar,
+      correctWord,
+      consistency,
+      mode,
+      testWords,
+      testTime,
+      elapsedTime,
+   ]);
 
    return (
       <>
