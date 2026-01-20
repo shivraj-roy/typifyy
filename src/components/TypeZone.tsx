@@ -190,6 +190,11 @@ const TypeZone = ({
       setTimeout(() => {
          updateCaretPosition();
       }, 50);
+
+      // Recalculate caret position after fonts are loaded (fixes rare positioning bug)
+      document.fonts.ready.then(() => {
+         updateCaretPosition();
+      });
    }, [updateCaretPosition]);
 
    // * Keep correctCharRef in sync with correctChar state
