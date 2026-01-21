@@ -1,14 +1,98 @@
 <!doctype html>
 <html lang="en">
    <head>
+      <link rel="preconnect" href="https://firebasestorage.googleapis.com" />
+      <link rel="preconnect" href="https://identitytoolkit.googleapis.com" />
+      <link rel="preconnect" href="https://www.googleapis.com" />
+
+      <link
+         rel="preload"
+         href="/assets/font/SpaceMono-Regular.woff2"
+         type="font/woff2"
+         as="font"
+         crossorigin
+      />
+      <link
+         rel="preload"
+         href="/assets/font/Satoshi-Regular.woff"
+         type="font/woff"
+         as="font"
+         crossorigin
+      />
+      <link
+         rel="preload"
+         href="/assets/font/RobotoMono-Regular.woff2"
+         type="font/woff2"
+         as="font"
+         crossorigin
+      />
+
+      <!-- Prevent Escape key from interfering with typing test -->
+      <script>
+         document.addEventListener("keydown", function (e) {
+            if (e.key == "Escape") e.preventDefault();
+         });
+      </script>
+
       <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Typifyy | Minimalistic Typing Test</title>
+
       <link
          rel="icon"
          type="image/svg+xml"
          href="/assets/favicon/favicon.svg"
       />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>Typifyy | Test Your Typing Speed</title>
+      <link
+         rel="apple-touch-icon"
+         sizes="180x180"
+         href="/assets/icon/apple-typifyy-icon.png"
+      />
+      <link
+         rel="mask-icon"
+         href="/assets/favicon/safari-typifyy-icon.svg"
+         color="#eb5e29"
+      />
+      <meta name="theme-color" content="#252422" />
+      <meta name="msapplication-TileColor" content="#eb5e29" />
+
+      <meta name="name" content="Typifyy | Minimalistic Typing Test" />
+      <meta
+         name="description"
+         content="A minimalistic typing test to measure and improve your typing speed. Track your WPM, accuracy, consistency with real-time graphs. Multiple test modes with customizable settings."
+      />
+      <meta
+         name="keywords"
+         content="typing test, typing speed test, wpm test, words per minute, typing practice, typifyy, monkeytype alternative, typing speed, typing accuracy"
+      />
+      <meta name="author" content="Shivraj Roy" />
+
+      <meta property="og:type" content="website" />
+      <meta property="og:url" content="https://typifyy.vercel.app/" />
+      <meta property="og:title" content="Typifyy | Minimalistic Typing Test" />
+      <meta
+         property="og:description"
+         content="A minimalistic typing test to measure and improve your typing speed. Track your WPM, accuracy, consistency with real-time graphs."
+      />
+      <meta
+         property="og:image"
+         content="https://typifyy.vercel.app/assets/social-banner.png"
+      />
+
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:url" content="https://typifyy.vercel.app/" />
+      <meta name="twitter:title" content="Typifyy | Minimalistic Typing Test" />
+      <meta
+         name="twitter:description"
+         content="A minimalistic typing test to measure and improve your typing speed. Track your WPM, accuracy, consistency with real-time graphs."
+      />
+      <meta
+         name="twitter:image"
+         content="https://typifyy.vercel.app/assets/social-banner.png"
+      />
+
+      <meta name="darkreader-lock" />
+      <meta http-equiv="Cache-Control" content="no-store" />
    </head>
    <body>
       <div id="announcement"></div>
