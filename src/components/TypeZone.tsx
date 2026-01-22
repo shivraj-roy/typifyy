@@ -897,7 +897,7 @@ const TypeZone = ({
                         {words.map((word, wordIndex) => (
                            <span
                               key={`${wordIndex}-${word}`}
-                              className="mx-2"
+                              className="mx-2 cursor-default"
                               ref={wordSpanRef[wordIndex]}
                            >
                               {word.split("").map((letter, letterIndex) => (
