@@ -74,6 +74,7 @@ const TypeZone = ({
    const [isAfk, setIsAfk] = useState(false);
    const [capsLockOn, setCapsLockOn] = useState(false);
    const [testFailed, setTestFailed] = useState(false);
+   const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
 
    const inputRef = useRef<HTMLInputElement>(null);
    const wordsContainerRef = useRef<HTMLDivElement>(null);
@@ -756,6 +757,35 @@ const TypeZone = ({
       }
    }, [testEnd]);
 
+   // * Detect virtual keyboard open/close on mobile
+   useEffect(() => {
+      // Only run on mobile devices
+      if (typeof window === "undefined" || !window.visualViewport) return;
+
+      const viewport = window.visualViewport;
+      const initialHeight = viewport.height;
+
+      const handleViewportResize = () => {
+         const currentHeight = viewport.height;
+         const heightDifference = initialHeight - currentHeight;
+
+         // Keyboard is considered open if viewport shrinks by more than 150px
+         if (heightDifference > 150) {
+            setIsKeyboardVisible(true);
+            window.dispatchEvent(new CustomEvent("keyboardOpen"));
+         } else {
+            setIsKeyboardVisible(false);
+            window.dispatchEvent(new CustomEvent("keyboardClose"));
+         }
+      };
+
+      viewport.addEventListener("resize", handleViewportResize);
+
+      return () => {
+         viewport.removeEventListener("resize", handleViewportResize);
+      };
+   }, []);
+
    return (
       <>
          {/* TypeZone for all devices */}
@@ -808,7 +838,7 @@ const TypeZone = ({
                   </div>
                </div>
             ) : (
-               <div className="w-full flex flex-col items-center -mt-12 md:-mt-24">
+               <div className={`w-full flex flex-col items-center ${isKeyboardVisible ? "-mt-32" : "-mt-12 md:-mt-24"}`}>
                   <div className="w-full overflow-visible px-4 md:px-0" onClick={focusInput}>
                      <div className="testModesNotice flex justify-center text-center gap-2 transition-opacity duration-150 relative">
                         {capsLockOn && capsLockWarningMode === "show" && (

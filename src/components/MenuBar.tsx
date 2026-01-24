@@ -22,7 +22,7 @@ const MenuBar = ({ testStart }: { testStart: boolean }) => {
 
    return (
       <div
-         className={`flex justify-center items-center self-start transition-opacity duration-300 w-full px-4 md:px-0 ${
+         className={`flex justify-center items-center self-start transition-opacity duration-300 w-full ${
             testStart ? "opacity-0 pointer-events-none" : "opacity-100"
          }`}
       >
