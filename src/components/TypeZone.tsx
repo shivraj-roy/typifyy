@@ -852,7 +852,7 @@ const TypeZone = ({
    return (
       <>
          {/* TypeZone for all devices */}
-         <div className="typeZoneContainer grid grid-rows-[auto_1fr] w-full max-w-full h-full items-center overflow-x-hidden overflow-y-auto -mx-4 md:mx-0">
+         <div className="typeZoneContainer grid grid-rows-[auto_1fr] w-full max-w-full h-full items-center">
             <MenuBar testStart={testStart} />
             {testEnd ? (
                <div className="w-full max-w-full flex flex-col items-center justify-center -mt-12 md:-mt-24">
@@ -947,7 +947,7 @@ const TypeZone = ({
                      )}
                      <div
                         ref={wordsContainerRef}
-                        className="text-[1.75rem] md:text-3xl flex flex-wrap content-start leading-[2.5rem] md:leading-[3rem] tracking-normal relative text-secondary h-32 md:h-36 overflow-hidden w-full"
+                        className="text-[1.75rem] md:text-3xl flex flex-wrap content-start leading-[2.5rem] md:leading-[3rem] tracking-normal relative text-secondary h-32 md:h-36 overflow-hidden w-full -mx-4 px-4 md:mx-0 md:px-0"
                      >
                         {/* Absolute positioned caret */}
                         <div
