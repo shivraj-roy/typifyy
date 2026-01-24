@@ -21,6 +21,10 @@ ChartJS.register(
 );
 
 const Graph = ({ graphData }: { graphData: number[][] }) => {
+   const isMobile = window.innerWidth < 768;
+   const lineWidth = isMobile ? 1.5 : 3;
+   const pointSize = isMobile ? 1 : 2.5;
+
    const data = {
       labels: graphData.map(([time]) => time),
       datasets: [
@@ -30,6 +34,7 @@ const Graph = ({ graphData }: { graphData: number[][] }) => {
             borderColor: "#eb5e2980",
             backgroundColor: "#eb5e2980",
             borderDash: [8, 8],
+            borderWidth: lineWidth,
             tension: 0.3,
             pointRadius: 0,
          },
@@ -38,8 +43,9 @@ const Graph = ({ graphData }: { graphData: number[][] }) => {
             data: graphData.map(([, , Wpm]) => Wpm),
             borderColor: "#eb5e29",
             backgroundColor: "#eb5e29",
+            borderWidth: lineWidth,
             tension: 0.3,
-            pointRadius: 2.5,
+            pointRadius: pointSize,
          },
       ],
    };
