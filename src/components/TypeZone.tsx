@@ -91,8 +91,9 @@ const TypeZone = ({
 
    // Detect if device is touch-enabled (mobile/tablet)
    const isTouchDevice =
-      ("ontouchstart" in window || navigator.maxTouchPoints > 0) &&
-      typeof window !== "undefined";
+      typeof window !== "undefined" &&
+      ("ontouchstart" in window ||
+         (typeof navigator !== "undefined" && navigator.maxTouchPoints > 0));
 
    // * Reference for each word span element in the DOM...
    const wordSpanRef = useMemo(() => {
@@ -590,7 +591,7 @@ const TypeZone = ({
       ) {
          processKeyInput("Backspace");
          // Reset to baseline
-         // target.value = "a";
+         target.value = "a";
          setInputValue("a");
          return;
       }
@@ -606,7 +607,7 @@ const TypeZone = ({
          }
 
          // Reset to baseline
-         // target.value = "a";
+         target.value = "a";
          setInputValue("a");
       }
    };
