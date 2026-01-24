@@ -17,6 +17,7 @@ import {
 } from "react-icons/fa";
 import { useTestModeStore } from "../stores/testModeStore";
 import { useSettingsStore } from "../stores/settingsStore";
+import { useIsMobile } from "../hooks/useIsMobile";
 import TimeCounter from "./TimeCounter";
 import TimeProgressBar from "./TimeProgressBar";
 import { HiCursorClick } from "react-icons/hi";
@@ -53,6 +54,7 @@ const TypeZone = ({
       liveProgressMode,
       capsLockWarningMode,
    } = useSettingsStore();
+   const isMobile = useIsMobile();
 
    const [words, setWords] = useState<string[]>(() => {
       const wordCount = mode === "words" ? testWords : 50;
@@ -74,6 +76,7 @@ const TypeZone = ({
    const [isAfk, setIsAfk] = useState(false);
    const [capsLockOn, setCapsLockOn] = useState(false);
    const [testFailed, setTestFailed] = useState(false);
+   const [inputValue, setInputValue] = useState("a"); // Keep a dummy character
 
    const inputRef = useRef<HTMLInputElement>(null);
    const wordsContainerRef = useRef<HTMLDivElement>(null);
@@ -85,6 +88,12 @@ const TypeZone = ({
    const elapsedSecondsRef = useRef<number>(0);
    const lastTypingTimeRef = useRef<number>(Date.now());
    const warningPlayedRef = useRef<boolean>(false);
+
+   // Detect if device is touch-enabled (mobile/tablet)
+   const isTouchDevice =
+      typeof window !== "undefined" &&
+      ("ontouchstart" in window ||
+         (typeof navigator !== "undefined" && navigator.maxTouchPoints > 0));
 
    // * Reference for each word span element in the DOM...
    const wordSpanRef = useMemo(() => {
@@ -118,25 +127,33 @@ const TypeZone = ({
    };
 
    // * Scroll smoothly when moving to the next line
-   const scrollToKeepOnSecondLine = (wordIndex: number) => {
-      const container = wordsContainerRef.current;
-      const wordElement = wordSpanRef[wordIndex]?.current;
+   const scrollToKeepOnSecondLine = useCallback(
+      (wordIndex: number) => {
+         const container = wordsContainerRef.current;
+         const wordElement = wordSpanRef[wordIndex]?.current;
 
-      if (!container || !wordElement) return;
+         if (!container || !wordElement) return;
 
-      const lineHeight = 48; // 3rem = 48px
-      const wordTop = wordElement.offsetTop;
-      const currentLine = Math.floor(wordTop / lineHeight);
+         // Responsive line height: 40px on mobile (leading-[2.5rem]), 48px on desktop (leading-[3rem])
+         const lineHeight = isMobile ? 40 : 48;
+         const wordTop = wordElement.offsetTop;
+         const currentLine = Math.floor(wordTop / lineHeight);
 
-      // If current word is on line 2 or beyond (0-indexed), scroll up
-      if (currentLine >= 2) {
-         const scrollAmount = (currentLine - 1) * lineHeight;
-         container.scrollTo({
-            top: scrollAmount,
-            behavior: "smooth",
-         });
-      }
-   };
+         // Both mobile and desktop: scroll after line 2 (currentLine >= 2)
+         // This means scroll when moving to line 3
+         const scrollThreshold = 2;
+
+         if (currentLine >= scrollThreshold) {
+            const scrollAmount =
+               (currentLine - (scrollThreshold - 1)) * lineHeight;
+            container.scrollTo({
+               top: scrollAmount,
+               behavior: "smooth",
+            });
+         }
+      },
+      [isMobile, wordSpanRef],
+   );
 
    // * Update caret position based on current character
    const updateCaretPosition = useCallback(() => {
@@ -336,42 +353,14 @@ const TypeZone = ({
       }
    };
 
-   // * Handles user input...
-   const handleUserInput = (e: React.KeyboardEvent<HTMLInputElement>) => {
-      console.log(e.key);
-
-      // Detect Caps Lock state
-      const isCapsLockOn = e.getModifierState("CapsLock");
-      setCapsLockOn(isCapsLockOn);
-
-      // Play key sound
-      if (soundMode !== "off") {
-         const keyCode = e.keyCode || e.which;
-         playKeySound(keyCode, soundMode, soundVolume);
-      }
-
+   // * Core typing logic - processes a single key press
+   const processKeyInput = (key: string) => {
       // Update last typing time
       lastTypingTimeRef.current = Date.now();
       setIsAfk(false);
 
-      // ? Allow Tab key to pass through for restart button navigation
-      if (e.key === "Tab") {
-         return; // Let Tab work normally for button focus
-      }
-
-      // ? Ignore keyboard shortcuts (Ctrl/Cmd/Alt + key combinations)
-      if (e.ctrlKey || e.metaKey || e.altKey) {
-         return; // Don't interfere with browser shortcuts (zoom, refresh, etc.)
-      }
-
-      // ? Prevent default behavior for non-character keys
-      if (e.keyCode !== 8 && e.key.length > 1) {
-         e.preventDefault();
-         return;
-      }
-
       // ? Start the test when the user types the first character (but not space)
-      if (!testStart && e.key.length === 1 && e.key !== " ") {
+      if (!testStart && key.length === 1 && key !== " ") {
          setTestStart(true);
          startTimer();
       }
@@ -392,9 +381,7 @@ const TypeZone = ({
       }
 
       // ? Handle space key (move to the next word)
-      if (e.key === " " || e.keyCode === 32) {
-         e.preventDefault(); // Prevent the default space behavior
-
+      if (key === " ") {
          // Ignore space if caret is at the start of the word (no characters typed yet)
          if (onCharIndex === 0) {
             // Play error sound for space pressed too early
@@ -452,9 +439,7 @@ const TypeZone = ({
       }
 
       // ? Handle backspace key (move to the previous word/character)
-      if (e.key === "Backspace" || e.keyCode === 8) {
-         e.preventDefault(); // Prevent the default backspace behavior
-
+      if (key === "Backspace") {
          if (onCharIndex > 0) {
             if (currentWord.length === onCharIndex) {
                if (currentWord[onCharIndex - 1].className.includes("extra")) {
@@ -500,7 +485,7 @@ const TypeZone = ({
             playErrorSound(errorSoundMode, soundVolume);
          }
          const newSpan = document.createElement("span");
-         newSpan.innerText = e.key;
+         newSpan.innerText = key;
          newSpan.className = "extra-key extra"; // "extra" className is for key reference for backspace key
          wordSpanRef[onWordIndex].current?.appendChild(newSpan);
          setOnCharIndex((prev) => prev + 1);
@@ -509,7 +494,7 @@ const TypeZone = ({
       }
 
       // ? Check if the character is correct
-      if (currentChar && e.key === currentChar) {
+      if (currentChar && key === currentChar) {
          console.log("correct");
          currentWord[onCharIndex].className = "correct";
          setOnCharIndex((prev) => prev + 1);
@@ -540,6 +525,90 @@ const TypeZone = ({
             timerRef.current = null;
          }
          setTestEnd(true);
+      }
+   };
+
+   // * Handles user input from desktop keyboard (keydown events)
+   const handleUserInput = (e: React.KeyboardEvent<HTMLInputElement>) => {
+      // On touch devices, skip keyDown handler - use onInput instead
+      if (isTouchDevice) {
+         return;
+      }
+
+      console.log(e.key);
+
+      // ? Allow Tab key to pass through for restart button navigation
+      if (e.key === "Tab") {
+         return; // Let Tab work normally for button focus
+      }
+
+      // ? Ignore keyboard shortcuts (Ctrl/Cmd/Alt + key combinations)
+      if (e.ctrlKey || e.metaKey || e.altKey) {
+         return; // Don't interfere with browser shortcuts (zoom, refresh, etc.)
+      }
+
+      // ? Prevent default behavior for non-character keys
+      if (e.keyCode !== 8 && e.key.length > 1) {
+         e.preventDefault();
+         return;
+      }
+
+      // Prevent default for space and backspace
+      if (e.key === " " || e.key === "Backspace") {
+         e.preventDefault();
+      }
+
+      // Detect Caps Lock state
+      const isCapsLockOn = e.getModifierState("CapsLock");
+      setCapsLockOn(isCapsLockOn);
+
+      // Play key sound
+      if (soundMode !== "off") {
+         const keyCode = e.keyCode || e.which;
+         playKeySound(keyCode, soundMode, soundVolume);
+      }
+
+      // Process the key using core logic
+      processKeyInput(e.key);
+   };
+
+   // * Handle mobile keyboard input (using input event)
+   const handleMobileInput = (e: React.FormEvent<HTMLInputElement>) => {
+      // On non-touch devices, skip input handler - use onKeyDown instead
+      if (!isTouchDevice) {
+         return;
+      }
+
+      const target = e.currentTarget;
+      const newValue = target.value;
+
+      // Input should always start with "a" - this is our baseline
+      // If it doesn't start with "a" or is empty, user pressed backspace
+      if (
+         newValue.length === 0 ||
+         newValue === "" ||
+         !newValue.startsWith("a")
+      ) {
+         processKeyInput("Backspace");
+         // Reset to baseline
+         target.value = "a";
+         setInputValue("a");
+         return;
+      }
+
+      // If value is longer than "a", user typed new character(s)
+      if (newValue.length > 1) {
+         // Get everything after "a"
+         const addedChars = newValue.slice(1);
+
+         // Process each added character
+         for (const char of addedChars) {
+            processKeyInput(char);
+         }
+
+         // Reset to baseline
+         target.value = "a";
+         setInputValue("a");
       }
    };
 
@@ -714,9 +783,15 @@ const TypeZone = ({
       setGraphData([]);
       setIsAfk(false);
       setTestFailed(false);
+      setInputValue("a");
       elapsedSecondsRef.current = 0;
       lastTypingTimeRef.current = Date.now();
       warningPlayedRef.current = false;
+
+      // Reset input field to baseline
+      if (inputRef.current) {
+         inputRef.current.value = "a";
+      }
 
       // Reset scroll position
       if (wordsContainerRef.current) {
@@ -758,24 +833,12 @@ const TypeZone = ({
 
    return (
       <>
-         {/* Hero message for small devices */}
-         <div className="md:hidden w-full h-full flex items-center justify-center px-8 text-center">
-            <div>
-               <h2 className="text-2xl md:text-3xl text-secondary mb-4">
-                  For better experience
-               </h2>
-               <p className="text-lg text-primary">
-                  Test your typing on a larger device
-               </p>
-            </div>
-         </div>
-
-         {/* TypeZone for medium and large devices */}
-         <div className="typeZoneContainer hidden md:grid grid-rows-[auto_1fr] w-full max-w-full h-full items-center overflow-hidden">
+         {/* TypeZone for all devices */}
+         <div className="typeZoneContainer grid grid-rows-[auto_1fr] w-full max-w-full h-full items-center">
             <MenuBar testStart={testStart} />
             {testEnd ? (
-               <div className="w-full max-w-full flex flex-col items-center justify-center -mt-24">
-                  <div className="w-full max-w-full overflow-hidden lg:h-[17rem]">
+               <div className="w-full max-w-full flex flex-col items-center justify-center -mt-12 md:-mt-24">
+                  <div className="w-full max-w-full overflow-hidden lg:h-[17rem] px-4 md:px-0">
                      <Stats
                         raw={calculateRAW()}
                         wpm={calculateWPM()}
@@ -794,7 +857,7 @@ const TypeZone = ({
                         testFailed={testFailed}
                      />
                   </div>
-                  <div className="nextTestSection flex flex-col items-center mt-8">
+                  <div className="nextTestSection flex flex-col items-center mt-8 w-full">
                      <button
                         ref={nextTestBtnRef}
                         onClick={restartTest}
@@ -820,8 +883,11 @@ const TypeZone = ({
                   </div>
                </div>
             ) : (
-               <div className="w-full flex flex-col items-center -mt-24">
-                  <div className="w-full overflow-visible" onClick={focusInput}>
+               <div className="w-full flex flex-col items-center -mt-12 md:-mt-24">
+                  <div
+                     className="w-full overflow-visible px-4 md:px-0"
+                     onClick={focusInput}
+                  >
                      <div className="testModesNotice flex justify-center text-center gap-2 transition-opacity duration-150 relative">
                         {capsLockOn && capsLockWarningMode === "show" && (
                            <div className="capsWarning absolute -top-16 left-1/2 -translate-x-1/2 flex gap-2.5 items-center text-bg text-[1rem] bg-accent w-fit p-4 rounded-lg pointer-events-none z-50">
@@ -866,7 +932,7 @@ const TypeZone = ({
                      )}
                      <div
                         ref={wordsContainerRef}
-                        className="text-3xl flex flex-wrap content-start leading-[3rem] tracking-normal relative text-secondary h-36 overflow-hidden w-full"
+                        className="text-[1.75rem] md:text-3xl flex flex-wrap content-start leading-[2.5rem] md:leading-[3rem] tracking-normal relative text-secondary h-32 md:h-36 overflow-hidden w-full -mx-4 px-4 md:mx-0 md:px-0"
                      >
                         {/* Absolute positioned caret */}
                         <div
@@ -888,7 +954,7 @@ const TypeZone = ({
                               className="cursor-default absolute top-0 left-0 w-full h-full flex items-center justify-center backdrop-blur-sm z-10"
                               onClick={focusInput}
                            >
-                              <span className="flex items-center justify-around text-xl text-primary gap-5 font-mono tracking-wider">
+                              <span className="flex items-center justify-around text-base md:text-xl text-primary gap-3 md:gap-5 font-mono tracking-wider">
                                  <HiCursorClick />
                                  Click here to focus
                               </span>
@@ -910,14 +976,29 @@ const TypeZone = ({
                      </div>
                      <input
                         type="text"
-                        className="opacity-0 pointer-events-none absolute"
+                        className="opacity-0"
+                        style={{
+                           position: "absolute",
+                           top: 0,
+                           left: 0,
+                           width: "1px",
+                           height: "1px",
+                           pointerEvents: "none",
+                        }}
+                        value={inputValue}
+                        onInput={handleMobileInput}
                         onKeyDown={handleUserInput}
                         ref={inputRef}
                         onFocus={() => setIsFocused(true)}
                         onBlur={() => setIsFocused(false)}
+                        inputMode="text"
+                        autoComplete="off"
+                        autoCorrect="off"
+                        autoCapitalize="off"
+                        spellCheck="false"
                      />
                   </div>
-                  <div className="restartBtn flex justify-center mt-8">
+                  <div className="restartBtn flex justify-center mt-8 w-full">
                      <button
                         onClick={restartTest}
                         className="relative group px-8 py-3 text-secondary hover:text-primary border-2 border-transparent focus:border-secondary rounded-lg focus:outline-none transition-all cursor-pointer"
