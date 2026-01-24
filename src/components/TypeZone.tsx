@@ -74,7 +74,6 @@ const TypeZone = ({
    const [isAfk, setIsAfk] = useState(false);
    const [capsLockOn, setCapsLockOn] = useState(false);
    const [testFailed, setTestFailed] = useState(false);
-   const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
    const [inputValue, setInputValue] = useState("a"); // Keep a dummy character
 
    const inputRef = useRef<HTMLInputElement>(null);
@@ -89,7 +88,8 @@ const TypeZone = ({
    const warningPlayedRef = useRef<boolean>(false);
 
    // Detect if device is touch-enabled (mobile/tablet)
-   const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+   const isTouchDevice =
+      "ontouchstart" in window || navigator.maxTouchPoints > 0;
 
    // * Reference for each word span element in the DOM...
    const wordSpanRef = useMemo(() => {
@@ -140,7 +140,8 @@ const TypeZone = ({
       const scrollThreshold = 2;
 
       if (currentLine >= scrollThreshold) {
-         const scrollAmount = (currentLine - (scrollThreshold - 1)) * lineHeight;
+         const scrollAmount =
+            (currentLine - (scrollThreshold - 1)) * lineHeight;
          container.scrollTo({
             top: scrollAmount,
             behavior: "smooth",
@@ -577,10 +578,14 @@ const TypeZone = ({
 
       // Input should always start with "a" - this is our baseline
       // If it doesn't start with "a" or is empty, user pressed backspace
-      if (newValue.length === 0 || newValue === "" || !newValue.startsWith("a")) {
+      if (
+         newValue.length === 0 ||
+         newValue === "" ||
+         !newValue.startsWith("a")
+      ) {
          processKeyInput("Backspace");
          // Reset to baseline
-         target.value = "a";
+         // target.value = "a";
          setInputValue("a");
          return;
       }
@@ -596,7 +601,7 @@ const TypeZone = ({
          }
 
          // Reset to baseline
-         target.value = "a";
+         // target.value = "a";
          setInputValue("a");
       }
    };
@@ -820,35 +825,6 @@ const TypeZone = ({
       }
    }, [testEnd]);
 
-   // * Detect virtual keyboard open/close on mobile
-   useEffect(() => {
-      // Only run on mobile devices
-      if (typeof window === "undefined" || !window.visualViewport) return;
-
-      const viewport = window.visualViewport;
-      const initialHeight = viewport.height;
-
-      const handleViewportResize = () => {
-         const currentHeight = viewport.height;
-         const heightDifference = initialHeight - currentHeight;
-
-         // Keyboard is considered open if viewport shrinks by more than 150px
-         if (heightDifference > 150) {
-            setIsKeyboardVisible(true);
-            window.dispatchEvent(new CustomEvent("keyboardOpen"));
-         } else {
-            setIsKeyboardVisible(false);
-            window.dispatchEvent(new CustomEvent("keyboardClose"));
-         }
-      };
-
-      viewport.addEventListener("resize", handleViewportResize);
-
-      return () => {
-         viewport.removeEventListener("resize", handleViewportResize);
-      };
-   }, []);
-
    return (
       <>
          {/* TypeZone for all devices */}
@@ -901,8 +877,11 @@ const TypeZone = ({
                   </div>
                </div>
             ) : (
-               <div className={`w-full flex flex-col items-center ${isKeyboardVisible ? "-mt-32" : "-mt-12 md:-mt-24"}`}>
-                  <div className="w-full overflow-visible px-4 md:px-0" onClick={focusInput}>
+               <div className="w-full flex flex-col items-center -mt-12 md:-mt-24">
+                  <div
+                     className="w-full overflow-visible px-4 md:px-0"
+                     onClick={focusInput}
+                  >
                      <div className="testModesNotice flex justify-center text-center gap-2 transition-opacity duration-150 relative">
                         {capsLockOn && capsLockWarningMode === "show" && (
                            <div className="capsWarning absolute -top-16 left-1/2 -translate-x-1/2 flex gap-2.5 items-center text-bg text-[1rem] bg-accent w-fit p-4 rounded-lg pointer-events-none z-50">
@@ -993,12 +972,12 @@ const TypeZone = ({
                         type="text"
                         className="opacity-0 absolute"
                         style={{
-                           position: 'absolute',
+                           position: "absolute",
                            top: 0,
                            left: 0,
-                           width: '1px',
-                           height: '1px',
-                           pointerEvents: 'none'
+                           width: "1px",
+                           height: "1px",
+                           pointerEvents: "none",
                         }}
                         value={inputValue}
                         onInput={handleMobileInput}
