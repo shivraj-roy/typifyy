@@ -758,24 +758,12 @@ const TypeZone = ({
 
    return (
       <>
-         {/* Hero message for small devices */}
-         <div className="md:hidden w-full h-full flex items-center justify-center px-8 text-center">
-            <div>
-               <h2 className="text-2xl md:text-3xl text-secondary mb-4">
-                  For better experience
-               </h2>
-               <p className="text-lg text-primary">
-                  Test your typing on a larger device
-               </p>
-            </div>
-         </div>
-
-         {/* TypeZone for medium and large devices */}
-         <div className="typeZoneContainer hidden md:grid grid-rows-[auto_1fr] w-full max-w-full h-full items-center overflow-hidden">
+         {/* TypeZone for all devices */}
+         <div className="typeZoneContainer grid grid-rows-[auto_1fr] w-full max-w-full h-full items-center overflow-x-hidden overflow-y-auto -mx-4 md:mx-0">
             <MenuBar testStart={testStart} />
             {testEnd ? (
-               <div className="w-full max-w-full flex flex-col items-center justify-center -mt-24">
-                  <div className="w-full max-w-full overflow-hidden lg:h-[17rem]">
+               <div className="w-full max-w-full flex flex-col items-center justify-center -mt-12 md:-mt-24">
+                  <div className="w-full max-w-full overflow-hidden lg:h-[17rem] px-4 md:px-0">
                      <Stats
                         raw={calculateRAW()}
                         wpm={calculateWPM()}
@@ -794,7 +782,7 @@ const TypeZone = ({
                         testFailed={testFailed}
                      />
                   </div>
-                  <div className="nextTestSection flex flex-col items-center mt-8">
+                  <div className="nextTestSection flex flex-col items-center mt-8 w-full">
                      <button
                         ref={nextTestBtnRef}
                         onClick={restartTest}
@@ -820,8 +808,8 @@ const TypeZone = ({
                   </div>
                </div>
             ) : (
-               <div className="w-full flex flex-col items-center -mt-24">
-                  <div className="w-full overflow-visible" onClick={focusInput}>
+               <div className="w-full flex flex-col items-center -mt-12 md:-mt-24">
+                  <div className="w-full overflow-visible px-4 md:px-0" onClick={focusInput}>
                      <div className="testModesNotice flex justify-center text-center gap-2 transition-opacity duration-150 relative">
                         {capsLockOn && capsLockWarningMode === "show" && (
                            <div className="capsWarning absolute -top-16 left-1/2 -translate-x-1/2 flex gap-2.5 items-center text-bg text-[1rem] bg-accent w-fit p-4 rounded-lg pointer-events-none z-50">
@@ -866,7 +854,7 @@ const TypeZone = ({
                      )}
                      <div
                         ref={wordsContainerRef}
-                        className="text-3xl flex flex-wrap content-start leading-[3rem] tracking-normal relative text-secondary h-36 overflow-hidden w-full"
+                        className="text-2xl md:text-3xl flex flex-wrap content-start leading-9 md:leading-[3rem] tracking-normal relative text-secondary h-28 md:h-36 overflow-hidden w-full"
                      >
                         {/* Absolute positioned caret */}
                         <div
@@ -888,7 +876,7 @@ const TypeZone = ({
                               className="cursor-default absolute top-0 left-0 w-full h-full flex items-center justify-center backdrop-blur-sm z-10"
                               onClick={focusInput}
                            >
-                              <span className="flex items-center justify-around text-xl text-primary gap-5 font-mono tracking-wider">
+                              <span className="flex items-center justify-around text-base md:text-xl text-primary gap-3 md:gap-5 font-mono tracking-wider">
                                  <HiCursorClick />
                                  Click here to focus
                               </span>
@@ -917,7 +905,7 @@ const TypeZone = ({
                         onBlur={() => setIsFocused(false)}
                      />
                   </div>
-                  <div className="restartBtn flex justify-center mt-8">
+                  <div className="restartBtn flex justify-center mt-8 w-full">
                      <button
                         onClick={restartTest}
                         className="relative group px-8 py-3 text-secondary hover:text-primary border-2 border-transparent focus:border-secondary rounded-lg focus:outline-none transition-all cursor-pointer"

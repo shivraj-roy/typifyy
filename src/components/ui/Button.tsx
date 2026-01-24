@@ -10,7 +10,7 @@ const Button = ({
    return (
       <button
          id={btnId !== undefined ? String(btnId) : undefined}
-         className={`flex items-center justify-center gap-2 px-2 cursor-pointer hover:text-primary text-sm ${btnClass}`}
+         className={`flex items-center justify-center gap-1 md:gap-2 px-1.5 md:px-2 cursor-pointer hover:text-primary ${btnClass}`}
          onClick={btnClick}
          onMouseDown={(e) => e.preventDefault()}
       >

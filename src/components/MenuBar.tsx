@@ -22,11 +22,11 @@ const MenuBar = ({ testStart }: { testStart: boolean }) => {
 
    return (
       <div
-         className={`flex justify-center items-center self-start transition-opacity duration-300 w-full ${
+         className={`flex justify-center items-center self-start transition-opacity duration-300 w-full px-4 md:px-0 ${
             testStart ? "opacity-0 pointer-events-none" : "opacity-100"
          }`}
       >
-         <div className="flex bg-alt-bg px-3 py-2 rounded-xl">
+         <div className="flex bg-alt-bg px-2 md:px-3 py-1.5 md:py-2 rounded-xl text-xs md:text-sm">
             <div className="flex">
                <Button
                   btnIcon={<MdTimer />}
@@ -41,7 +41,7 @@ const MenuBar = ({ testStart }: { testStart: boolean }) => {
                   btnClick={() => handleModeChange("words")}
                />
             </div>
-            <div className="w-1.5 h-auto bg-bg rounded-2xl mr-2 ml-3 my-1" />
+            <div className="w-1 md:w-1.5 h-auto bg-bg rounded-2xl mr-1.5 md:mr-2 ml-2 md:ml-3 my-1" />
             <div className="flex">
                {mode === "time" ? (
                   <>
