@@ -91,7 +91,8 @@ const TypeZone = ({
 
    // Detect if device is touch-enabled (mobile/tablet)
    const isTouchDevice =
-      "ontouchstart" in window || navigator.maxTouchPoints > 0;
+      ("ontouchstart" in window || navigator.maxTouchPoints > 0) &&
+      typeof window !== "undefined";
 
    // * Reference for each word span element in the DOM...
    const wordSpanRef = useMemo(() => {
@@ -150,7 +151,7 @@ const TypeZone = ({
             });
          }
       },
-      [isMobile],
+      [isMobile, wordSpanRef],
    );
 
    // * Update caret position based on current character
