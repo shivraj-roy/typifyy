@@ -8,8 +8,8 @@ import {
    Tooltip,
    Legend,
 } from "chart.js";
-import { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
+import { useIsMobile } from "../hooks/useIsMobile";
 
 ChartJS.register(
    CategoryScale,
@@ -22,14 +22,7 @@ ChartJS.register(
 );
 
 const Graph = ({ graphData }: { graphData: number[][] }) => {
-   const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768);
-
-   useEffect(() => {
-      const handleResize = () => setIsMobile(window.innerWidth < 768);
-      window.addEventListener("resize", handleResize);
-      return () => window.removeEventListener("resize", handleResize);
-   }, []);
-
+   const isMobile = useIsMobile();
    const lineWidth = isMobile ? 1.5 : 3;
    const pointSize = isMobile ? 1 : 2.5;
 

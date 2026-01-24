@@ -17,6 +17,7 @@ import {
 } from "react-icons/fa";
 import { useTestModeStore } from "../stores/testModeStore";
 import { useSettingsStore } from "../stores/settingsStore";
+import { useIsMobile } from "../hooks/useIsMobile";
 import TimeCounter from "./TimeCounter";
 import TimeProgressBar from "./TimeProgressBar";
 import { HiCursorClick } from "react-icons/hi";
@@ -53,6 +54,7 @@ const TypeZone = ({
       liveProgressMode,
       capsLockWarningMode,
    } = useSettingsStore();
+   const isMobile = useIsMobile();
 
    const [words, setWords] = useState<string[]>(() => {
       const wordCount = mode === "words" ? testWords : 50;
@@ -123,31 +125,33 @@ const TypeZone = ({
    };
 
    // * Scroll smoothly when moving to the next line
-   const scrollToKeepOnSecondLine = (wordIndex: number) => {
-      const container = wordsContainerRef.current;
-      const wordElement = wordSpanRef[wordIndex]?.current;
+   const scrollToKeepOnSecondLine = useCallback(
+      (wordIndex: number) => {
+         const container = wordsContainerRef.current;
+         const wordElement = wordSpanRef[wordIndex]?.current;
 
-      if (!container || !wordElement) return;
+         if (!container || !wordElement) return;
 
-      // Responsive line height: 40px on mobile (leading-[2.5rem]), 48px on desktop (leading-[3rem])
-      const isMobile = window.innerWidth < 768;
-      const lineHeight = isMobile ? 40 : 48;
-      const wordTop = wordElement.offsetTop;
-      const currentLine = Math.floor(wordTop / lineHeight);
+         // Responsive line height: 40px on mobile (leading-[2.5rem]), 48px on desktop (leading-[3rem])
+         const lineHeight = isMobile ? 40 : 48;
+         const wordTop = wordElement.offsetTop;
+         const currentLine = Math.floor(wordTop / lineHeight);
 
-      // Both mobile and desktop: scroll after line 2 (currentLine >= 2)
-      // This means scroll when moving to line 3
-      const scrollThreshold = 2;
+         // Both mobile and desktop: scroll after line 2 (currentLine >= 2)
+         // This means scroll when moving to line 3
+         const scrollThreshold = 2;
 
-      if (currentLine >= scrollThreshold) {
-         const scrollAmount =
-            (currentLine - (scrollThreshold - 1)) * lineHeight;
-         container.scrollTo({
-            top: scrollAmount,
-            behavior: "smooth",
-         });
-      }
-   };
+         if (currentLine >= scrollThreshold) {
+            const scrollAmount =
+               (currentLine - (scrollThreshold - 1)) * lineHeight;
+            container.scrollTo({
+               top: scrollAmount,
+               behavior: "smooth",
+            });
+         }
+      },
+      [isMobile],
+   );
 
    // * Update caret position based on current character
    const updateCaretPosition = useCallback(() => {
@@ -970,7 +974,7 @@ const TypeZone = ({
                      </div>
                      <input
                         type="text"
-                        className="opacity-0 absolute"
+                        className="opacity-0"
                         style={{
                            position: "absolute",
                            top: 0,
