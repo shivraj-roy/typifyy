@@ -1,4 +1,4 @@
-import { generate } from "random-words";
+import englishWords from "../language/english.json";
 import {
    useRef,
    useEffect,
@@ -56,9 +56,18 @@ const TypeZone = ({
    } = useSettingsStore();
    const isMobile = useIsMobile();
 
+   const generateWords = (count: number): string[] => {
+      const pool = englishWords.words;
+      const result: string[] = [];
+      for (let i = 0; i < count; i++) {
+         result.push(pool[Math.floor(Math.random() * pool.length)]);
+      }
+      return result;
+   };
+
    const [words, setWords] = useState<string[]>(() => {
       const wordCount = mode === "words" ? testWords : 50;
-      return generate(wordCount) as string[];
+      return generateWords(wordCount);
    });
    const [counter, setCounter] = useState<number>(testTime);
    const [onWordIndex, setOnWordIndex] = useState(0);
@@ -620,7 +629,7 @@ const TypeZone = ({
    // * Reset words when mode or testWords changes...
    useEffect(() => {
       const wordCount = mode === "words" ? testWords : 50;
-      setWords(generate(wordCount) as string[]);
+      setWords(generateWords(wordCount));
       // Clear existing timer if any
       if (timerRef.current) {
          clearInterval(timerRef.current);
@@ -766,7 +775,7 @@ const TypeZone = ({
 
       // Generate new words
       const wordCount = mode === "words" ? testWords : 50;
-      setWords(generate(wordCount) as string[]);
+      setWords(generateWords(wordCount));
 
       // Reset all state
       setCounter(testTime);
